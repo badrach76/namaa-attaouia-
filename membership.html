@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلب الانخراط - جمعية نماء العطاوية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="navbar">
+            <div class="logo-area">
+                <img src="1000096843.jpg" alt="شعار جمعية نماء العطاوية" class="logo-img">
+                <div class="logo-text">
+                    <h1>جمعية نماء العطاوية</h1>
+                    <span>لأصحاب وحدات إنتاج زيت الزيتون</span>
+                </div>
+            </div>
+            <div class="menu-toggle" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="services.html">الخدمات</a></li>
+                <li><a href="activities.html">أنشطة الجمعية</a></li>
+                <li><a href="training.html">التكوين والتأطير</a></li>
+                <li><a href="membership.html" class="active">طلب الانخراط</a></li>
+                <li><a href="register.html">حساب المنخرط</a></li>
+                <li><a href="admin-login.html" class="admin-nav-btn"><i class="fa-solid fa-lock"></i> الإدارة</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="section-title">
+            <h3>طلب الانخراط في الجمعية</h3>
+            <p>املأ الاستمارة أدناه للانضمام رسمياً لشبكة وحدات إنتاج زيت الزيتون بالعطاوية</p>
+        </div>
+        <div class="form-box">
+            <form onsubmit="handleMembership(event)">
+                <div class="form-group">
+                    <label>الاسم الكامل للمسؤول القانوني:</label>
+                    <input type="text" id="m-name" required placeholder="أدخل الاسم الكامل">
+                </div>
+                <div class="form-group">
+                    <label>اسم وحدة الإنتاج (المعصرة):</label>
+                    <input type="text" id="m-mill" required placeholder="مثال: معصرة النماء الحديثة">
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف النقال (للتواصل عبر واتساب):</label>
+                    <input type="tel" id="m-phone" required placeholder="06XXXXXXXX" style="direction: ltr; text-align: right;">
+                </div>
+                <div class="form-group">
+                    <label>العنوان / الدوار / المنطقة بالعطاوية:</label>
+                    <input type="text" id="m-address" required placeholder="أدخل العنوان بالتفصيل">
+                </div>
+                <div class="form-group">
+                    <label>نوع وحدة الإنتاج:</label>
+                    <select id="m-type" required>
+                        <option value="">اختر النوع...</option>
+                        <option value="عصرية">عصرية (مستمر / نصف مستمر)</option>
+                        <option value="تقليدية">تقليدية (معصرة تقليدية)</option>
+                        <option value="تخزين">وحدة تخزين وتعبئة</option>
+                    </select>
+                </div>
+                <!-- خانة وضعية الترخيص الصحي الجديدة -->
+                <div class="form-group">
+                    <label><i class="fa-solid fa-shield-halved" style="color: var(--accent-gold);"></i> وضعية الترخيص الصحي (ONSSA):</label>
+                    <select id="m-license" required>
+                        <option value="">اختر وضعية الترخيص...</option>
+                        <option value="مرخص">مرخص نهائياً</option>
+                        <option value="غير مرخص">غير مرخص</option>
+                        <option value="في طور الإنجاز">في طور الإنجاز وتسوية الوضعية</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">إرسال طلب الانخراط</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون</h2>
+                <p>العطاوية، إقليم قلعة السراغنة، المملكة المغربية</p>
+            </div>
+            <div>
+                <p><i class="fa-solid fa-location-dot"></i> العطاوية، قلعة السراغنة</p>
+                <p><i class="fa-solid fa-envelope"></i> contact@namaa-attaouia.ma</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>جميع حقوق النشر محفوظة © 2026 - جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون</p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

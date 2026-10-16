@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة حساب المنخرط - جمعية نماء العطاوية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="navbar">
+            <div class="logo-area">
+                <img src="1000096843.jpg" alt="شعار جمعية نماء العطاوية" class="logo-img">
+                <div class="logo-text">
+                    <h1>جمعية نماء العطاوية</h1>
+                    <span>لأصحاب وحدات إنتاج زيت الزيتون</span>
+                </div>
+            </div>
+            <div class="menu-toggle" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="services.html">الخدمات</a></li>
+                <li><a href="activities.html">أنشطة الجمعية</a></li>
+                <li><a href="training.html">التكوين والتأطير</a></li>
+                <li><a href="membership.html">طلب الانخراط</a></li>
+                <li><a href="register.html" class="active">حساب المنخرط</a></li>
+                <li><a href="admin-login.html" class="admin-nav-btn"><i class="fa-solid fa-lock"></i> الإدارة</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="section-title">
+            <h3>تسجيل الدخول إلى حساب المنخرط</h3>
+            <p>أدخل اسم المستخدم وكلمة المرور المرسلة إليك عبر الواتساب من طرف إدارة الجمعية</p>
+        </div>
+
+        <div style="max-width: 800px; margin: 0 auto 30px; background: var(--light-gold); padding: 20px; border-radius: 10px; border-right: 5px solid var(--accent-gold);">
+            <h4 style="color: var(--primary-green); margin-bottom: 8px;"><i class="fa-solid fa-circle-info"></i> ما هي فوائد إنشاء حساب خاص بالمنخرط؟</h4>
+            <ul style="margin-right: 20px; font-size: 0.95rem; color: #444;">
+                <li>الاطلاع على مستجدات المعاصر والقرارات التنظيمية الخاصة بالقطاع.</li>
+                <li>الاستفادة من برامج التكوين والتأطير المهني الحصرية.</li>
+                <li>إمكانية تعديل بيانات المعноصر وتحديث كلمة المرور بكل أمان.</li>
+            </ul>
+        </div>
+
+        <div class="form-box">
+            <form onsubmit="handleUserLogin(event)">
+                <div class="form-group">
+                    <label>اسم المستخدم:</label>
+                    <input type="text" id="user-username" required placeholder="أدخل اسم المستخدم" style="direction: ltr; text-align: right;">
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور:</label>
+                    <input type="password" id="user-pass" required placeholder="********" style="direction: ltr; text-align: right;">
+                </div>
+                <button type="submit" class="submit-btn">تسجيل الدخول للحساب</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون</h2>
+                <p>العطاوية، إقليم قلعة السراغنة، المملكة المغربية</p>
+            </div>
+            <div>
+                <p><i class="fa-solid fa-location-dot"></i> العطاوية، قلعة السراغنة</p>
+                <p><i class="fa-solid fa-envelope"></i> contact@namaa-attaouia.ma</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>جميع حقوق النشر محفوظة © 2026 - جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون</p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

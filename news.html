@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أخبار الجمعية والقطاع - جمعية نماء العطاوية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="market-ticker">
+        <div class="ticker-content">
+            <span>🫒 أسعار السوق الوطنية والدولية:</span>
+            <span>زيت الزيتون الممتاز (العطاوية): 75 - 85 درهم للتر</span> | 
+            <span>إقليم قلعة السراغنة: معدل العصر 18%</span> | 
+            <span>السوق الدولية (إسبانيا/إيطاليا): استقرار نسبي في الأسعار</span>
+        </div>
+    </div>
+
+    <header>
+        <div class="navbar">
+            <div class="logo-area">
+                <img src="1000096843.jpg" alt="شعار جمعية نماء العطاوية" class="logo-img">
+                <div class="logo-text"><h1>جمعية نماء العطاوية</h1><span>لأصحاب وحدات إنتاج زيت الزيتون</span></div>
+            </div>
+            <div class="menu-toggle" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="services.html">الخدمات</a></li>
+                <li><a href="activities.html">أنشطة الجمعية</a></li>
+                <li><a href="news.html" class="active">أخبار القطاع</a></li>
+                <li><a href="training.html">التكوين والتأطير</a></li>
+                <li><a href="membership.html">طلب الانخراط</a></li>
+                <li><a href="register.html">حساب المنخرط</a></li>
+                <li><a href="admin-login.html" class="admin-nav-btn"><i class="fa-solid fa-lock"></i> الإدارة</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="section-title">
+            <h3>أخبار الجمعية والقطاع (محلية، وطنية ودولية)</h3>
+            <p>تابع آخر المستجدات والأنشطة الموازية والتقارير الاقتصادية لقطاع زيت الزيتون</p>
+        </div>
+
+        <div id="public-news-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
+            <!-- يتم تعبئتها ديناميكياً من لوحة الإدارة -->
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo"><h2>جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون</h2><p>العطاوية، قلعة السراغنة، المغرب</p></div>
+            <div><p><i class="fa-solid fa-location-dot"></i> العطاوية</p><p><i class="fa-solid fa-envelope"></i> contact@namaa-attaouia.ma</p></div>
+        </div>
+        <div class="footer-bottom"><p>جميع حقوق النشر محفوظة © 2026 - جمعية نماء العطاوية</p></div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

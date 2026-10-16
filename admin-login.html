@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول المشرفين - جمعية نماء العطاوية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="navbar">
+            <div class="logo-area">
+                <img src="1000096843.jpg" alt="شعار جمعية نماء العطاوية" class="logo-img">
+                <div class="logo-text">
+                    <h1>جمعية نماء العطاوية</h1>
+                    <span>لأصحاب وحدات إنتاج زيت الزيتون</span>
+                </div>
+            </div>
+            <div class="menu-toggle" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="services.html">الخدمات</a></li>
+                <li><a href="membership.html">طلب الانخراط</a></li>
+                <li><a href="register.html">إنشاء حساب</a></li>
+                <li><a href="admin-login.html" class="active admin-nav-btn"><i class="fa-solid fa-lock"></i> إدارة المنصة</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="section-title">
+            <h3>بوابة الدخول الآمن للمشرفين</h3>
+            <p>الرجاء إدخال بيانات اعتماد الإدارة للوصول إلى لوحة التحكم والتحكم بالمنخرطين</p>
+        </div>
+        <div class="form-box">
+            <div style="text-align: center; margin-bottom: 25px;">
+                <i class="fa-solid fa-user-shield" style="font-size: 3.5rem; color: var(--accent-gold);"></i>
+            </div>
+            <form onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label>اسم المستخدم الإداري:</label>
+                    <input type="text" id="admin-user" required placeholder="أدخل اسم المستخدم" style="direction: ltr; text-align: right;">
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور السرية:</label>
+                    <input type="password" id="admin-pass" required placeholder="********" style="direction: ltr; text-align: right;">
+                </div>
+                <button type="submit" class="submit-btn" style="background-color: var(--accent-gold);">تسجيل الدخول الآمن</button>
+            </form>
+            <div style="margin-top: 15px; text-align: center; font-size: 0.85rem; color: #666;">
+                <p>بيانات تجريبية للاختبار: اسم المستخدم <code>admin_namaa</code> | كلمة المرور <code>Olive2026@Attaouia</code></p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون</h2>
+                <p>العطاوية، إقليم قلعة السراغنة، المملكة المغربية</p>
+            </div>
+            <div>
+                <p><i class="fa-solid fa-location-dot"></i> العطاوية، قلعة السراغنة</p>
+                <p><i class="fa-solid fa-envelope"></i> contact@namaa-attaouia.ma</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>جميع حقوق النشر محفوظة © 2026 - جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون</p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
