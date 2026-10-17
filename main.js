@@ -11,30 +11,45 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('user-dashboard-info')) loadUserDashboard();
 });
 
-// دالة جلب أسعار السوق ومؤشرات البورصات الدولية والمحلية تلقائياً
+// دالة جلب أسعار السوق ومؤشرات البورصات الدولية والأسعار المحلية المسجلة يدوياً من الإدارة
 async function fetchGlobalMarketPrices() {
     const tickerContainer = document.getElementById('live-market-ticker');
     if (!tickerContainer) return;
 
     try {
-        const marketData = [
-            "🇪🇸 بورصة إسبانيا (Extra Virgin): 8.40 أورو / لتر",
-            "🇮🇹 بورصة إيطاليا (معدل السوق): 9.10 أورو / لتر",
-            "🇹🇳 السوق التونسية (تصدير): 22.50 دينار / لتر",
-            "🇲🇦 السوق المحلية (العطاوية - قلعة السراغنة): 75 - 85 درهم للتر",
-            "📈 مؤشر العصر والإنتاج الإقليمي: نسبة العصر المستقرة في حدود 18%"
+        // 1. المؤشرات الدولية المعتمدة (المجلس الدولي لزيت الزيتون IOC والبورصات الكبرى)
+        let marketData = [
+            "🏛️ مرجعيات المجلس الدولي لزيت الزيتون (IOC): اعتماد معايير الجودة والشفافية الدولية",
+            "🇪🇸 بورصة إسبانيا (أندلسية - Extra Virgin): 8.35 - 8.50 أورو / لتر",
+            "🇮🇹 بورصة إيطاليا (باري - Extra Virgin): 9.00 - 9.20 أورو / لتر",
+            "🇹🇳 السوق التونسية (تصدير - معايير IOC): 22.00 - 23.00 دينار / لتر",
+            "🌱 مؤشر العصر والإنتاج الإقليمي (العصر على البارد): مستقر في حدود 18%"
         ];
 
-        let tickerHTML = `<span>🫒 مؤشرات البورصات الدولية والمحلية (تحديث حي تلقائي):</span>`;
-        marketData.forEach(item => {
-            tickerHTML += `<span>${item}</span> | `;
-        });
+        // 2. جلب الأسعار المحلية المدخلة يدوياً من لوحة الإدارة من قاعدة بيانات Supabase
+        const { data: localPrices, error } = await supabaseClient.from('market_prices').select('*');
+        if (!error && localPrices && localPrices.length > 0) {
+            localPrices.forEach(item => {
+                marketData.push(`🇲🇦 ${item.price_text}`);
+            });
+        } else {
+            // سعر افتراضي محلي في حال لم يتم إدخال أسعار بعد
+            marketData.push("🇲🇦 السوق المحلية (إقليم قلعة السراغنة - العطاوية): يرجى التحيين من لوحة الإدارة");
+        }
+
+        let tickerHTML = "";
+        for (let i = 0; i < 2; i++) {
+            marketData.forEach(item => {
+                tickerHTML += `<span>${item}</span> | `;
+            });
+        }
 
         tickerContainer.innerHTML = tickerHTML;
     } catch (error) {
-        console.error('تعذر تحديث أسعار السوق تلقائياً:', error);
+        console.error('تعذر تحديث أسعار السوق:', error);
     }
 }
+
 
 // 1. تسجيل دخول المشرف (الإدارة)
 function handleAdminLogin(e) {
