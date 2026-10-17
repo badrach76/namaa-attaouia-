@@ -3,122 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم المنخرط - جمعية نماء العطاوية</title>
+    <title>فضاء المنخرط - جمعية نماء العطاوية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script>if (!sessionStorage.getItem('currentMember')) { window.location.href = 'register.html'; }</script>
 </head>
-<body id="user-dashboard-info">
-<header>
-    <div class="navbar">
-        <div class="logo-area">
-            <img src="1000096843.jpg" alt="شعار جمعية نماء" class="logo-img">
-            <div class="logo-text">
-                <h1>جمعية نماء العطاوية</h1>
-                <span>لأصحاب وحدات إنتاج زيت الزيتون</span>
+<body style="background-color: #f9f6f0;">
+
+    <header>
+        <div class="navbar" style="padding: 15px 5%;">
+            <div class="logo-area" style="display: flex; align-items: center; gap: 15px;">
+                <img src="1000096843.jpg" alt="شعار جمعية نماء" class="logo-img" style="width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-gold);">
+                <div class="logo-text">
+                    <h1 style="font-size: 1.2rem; color: var(--primary-green); margin: 0;">جمعية نماء العطاوية</h1>
+                    <span style="font-size: 0.8rem; color: #666;">فضاء تسيير المنخرطين والمعاصر</span>
+                </div>
             </div>
-        </div>
-        <ul class="nav-links">
-            <li><a href="index.html"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
-            
-            <!-- قائمة المستجدات المنسدلة -->
-            <li>
-                <a><i class="fa-solid fa-newspaper"></i> المستجدات <i class="fa-solid fa-angle-down" style="font-size:0.6rem;"></i></a>
-                <div class="dropdown-menu">
-                    <a href="news.html"><i class="fa-solid fa-globe"></i> أخبار القطاع</a>
-                    <a href="activities.html"><i class="fa-solid fa-calendar-days"></i> أنشطة الجمعية</a>
-                </div>
-            </li>
-
-            <!-- قائمة المهنية المنسدلة -->
-            <li>
-                <a><i class="fa-solid fa-briefcase"></i> المهنية <i class="fa-solid fa-angle-down" style="font-size:0.6rem;"></i></a>
-                <div class="dropdown-menu">
-                    <a href="services.html"><i class="fa-solid fa-handshake-angle"></i> خدمات المعاصر</a>
-                    <a href="training.html"><i class="fa-solid fa-graduation-cap"></i> التكوين والتأطير</a>
-                </div>
-            </li>
-
-            <!-- قائمة الإدارة المنسدلة -->
-            <li>
-                <a><i class="fa-solid fa-user-gear"></i> الإدارة <i class="fa-solid fa-angle-down" style="font-size:0.6rem;"></i></a>
-                <div class="dropdown-menu">
-                    <a href="admin-login.html"><i class="fa-solid fa-lock"></i> تسجيل دخول المشرف</a>
-                    <a href="admin-dashboard.html"><i class="fa-solid fa-gauge-high"></i> لوحة الإدارة</a>
-                </div>
-            </li>
-
-            <li><a href="membership.html"><i class="fa-solid fa-user-plus"></i> الانخراط</a></li>
-            <li><a href="register.html" class="admin-nav-btn"><i class="fa-solid fa-user-shield"></i> فضاء المنخرط</a></li>
-        </ul>
-    </div>
-</header>
-
-
-    <div class="container">
-        <div class="section-title">
-            <h3>مرحباً بك، <span id="u-name-display" style="color:var(--primary-green);"></span></h3>
-            <p>فضاءك المهني للاطلاع على وحدة الإنتاج، واجبات الانخراط، والتكوينات الحصرية</p>
-        </div>
-
-        <!-- رابط الوصول السريع للتكوينات والتأطير الحصري -->
-        <div style="background: linear-gradient(135deg, var(--primary-green), var(--light-green)); color: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
             <div>
-                <h4 style="font-size: 1.4rem; margin-bottom: 5px;"><i class="fa-solid fa-graduation-cap"></i> بوابة التكوينات والتأطير الحصري للمنخرطين</h4>
-                <p style="color: var(--light-gold);">استفد من الدورات التقنية، الفيديوهات التعليمية، والدلائل الميدانية لأرباب المعاصر.</p>
+                <button onclick="logoutMember()" style="background: #c0392b; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
             </div>
-            <a href="#member-trainings-section" style="background: var(--accent-gold); color: white; padding: 10px 25px; border-radius: 25px; text-decoration: none; font-weight: 700;">الذهاب للتكوينات</a>
+        </div>
+    </header>
+
+    <div class="container" style="max-width: 1000px; margin: 30px auto; padding: 0 20px;">
+        <div class="section-title" style="text-align: center; margin-bottom: 30px;">
+            <h3 style="color: var(--primary-green); font-size: 1.8rem;"><i class="fa-solid fa-user-gear"></i> لوحة تحكم المنخرط المهني</h3>
+            <p style="color: #666;">متابعة حالة الانخراط، تحديث بيانات المعصرة، والاطلاع على التكوينات التأطيرية الحصرية</p>
         </div>
 
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:30px;">
-            <div style="background:white; padding:25px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
-                <h4 style="color:var(--primary-green); margin-bottom:15px;"><i class="fa-solid fa-industry"></i> بيانات وحدة الإنتاج والالتزامات</h4>
-                <p><strong>اسم المعصرة:</strong> <span id="u-mill-display"></span></p>
-                <p><strong>رقم الهاتف:</strong> <span id="u-phone-display"></span></p>
-                <p><strong>نوع الوحدة:</strong> <span id="u-type-display"></span></p>
-                <p><strong>الترخيص الصحي:</strong> <span id="u-license-display"></span></p>
-                <p style="margin-top: 10px;"><strong>واجب الانخراط السنوي:</strong> <span id="u-fee-status"></span></p>
-            </div>
+        <!-- بطاقة معلومات المنخرط -->
+        <div id="user-dashboard-info" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 30px; border-top: 5px solid var(--primary-green);">
+            <!-- يتم تحميل بيانات المنخرط هنا ديناميكياً -->
+        </div>
 
-            <!-- نموذج إرسال استفسار إلى الإدارة -->
-            <div class="form-box" style="margin:0; max-width:100%; padding:25px;">
-                <h4 style="color:var(--primary-green); margin-bottom:15px;"><i class="fa-solid fa-paper-plane"></i> إرسال استفسار أو طلب إلى الإدارة</h4>
-                <form onsubmit="handleMemberInquiry(event)">
-                    <div class="form-group"><textarea id="inquiry-text" rows="3" required placeholder="اكتب استفسارك أو طلبك للإدارة هنا..."></textarea></div>
-                    <button type="submit" class="submit-btn" style="padding:10px;">إرسال الاستفسار</button>
-                </form>
-                <div style="margin-top: 15px;">
-                    <h5 style="font-size: 0.9rem; color:var(--primary-green); margin-bottom: 5px;">سجل الاستفسارات السابقة:</h5>
-                    <div id="member-inquiries-box" class="chat-box"></div>
+        <!-- قسم تحديث بيانات الحساب ومعلومات المعصرة -->
+        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 30px;">
+            <h4 style="color: var(--primary-green); margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> تحديث بيانات المعصرة والحساب</h4>
+            <form onsubmit="handleUpdateMemberProfile(event)" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group" style="grid-column: span 1;">
+                    <label style="font-weight: bold; font-size: 0.9rem; color: #444;">اسم المسير / المستغل:</label>
+                    <input type="text" id="update-name" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px;">
                 </div>
-            </div>
-        </div>
-
-        <!-- قسم تغيير بيانات الحساب -->
-        <div class="form-box" style="max-width: 100%; margin-bottom: 40px; padding: 25px;">
-            <h4 style="color:var(--primary-green); margin-bottom:15px;"><i class="fa-solid fa-key"></i> تغيير اسم المستخدم وكلمة المرور الخاصة بحسابك</h4>
-            <form onsubmit="handleUpdateCredentials(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; align-items: end;">
-                <div class="form-group" style="margin:0;"><label>اسم المستخدم الجديد:</label><input type="text" id="new-user" required placeholder="اسم المستخدم" style="direction: ltr; text-align: right;"></div>
-                <div class="form-group" style="margin:0;"><label>كلمة المرور الجديدة:</label><input type="password" id="new-pass" required placeholder="********" style="direction: ltr; text-align: right;"></div>
-                <button type="submit" class="submit-btn" style="padding:11px;">حفظ التعديلات</button>
+                <div class="form-group" style="grid-column: span 1;">
+                    <label style="font-weight: bold; font-size: 0.9rem; color: #444;">اسم المعصرة:</label>
+                    <input type="text" id="update-mill" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px;">
+                </div>
+                <div class="form-group" style="grid-column: span 1;">
+                    <label style="font-weight: bold; font-size: 0.9rem; color: #444;">رقم الهاتف:</label>
+                    <input type="text" id="update-phone" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px; direction: ltr; text-align: right;">
+                </div>
+                <div class="form-group" style="grid-column: span 1;">
+                    <label style="font-weight: bold; font-size: 0.9rem; color: #444;">كلمة المرور الجديدة:</label>
+                    <input type="password" id="update-pass" placeholder="اتركها فارغة إذا لمغن ترغب بتغييرها" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px; direction: ltr; text-align: right;">
+                </div>
+                <div style="grid-column: span 2; text-align: left;">
+                    <button type="submit" style="background: var(--accent-gold); color: var(--primary-green); font-weight: bold; padding: 10px 25px; border: none; border-radius: 6px; cursor: pointer;">حفظ التعديلات</button>
+                </div>
             </form>
         </div>
 
-        <!-- التكوينات الحصرية للمنخرطين -->
-        <div id="member-trainings-section" style="margin-top: 50px;">
-            <div class="section-title">
-                <h3>الدورات التكوينية الحصرية للمنخرطين</h3>
-                <p>محتويات رقمية متقدمة، فيديوهات توجيهية ودروس ميدانية</p>
+        <!-- قسم التكوينات الحصرية للمنخرطين -->
+        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 40px;">
+            <h4 style="color: var(--primary-green); margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px;"><i class="fa-solid fa-graduation-cap"></i> التكوينات والبرامج التأطيرية الحصرية للمنخرطين</h4>
+            <div id="member-trainings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <!-- يتم جلب التكوينات الخاصة هنا -->
             </div>
-            <div id="member-trainings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px;"></div>
         </div>
     </div>
 
-    <footer>
-        <div class="footer-content"><div class="footer-logo"><h2>جمعية نماء العطاوية</h2><p>العطاوية، المغرب</p></div></div>
-        <div class="footer-bottom"><p>جميع حقوق النشر محفوظة © 2026 - جمعية نماء العطاوية</p></div>
-    </footer>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script src="main.js"></script>
