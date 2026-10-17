@@ -98,6 +98,55 @@ header { background: var(--white); box-shadow: 0 4px 20px rgba(0,0,0,0.05); posi
     border-top: 3px solid var(--accent-gold);
     z-index: 1100;
 }
+/* تحسين عارضة اللوغو والإسم العلوية */
+header {
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 3px solid var(--accent-gold);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none;
+}
+
+.logo-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-gold);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.logo-text h1 {
+    font-size: 1.25rem;
+    color: var(--primary-green);
+    font-weight: 900;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.logo-text span {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 600;
+}
+
 .dropdown-menu a { color: var(--text-dark) !important; background: transparent !important; padding: 8px 15px; font-size: 0.85rem; text-align: right; }
 .dropdown-menu a:hover { background: var(--light-gold) !important; color: var(--primary-green) !important; padding-right: 20px; }
 
