@@ -26,7 +26,7 @@
     <div class="container">
         <div class="section-title">
             <h3>إدارة المنصة وقاعدة البيانات (Supabase)</h3>
-            <p>تحكم كامل في الإضافة، التعديل، والحذف للمنخرطين، الأنشطة والتكوينات</p>
+            <p>إدارة المنخرطين والأنشطة والتكوينات والأخبار والوسائط من مكان واحد</p>
         </div>
 
         <!-- إرسال إشعار جماعي لمجموعة الواتساب -->
@@ -79,46 +79,17 @@
                 <div class="form-group" style="margin:0;"><label>العنوان:</label><input type="text" id="act-title" required placeholder="العنوان"></div>
                 <div class="form-group" style="margin:0;"><label>التاريخ:</label><input type="date" id="act-date" required></div>
                 <div class="form-group" style="margin:0;"><label>النوع:</label><select id="act-type"><option value="منجز">منجز</option><option value="مستقبلي">مستقبلي</option></select></div>
-                <div class="form-group" style="margin:0;"><label>رابط الصورة:</label><input type="url" id="act-image" placeholder="https://..."></div>
-                <div class="form-group" style="margin:0;"><label>رابط الفيديو:</label><input type="text" id="act-video" placeholder="YouTube Embed"></div>
+                <div class="form-group" style="margin:0;"><label>رفع صورة من الجهاز:</label><input type="file" id="act-image-file" accept="image/*"></div>
+                <div class="form-group" style="margin:0;"><label>أو رابط الصورة:</label><input type="url" id="act-image-url" placeholder="https://..."></div>
+                <div class="form-group" style="margin:0;"><label>رفع فيديو من الجهاز:</label><input type="file" id="act-video-file" accept="video/*"></div>
+                <div class="form-group" style="margin:0;"><label>أو رابط فيديو/YouTube:</label><input type="url" id="act-video-url" placeholder="رابط الفيديو"></div>
                 <div class="form-group" style="margin:0; grid-column: 1/-1;"><label>التفاصيل:</label><textarea id="act-desc" rows="2" required placeholder="التفاصيل..."></textarea></div>
                 <button type="submit" class="submit-btn" style="grid-column: 1/-1; padding: 10px;">نشر النشاط</button>
             </form>
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse; text-align: right;">
-                    <thead><tr style="background:#ddd;"><th style="padding:8px;">العنوان</th><th style="padding:8px;">التاريخ</th><th style="padding:8px;">النوع</th><th style="padding:8px;">حذف</th></tr></thead>
+                    <thead><tr style="background:#ddd;"><th style="padding:8px;">العنوان</th><th style="padding:8px;">التاريخ</th><th style="padding:8px;">النوع</th><th style="padding:8px;">الوسائط</th><th style="padding:8px;">حذف</th></tr></thead>
                     <tbody id="admin-activities-table"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- إدارة أخبار الجمعية والقطاع -->
-        <div class="admin-action-box" style="border-top-color: var(--accent-gold);">
-            <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-newspaper"></i> إدارة أخبار الجمعية والقطاع</h4>
-            <form id="news-admin-form" onsubmit="handleAddNews(event)" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-bottom:20px; align-items:end;">
-                <input type="hidden" id="news-id">
-                <div class="form-group" style="margin:0;"><label for="news-title">عنوان الخبر:</label><input type="text" id="news-title" required maxlength="180" placeholder="عنوان واضح ومختصر"></div>
-                <div class="form-group" style="margin:0;"><label for="news-category">التصنيف:</label><select id="news-category" required>
-                    <option value="أخبار الجمعية">أخبار الجمعية</option>
-                    <option value="القوانين والتراخيص">القوانين والتراخيص</option>
-                    <option value="أخبار القطاع">أخبار القطاع</option>
-                    <option value="الأسعار والأسواق">الأسعار والأسواق</option>
-                    <option value="بلاغات ومذكرات">بلاغات ومذكرات</option>
-                    <option value="أخبار دولية">أخبار دولية</option>
-                </select></div>
-                <div class="form-group" style="margin:0;"><label for="news-date">التاريخ:</label><input type="date" id="news-date" required></div>
-                <div class="form-group" style="margin:0;"><label for="news-image-file">صورة الخبر (اختياري):</label><input type="file" id="news-image-file" accept="image/*"></div>
-                <div class="form-group" style="margin:0; grid-column:1/-1;"><label for="news-content">تفاصيل الخبر:</label><textarea id="news-content" rows="5" required maxlength="12000" placeholder="اكتب الخبر أو ملخص المستجد القانوني مع ذكر المصدر عند الاقتضاء..."></textarea></div>
-                <div style="grid-column:1/-1; display:flex; gap:10px; flex-wrap:wrap;">
-                    <button type="submit" id="news-submit-btn" class="submit-btn" style="width:auto; padding:10px 24px;"><i class="fa-solid fa-paper-plane"></i> نشر الخبر</button>
-                    <button type="button" class="btn-edit" onclick="resetNewsForm()" style="padding:10px 18px;">إلغاء التعديل</button>
-                </div>
-                <small style="grid-column:1/-1;color:#666;">يظهر الخبر للزوار بعد حفظه بنجاح. لا تضع معلومات غير متحقق منها أو أسعارًا غير مؤكدة.</small>
-            </form>
-            <div style="overflow-x:auto;">
-                <table style="width:100%; border-collapse:collapse; text-align:right; min-width:650px;">
-                    <thead><tr style="background:#ddd;"><th style="padding:8px;">العنوان</th><th style="padding:8px;">التصنيف</th><th style="padding:8px;">التاريخ</th><th style="padding:8px;">الإجراءات</th></tr></thead>
-                    <tbody id="admin-news-table"></tbody>
                 </table>
             </div>
         </div>
@@ -131,17 +102,35 @@
                 <div class="form-group" style="margin:0;"><label>التاريخ:</label><input type="date" id="tr-date" required></div>
                 <div class="form-group" style="margin:0;"><label>المؤطر:</label><input type="text" id="tr-trainer" required placeholder="المؤطر"></div>
                 <div class="form-group" style="margin:0;"><label>الفئة:</label><input type="text" id="tr-target" required placeholder="الفئة المستهدفة"></div>
-                <div class="form-group" style="margin:0;"><label>رابط الصورة:</label><input type="url" id="tr-image" placeholder="https://..."></div>
-                <div class="form-group" style="margin:0;"><label>رابط الفيديو:</label><input type="text" id="tr-video" placeholder="YouTube Embed"></div>
+                <div class="form-group" style="margin:0;"><label>رفع صورة من الجهاز:</label><input type="file" id="tr-image-file" accept="image/*"></div>
+                <div class="form-group" style="margin:0;"><label>أو رابط الصورة:</label><input type="url" id="tr-image-url" placeholder="https://..."></div>
+                <div class="form-group" style="margin:0;"><label>رفع فيديو من الجهاز:</label><input type="file" id="tr-video-file" accept="video/*"></div>
+                <div class="form-group" style="margin:0;"><label>أو رابط فيديو/YouTube:</label><input type="url" id="tr-video-url" placeholder="رابط الفيديو"></div>
                 <div class="form-group" style="margin:0; grid-column: 1/-1;"><label>المحتوى الحصري:</label><textarea id="tr-content" rows="2" required placeholder="المحتوى التقني..."></textarea></div>
                 <button type="submit" class="submit-btn" style="grid-column: 1/-1; padding: 10px; background-color: var(--accent-gold);">نشر التكوين</button>
             </form>
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse; text-align: right;">
-                    <thead><tr style="background:#ddd;"><th style="padding:8px;">العنوان</th><th style="padding:8px;">المؤطر</th><th style="padding:8px;">التاريخ</th><th style="padding:8px;">حذف</th></tr></thead>
+                    <thead><tr style="background:#ddd;"><th style="padding:8px;">العنوان</th><th style="padding:8px;">المؤطر</th><th style="padding:8px;">التاريخ</th><th style="padding:8px;">الوسائط</th><th style="padding:8px;">حذف</th></tr></thead>
                     <tbody id="admin-trainings-table"></tbody>
                 </table>
             </div>
+        </div>
+
+        <!-- إدارة أخبار الجمعية والقطاع -->
+        <div class="admin-action-box" style="border-top-color:#2e7d32;">
+            <h4 style="color:var(--primary-green);margin-bottom:15px;"><i class="fa-solid fa-newspaper"></i> إدارة أخبار الجمعية والقطاع</h4>
+            <form onsubmit="handleAddNews(event)" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:20px;align-items:end;">
+                <div class="form-group" style="margin:0;"><label>عنوان الخبر:</label><input type="text" id="news-title" required></div>
+                <div class="form-group" style="margin:0;"><label>التصنيف:</label><select id="news-category"><option>أخبار الجمعية</option><option>قوانين وتراخيص</option><option>أخبار وطنية</option><option>أخبار دولية</option><option>الأسعار والسوق</option><option>بلاغات مهنية</option></select></div>
+                <div class="form-group" style="margin:0;"><label>تاريخ النشر:</label><input type="date" id="news-date" required></div>
+                <div class="form-group" style="margin:0;"><label>صورة الخبر:</label><input type="file" id="news-image-file" accept="image/*"></div>
+                <div class="form-group" style="margin:0;"><label>أو رابط الصورة:</label><input type="url" id="news-image-url" placeholder="https://..."></div>
+                <div class="form-group" style="margin:0;"><label>رابط وثيقة PDF (اختياري):</label><input type="url" id="news-document-url" placeholder="رابط الوثيقة"></div>
+                <div class="form-group" style="margin:0;grid-column:1/-1;"><label>مضمون الخبر:</label><textarea id="news-content" rows="4" required></textarea></div>
+                <button type="submit" class="submit-btn" style="grid-column:1/-1;padding:10px;">نشر الخبر</button>
+            </form>
+            <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;text-align:right;min-width:700px;"><thead><tr style="background:#ddd;"><th style="padding:8px;">العنوان</th><th style="padding:8px;">التصنيف</th><th style="padding:8px;">التاريخ</th><th style="padding:8px;">الوسائط والوثائق</th><th style="padding:8px;">حذف</th></tr></thead><tbody id="admin-news-table"></tbody></table></div>
         </div>
     </div>
 

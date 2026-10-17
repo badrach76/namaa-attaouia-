@@ -247,3 +247,11 @@ footer {
     .nav-links.active { display: flex; }
     .menu-toggle { display: block; }
 }
+
+
+/* تحسين الاتساق بين الصفحات والنماذج والوسائط */
+.container { width: min(1200px, 100% - 32px); margin-inline: auto; }
+.admin-action-box { background: #fff; border-radius: 12px; padding: 22px; margin: 22px 0; box-shadow: 0 4px 16px rgba(0,0,0,.06); border-top: 4px solid var(--primary-green); }
+input[type="file"] { max-width: 100%; background: #fff; padding: 8px; border: 1px solid #ddd; border-radius: 8px; }
+.empty-state { background: #fff; padding: 22px; border-radius: 10px; color: #555; text-align: center; grid-column: 1 / -1; }
+@media (max-width: 640px) { .container { width: min(100% - 20px, 1200px); } .section-title h3 { font-size: 1.2rem; } .admin-action-box { padding: 14px; } }

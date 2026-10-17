@@ -9,13 +9,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="market-ticker">
-        <div class="ticker-content">
-            <span>🫒 مستجدات قطاع زيت الزيتون</span>
-            <span>تابع الأخبار والقوانين والبلاغات المهنية المنشورة من إدارة الجمعية</span>
-            <span>يرجى التحقق من مصدر وتاريخ أي معلومة متعلقة بالأسعار قبل اعتمادها</span>
-        </div>
-    </div>
+    <div class="market-ticker"><div class="ticker-content"><span>🫒 مستجدات قطاع زيت الزيتون: تابع الأخبار والبلاغات والقوانين المنشورة من إدارة الجمعية.</span></div></div>
+</div>
 
     <header>
         <div class="navbar">
@@ -40,28 +35,10 @@
     <div class="container">
         <div class="section-title">
             <h3>أخبار الجمعية والقطاع (محلية، وطنية ودولية)</h3>
-            <p>تابع آخر المستجدات والأنشطة الموازية والتقارير الاقتصادية لقطاع زيت الزيتون</p>
+            <p>أخبار الجمعية، القوانين والتراخيص، البلاغات المهنية ومستجدات السوق الوطنية والدولية</p>
         </div>
 
-        <div class="news-tools" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:25px;">
-            <div class="form-group" style="margin:0;">
-                <label for="news-search">البحث في الأخبار</label>
-                <input id="news-search" type="search" placeholder="ابحث بعنوان الخبر أو محتواه..." style="width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;">
-            </div>
-            <div class="form-group" style="margin:0;">
-                <label for="news-filter">تصفية حسب التصنيف</label>
-                <select id="news-filter" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;">
-                    <option value="">جميع التصنيفات</option>
-                    <option value="أخبار الجمعية">أخبار الجمعية</option>
-                    <option value="القوانين والتراخيص">القوانين والتراخيص</option>
-                    <option value="أخبار القطاع">أخبار القطاع</option>
-                    <option value="الأسعار والأسواق">الأسعار والأسواق</option>
-                    <option value="بلاغات ومذكرات">بلاغات ومذكرات</option>
-                    <option value="أخبار دولية">أخبار دولية</option>
-                </select>
-            </div>
-        </div>
-        <div id="public-news-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:24px;">
+        <div id="public-news-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
             <!-- يتم تعبئتها ديناميكياً من لوحة الإدارة -->
         </div>
     </div>

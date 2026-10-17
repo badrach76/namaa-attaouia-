@@ -1,26 +1,19 @@
-// استبدل الروابط والمفاتيح الخاصة بمشروعك في Supabase
-const SUPABASE_URL = 'https://yogeqsykljpuipanybei.supbase.co';
+// إعداد الاتصال بقاعدة بيانات Supabase
+// تنبيه: يجب أن يكون عنوان المشروع ومفتاح anon/public صحيحين من إعدادات Supabase.
+const SUPABASE_URL = 'https://yogeqsykljpuipanybei.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_46eo92Prv6Ks0eYscB3OjA_DjlNAKBl';
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// استعمال اسم مختلف لتفادي التعارض مع مكتبة window.supabase
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// دالة مساعدة لرفع الملفات (صور/فيديوهات) مباشرة من الجهاز إلى Supabase Storage
 async function uploadFileToSupabase(fileInputId) {
-    const fileInput = document.getElementById(fileInputId);
-    if (!fileInput || fileInput.files.length === 0) return null;
-    
-    const file = fileInput.files[0];
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}_${Math.random().toString(36.substring(2)}.${fileExt}`;
-    const filePath = `${fileName}`;
-
-    const { data, error } = await supabase.storage.from('namaa-media').upload(filePath, file);
-    if (error) {
-        alert('خطأ أثناء رفع الملف: ' + error.message);
-        return null;
-    }
-
-    // جلب الرابط العام للملف المرفوع
-    const { data: publicUrlData } = supabase.storage.from('namaa-media').getPublicUrl(filePath);
-    return publicUrlData.publicUrl;
-      }
+    const input = document.getElementById(fileInputId);
+    if (!input || !input.files || !input.files[0]) return null;
+    const file = input.files[0];
+    const safeName = file.name.normalize('NFKD').replace(/[^a-zA-Z0-9._-]/g, '-');
+    const filePath = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}-${safeName}`;
+    const { data, error } = await supabaseClient.storage.from('namaa-media').upload(filePath, file, { upsert: false, contentType: file.type || undefined });
+    if (error) throw new Error(`تعذر رفع الملف «${file.name}»: ${error.message}`);
+    const { data: publicData } = supabaseClient.storage.from('namaa-media').getPublicUrl(data.path);
+    return publicData.publicUrl;
+}
