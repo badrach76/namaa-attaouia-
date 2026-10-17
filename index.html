@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <!-- الهيدر والقوائم المنسدلة الذكية والمتكاملة -->
+    <!-- الهيدر والقوائم المنسدلة الذكية والمتكاملة مع فضاء الإدارة -->
     <header>
         <div class="navbar">
             <div class="logo-area">
@@ -50,9 +50,17 @@
                     </div>
                 </li>
 
+                <!-- قائمة منسدلة خاصة بفضاء الإدارة والمشرفين لضمان ربطها بجميع الصفحات -->
+                <li>
+                    <a><i class="fa-solid fa-user-gear"></i> الإدارة <i class="fa-solid fa-angle-down" style="font-size:0.7rem;"></i></a>
+                    <div class="dropdown-menu">
+                        <a href="admin-login.html"><i class="fa-solid fa-lock"></i> تسجيل دخول المشرف</a>
+                        <a href="admin-dashboard.html"><i class="fa-solid fa-gauge-high"></i> لوحة التحكم والإدارة</a>
+                    </div>
+                </li>
+
                 <li><a href="membership.html"><i class="fa-solid fa-user-plus"></i> طلب الانخراط</a></li>
-                <li><a href="register.html"><i class="fa-solid fa-user-shield"></i> فضاء المنخرط</a></li>
-                <li><a href="admin-login.html" class="admin-nav-btn"><i class="fa-solid fa-lock"></i> الإدارة</a></li>
+                <li><a href="register.html" class="admin-nav-btn"><i class="fa-solid fa-user-shield"></i> فضاء المنخرط</a></li>
             </ul>
         </div>
     </header>
