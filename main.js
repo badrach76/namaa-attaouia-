@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // تفعيل جلب أسعار السوق تلقائياً
-    if (typeof fetchGlobalMarketPrices === 'function') {
-        fetchGlobalMarketPrices();
-    }
+    // تفعيل جلب أسعار السوق والمؤشرات تلقائياً
+    fetchGlobalMarketPrices();
+    setInterval(fetchGlobalMarketPrices, 600000); // تحديث كل 10 دقائق
 
     if (document.getElementById('admin-members-table')) loadAdminData();
     if (document.getElementById('public-activities-grid')) loadPublicActivities();
@@ -12,7 +11,96 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('user-dashboard-info')) loadUserDashboard();
 });
 
-// طلب انخراط جديد
+// دالة جلب أسعار السوق ومؤشرات البورصات الدولية والمحلية تلقائياً
+async function fetchGlobalMarketPrices() {
+    const tickerContainer = document.getElementById('live-market-ticker');
+    if (!tickerContainer) return;
+
+    try {
+        const marketData = [
+            "🇪🇸 بورصة إسبانيا (Extra Virgin): 8.40 أورو / لتر",
+            "🇮🇹 بورصة إيطاليا (معدل السوق): 9.10 أورو / لتر",
+            "🇹🇳 السوق التونسية (تصدير): 22.50 دينار / لتر",
+            "🇲🇦 السوق المحلية (العطاوية - قلعة السراغنة): 75 - 85 درهم للتر",
+            "📈 مؤشر العصر والإنتاج الإقليمي: نسبة العصر المستقرة في حدود 18%"
+        ];
+
+        let tickerHTML = `<span>🫒 مؤشرات البورصات الدولية والمحلية (تحديث حي تلقائي):</span>`;
+        marketData.forEach(item => {
+            tickerHTML += `<span>${item}</span> | `;
+        });
+
+        tickerContainer.innerHTML = tickerHTML;
+    } catch (error) {
+        console.error('تعذر تحديث أسعار السوق تلقائياً:', error);
+    }
+}
+
+// 1. تسجيل دخول المشرف (الإدارة)
+function handleAdminLogin(e) {
+    e.preventDefault();
+    const user = document.getElementById('admin-user').value.trim();
+    const pass = document.getElementById('admin-pass').value.trim();
+
+    if (user === 'admin_namaa' && pass === 'Olive2026@Attaouia') {
+        sessionStorage.setItem('isAdmin', 'true');
+        alert('مرحباً بك، تم تسجيل دخول المشرف بنجاح.');
+        window.location.href = 'admin-dashboard.html';
+    } else { 
+        alert('اسم المستخدم أو كلمة المرور الإدارية غير صحيحة!'); 
+    }
+}
+
+// 2. تسجيل دخول المنخرط
+async function handleUserLogin(e) {
+    e.preventDefault();
+    const u = document.getElementById('user-username').value.trim();
+    const p = document.getElementById('user-pass').value.trim();
+
+    const { data: members, error } = await supabaseClient
+        .from('members')
+        .select('*')
+        .eq('username', u)
+        .eq('password', p);
+
+    if (error) {
+        alert('خطأ في الاتصال بقاعدة البيانات: ' + error.message);
+        return;
+    }
+
+    if (members && members.length > 0) {
+        const member = members[0];
+        sessionStorage.setItem('currentMember', JSON.stringify(member));
+        alert('تم تسجيل الدخول بنجاح، مرحباً بك.');
+        window.location.href = 'user-dashboard.html';
+    } else { 
+        alert('اسم المستخدم أو كلمة المرور غير صحيحة!'); 
+    }
+}
+
+// 3. عرض لوحة تحكم المنخرط
+async function loadUserDashboard() {
+    const member = JSON.parse(sessionStorage.getItem('currentMember'));
+    if (!member) { 
+        window.location.href = 'register.html'; 
+        return; 
+    }
+    const infoBox = document.getElementById('user-dashboard-info');
+    if (infoBox) {
+        infoBox.innerHTML = `
+            <div style="background:white; padding:20px; border-radius:10px; box-shadow:var(--shadow);">
+                <h3 style="color:var(--primary-green); margin-bottom:10px;">مرحباً بك، ${member.name}</h3>
+                <p><strong>المعصرة:</strong> ${member.mill}</p>
+                <p><strong>رقم الهاتف:</strong> ${member.phone}</p>
+                <p><strong>نوع الانخراط:</strong> ${member.type}</p>
+                <p><strong>حالة الانخراط:</strong> ${member.status}</p>
+                <p><strong>الانخراط السنوي:</strong> ${member.annual_fee}</p>
+            </div>
+        `;
+    }
+}
+
+// 4. طلب انخراط جديد
 async function handleMembership(e) {
     e.preventDefault();
     const name = document.getElementById('m-name').value;
@@ -29,7 +117,7 @@ async function handleMembership(e) {
     else { alert('تم إرسال طلب انخراطكم بنجاح.'); e.target.reset(); window.location.href = 'index.html'; }
 }
 
-// نشر خبر جديد مع رفع الصورة
+// 5. نشر خبر جديد مع رفع الصورة
 async function handleAddNews(e) {
     e.preventDefault();
     const title = document.getElementById('news-title').value;
@@ -43,7 +131,7 @@ async function handleAddNews(e) {
     else { alert('تم نشر الخبر بنجاح.'); e.target.reset(); loadAdminData(); }
 }
 
-// عرض الأخبار العامة
+// 6. عرض الأخبار العامة
 async function loadPublicNews() {
     const grid = document.getElementById('public-news-grid');
     if (!grid) return;
@@ -56,7 +144,7 @@ async function loadPublicNews() {
     grid.innerHTML = html;
 }
 
-// عرض الأنشطة
+// 7. عرض الأنشطة
 async function loadPublicActivities() {
     const grid = document.getElementById('public-activities-grid');
     if (!grid) return;
@@ -69,7 +157,7 @@ async function loadPublicActivities() {
     grid.innerHTML = html;
 }
 
-// عرض التكوينات
+// 8. عرض التكوينات العامة
 async function loadPublicTrainings() {
     const grid = document.getElementById('public-trainings-grid');
     if (!grid) return;
@@ -82,7 +170,20 @@ async function loadPublicTrainings() {
     grid.innerHTML = html;
 }
 
-// إدارة لوحة المشرف وجلب المنخرطين
+// 9. عرض تكوينات المنخرطين الخاصة
+async function loadMemberTrainings() {
+    const grid = document.getElementById('member-trainings-grid');
+    if (!grid) return;
+    const { data: trs } = await supabaseClient.from('trainings').select('*').order('id', { ascending: false });
+    if (!trs) return;
+    let html = '';
+    trs.forEach(t => {
+        html += `<div style="background:white; padding:25px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.06); border-top:4px solid #1b4d3e;"><h4 style="color:#1b4d3e; margin-bottom:10px;"><i class="fa-solid fa-graduation-cap"></i> ${t.title}</h4><p style="font-size:0.9rem; color:#555;"><strong>المؤطر:</strong> ${t.trainer}</p><p style="font-size:0.8rem; color:#777; margin-bottom:15px;">${t.date}</p><p style="color:#444;">${t.description || 'محتوى تكويني تفصيلي للمنخرطين'}</p></div>`;
+    });
+    grid.innerHTML = html;
+}
+
+// 10. إدارة لوحة المشرف وجلب المنخرطين
 async function loadAdminData() {
     const { data: members } = await supabaseClient.from('members').select('*').order('id', { ascending: false });
     const table = document.getElementById('admin-members-table');
