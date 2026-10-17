@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // تفعيل جلب أسعار البورصات الدولية والمحلية تلقائياً
-    fetchGlobalMarketPrices();
-    setInterval(fetchGlobalMarketPrices, 600000); // تحديث تلقائي كل 10 دقائق
+    // تفعيل جلب أسعار السوق تلقائياً
+    if (typeof fetchGlobalMarketPrices === 'function') {
+        fetchGlobalMarketPrices();
+    }
 
     if (document.getElementById('admin-members-table')) loadAdminData();
     if (document.getElementById('public-activities-grid')) loadPublicActivities();
@@ -10,33 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('public-news-grid')) loadPublicNews();
     if (document.getElementById('user-dashboard-info')) loadUserDashboard();
 });
-
-// دالة جلب أسعار السوق ومؤشرات البورصات الدولية والمحلية تلقائياً
-async function fetchGlobalMarketPrices() {
-    const tickerContainer = document.getElementById('live-market-ticker');
-    if (!tickerContainer) return;
-
-    try {
-        // بيانات حية ومحدثة تلقائياً لمؤشرات أسعار زيت الزيتون في البورصات الدولية والمحلية
-        const marketData = [
-            "🇪🇸 بورصة إسبانيا (Extra Virgin): 8.40 أورو / لتر",
-            "🇮🇹 بورصة إيطاليا (معدل السوق): 9.10 أورو / لتر",
-            "🇹🇳 السوق التونسية (تصدير): 22.50 دينار / لتر",
-            "🇲🇦 السوق المحلية (العطاوية - قلعة السراغنة): 75 - 85 درهم للتر",
-            "📈 مؤشر العصر والإنتاج الإقليمي: نسبة العصر المستقرة في حدود 18%"
-        ];
-
-        let tickerHTML = `<span>🫒 مؤشرات البورصات الدولية والمحلية (تحديث حي تلقائي):</span>`;
-        marketData.forEach(item => {
-            tickerHTML += `<span>${item}</span> | `;
-        });
-
-        tickerContainer.innerHTML = tickerHTML;
-
-    } catch (error) {
-        console.error('تعذر تحديث أسعار السوق تلقائياً:', error);
-    }
-}
 
 // طلب انخراط جديد
 async function handleMembership(e) {
@@ -50,7 +24,7 @@ async function handleMembership(e) {
     const username = 'user_' + Math.floor(Math.random() * 9000 + 1000);
     const password = 'pass' + Math.floor(Math.random() * 9000 + 1000);
 
-    const { error } = await supabase.from('members').insert([{ name, mill, phone, address, type, license, member_type: 'جديد', annual_fee: 'غير مؤدى', status: 'معالجة', username, password }]);
+    const { error } = await supabaseClient.from('members').insert([{ name, mill, phone, address, type, license, member_type: 'جديد', annual_fee: 'غير مؤدى', status: 'معالجة', username, password }]);
     if (error) alert('خطأ: ' + error.message);
     else { alert('تم إرسال طلب انخراطكم بنجاح.'); e.target.reset(); window.location.href = 'index.html'; }
 }
@@ -64,7 +38,7 @@ async function handleAddNews(e) {
     const content = document.getElementById('news-content').value;
     const imageUrl = await uploadFileToSupabase('news-image-file');
 
-    const { error } = await supabase.from('news').insert([{ title, category, date, content, image_url: imageUrl || 'https://images.unsplash.com/photo-1589927986062-0ef777bb1f16?auto=format&fit=crop&w=600&q=80' }]);
+    const { error } = await supabaseClient.from('news').insert([{ title, category, date, content, image_url: imageUrl || 'https://images.unsplash.com/photo-1589927986062-0ef777bb1f16?auto=format&fit=crop&w=600&q=80' }]);
     if (error) alert('خطأ: ' + error.message);
     else { alert('تم نشر الخبر بنجاح.'); e.target.reset(); loadAdminData(); }
 }
@@ -73,7 +47,7 @@ async function handleAddNews(e) {
 async function loadPublicNews() {
     const grid = document.getElementById('public-news-grid');
     if (!grid) return;
-    const { data: newsList } = await supabase.from('news').select('*').order('id', { ascending: false });
+    const { data: newsList } = await supabaseClient.from('news').select('*').order('id', { ascending: false });
     if (!newsList) return;
     let html = '';
     newsList.forEach(n => {
@@ -86,7 +60,7 @@ async function loadPublicNews() {
 async function loadPublicActivities() {
     const grid = document.getElementById('public-activities-grid');
     if (!grid) return;
-    const { data: acts } = await supabase.from('activities').select('*').order('id', { ascending: false });
+    const { data: acts } = await supabaseClient.from('activities').select('*').order('id', { ascending: false });
     if (!acts) return;
     let html = '';
     acts.forEach(a => {
@@ -99,7 +73,7 @@ async function loadPublicActivities() {
 async function loadPublicTrainings() {
     const grid = document.getElementById('public-trainings-grid');
     if (!grid) return;
-    const { data: trs } = await supabase.from('trainings').select('*').order('id', { ascending: false });
+    const { data: trs } = await supabaseClient.from('trainings').select('*').order('id', { ascending: false });
     if (!trs) return;
     let html = '';
     trs.forEach(t => {
@@ -108,9 +82,9 @@ async function loadPublicTrainings() {
     grid.innerHTML = html;
 }
 
-// إدارة لوحة المشرف
+// إدارة لوحة المشرف وجلب المنخرطين
 async function loadAdminData() {
-    const { data: members } = await supabase.from('members').select('*').order('id', { ascending: false });
+    const { data: members } = await supabaseClient.from('members').select('*').order('id', { ascending: false });
     const table = document.getElementById('admin-members-table');
     if (!members || !table) return;
     let html = '';
@@ -123,13 +97,13 @@ async function loadAdminData() {
 }
 
 async function updateMemberField(id, field, val) {
-    await supabase.from('members').update({ [field]: val }).eq('id', id);
+    await supabaseClient.from('members').update({ [field]: val }).eq('id', id);
     loadAdminData();
 }
 
 async function deleteRecord(table, id) {
     if (confirm('هل أنت متأكد من الحذف؟')) {
-        await supabase.from(table).delete().eq('id', id);
+        await supabaseClient.from(table).delete().eq('id', id);
         loadAdminData();
     }
 }
