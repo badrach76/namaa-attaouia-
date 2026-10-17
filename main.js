@@ -223,3 +223,36 @@ async function deleteRecord(table, id) {
         loadAdminData();
     }
 }
+// إضافة سعر محلي جديد من لوحة الإدارة
+async function handleAddLocalPrice(e) {
+    e.preventDefault();
+    const priceText = document.getElementById('local-price-input').value.trim();
+    if (!priceText) return;
+
+    const { error } = await supabaseClient.from('market_prices').insert([{ price_text: priceText }]);
+    if (error) alert('خطأ: ' + error.message);
+    else {
+        alert('تم إضافة السعر المحلي بنجاح وتحديث العارضة.');
+        e.target.reset();
+        loadAdminLocalPrices();
+        fetchGlobalMarketPrices();
+    }
+}
+
+// تحميل الأسعار المحلية في لوحة المشرف لإدارتها وحذفها
+async function loadAdminLocalPrices() {
+    const table = document.getElementById('admin-local-prices-table');
+    if (!table) return;
+    const { data: prices } = await supabaseClient.from('market_prices').select('*').order('id', { ascending: false });
+    let html = '';
+    if (prices) {
+        prices.forEach(p => {
+            html += `<tr style="border-bottom:1px solid #eee;">
+                <td style="padding:10px;">${p.price_text}</td>
+                <td style="padding:10px;"><button class="btn-danger" onclick="deleteRecord('market_prices', ${p.id}); loadAdminLocalPrices();">حذف</button></td>
+            </tr>`;
+        });
+    }
+    table.innerHTML = html;
+}
+
