@@ -3,253 +3,40 @@
     --light-green: #2e7d32;
     --accent-gold: #c5a059;
     --light-gold: #f4ecdf;
-    --bg-light: #f9fbf9;
-    --text-dark: #333333;
+    --bg-light: #f7f9f7;
+    --text-dark: #2c3e50;
     --white: #ffffff;
-    --whatsapp-color: #25d366;
     --danger-red: #d32f2f;
-    --warning-orange: #f57f17;
+    --shadow: 0 10px 30px rgba(0,0,0,0.06);
+    --transition: all 0.3s ease;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Cairo', sans-serif;
-    scroll-behavior: smooth;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; scroll-behavior: smooth; }
+body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.7; }
 
-body {
-    background-color: var(--bg-light);
-    color: var(--text-dark);
-    line-height: 1.6;
-}
+/* شريط أسعار السوق المتحرك */
+.market-ticker { background: var(--primary-green); color: white; padding: 10px 0; overflow: hidden; white-space: nowrap; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
+.ticker-content { display: inline-block; animation: ticker 30s linear infinite; font-weight: 700; font-size: 0.9rem; }
+.ticker-content span { margin-left: 40px; color: var(--light-gold); }
+@keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
 
-header {
-    background: var(--white);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
+/* الهيدر والقوائم المنسدلة */
+header { background: var(--white); box-shadow: 0 4px 20px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
+.navbar { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
+.logo-area { display: flex; align-items: center; gap: 12px; }
+.logo-img { width: 50px; height: 50px; object-fit: contain; border-radius: 50%; background: #fff; border: 2px solid var(--accent-gold); }
+.logo-text h1 { font-size: 1.1rem; color: var(--primary-green); font-weight: 900; }
+.logo-text span { font-size: 0.75rem; color: var(--accent-gold); font-weight: 700; }
 
-.navbar {
-    max-width: 1200px;
-    margin: 0 auto;
+.nav-links { display: flex; list-style: none; gap: 8px; align-items: center; flex-wrap: wrap; }
+.nav-links li { position: relative; }
+.nav-links a { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.85rem; padding: 8px 12px; border-radius: 8px; transition: var(--transition); display: flex; align-items: center; gap: 5px; cursor: pointer; }
+.nav-links a:hover, .nav-links a.active { color: var(--white); background-color: var(--primary-green); }
+
+/* إظهار القائمة المنسدلة عند التحويم أو اللمس */
+.nav-links li:hover .dropdown-menu,
+.nav-links li:focus-within .dropdown-menu {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 20px;
-}
-
-.logo-area {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.logo-img {
-    width: 48px;
-    height: 48px;
-    object-fit: contain;
-    border-radius: 50%;
-    background: #fff;
-    border: 1px solid var(--accent-gold);
-}
-
-.logo-text h1 {
-    font-size: 1.05rem;
-    color: var(--primary-green);
-    font-weight: 900;
-}
-
-.logo-text span {
-    font-size: 0.75rem;
-    color: var(--accent-gold);
-    font-weight: 600;
-}
-
-.nav-links {
-    display: flex;
-    list-style: none;
-    gap: 15px;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: var(--text-dark);
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: color 0.3s;
-}
-
-.nav-links a:hover, .nav-links a.active {
-    color: var(--accent-gold);
-}
-
-.admin-nav-btn {
-    background-color: var(--primary-green);
-    color: var(--white) !important;
-    padding: 6px 14px;
-    border-radius: 20px;
-}
-
-.menu-toggle {
-    display: none;
-    font-size: 1.5rem;
-    color: var(--primary-green);
-    cursor: pointer;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
-
-.section-title {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.section-title h3 {
-    font-size: 2rem;
-    color: var(--primary-green);
-    margin-bottom: 10px;
-}
-
-.section-title p {
-    color: #666;
-}
-
-.market-ticker {
-    background: var(--primary-green);
-    color: white;
-    padding: 10px 0;
-    overflow: hidden;
-    white-space: nowrap;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.ticker-content {
-    display: inline-block;
-    animation: ticker 25s linear infinite;
-    font-weight: 700;
-    font-size: 0.95rem;
-}
-
-.ticker-content span {
-    margin-left: 50px;
-    color: var(--light-gold);
-}
-
-@keyframes ticker {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
-}
-
-.form-box, .admin-action-box {
-    background: var(--white);
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    margin-bottom: 30px;
-    border-top: 5px solid var(--primary-green);
-}
-
-.form-group {
-    margin-bottom: 15px;
-    text-align: right;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 700;
-    color: var(--primary-green);
-}
-
-.form-group input, .form-group select, .form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    outline: none;
-}
-
-.submit-btn {
-    background-color: var(--primary-green);
-    color: var(--white);
-    border: none;
-    width: 100%;
-    padding: 12px;
-    font-size: 1rem;
-    font-weight: 700;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.submit-btn:hover {
-    background-color: var(--light-green);
-}
-
-.btn-danger { background-color: var(--danger-red) !important; color: white; padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; font-size: 0.8rem; }
-.btn-edit { background-color: var(--accent-gold) !important; color: white; padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; font-size: 0.8rem; }
-
-.badge { padding: 4px 10px; border-radius: 15px; font-size: 0.75rem; font-weight: 700; }
-.badge-success { background: #e8f5e9; color: var(--light-green); }
-.badge-warning { background: #fffde7; color: var(--warning-orange); }
-.badge-danger { background: #ffebee; color: var(--danger-red); }
-
-footer {
-    background-color: var(--primary-green);
-    color: var(--white);
-    padding: 40px 20px 20px;
-    margin-top: 60px;
-}
-
-.footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 25px;
-}
-
-.footer-bottom {
-    text-align: center;
-    padding-top: 20px;
-    font-size: 0.85rem;
-    color: #aaa;
-}
-
-@media (max-width: 768px) {
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 74px;
-        right: 0;
-        width: 100%;
-        background: var(--white);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        padding: 20px 0;
-        text-align: center;
-    }
-    .nav-links.active { display: flex; }
-    .menu-toggle { display: block; }
-}
-/* خصائص القائمة المنسدلة وعرضها عند التحويم */
-.nav-links li {
-    position: relative;
 }
 
 .dropdown-menu {
@@ -266,32 +53,33 @@ footer {
     border-top: 3px solid var(--accent-gold);
     z-index: 1100;
 }
+.dropdown-menu a { color: var(--text-dark) !important; background: transparent !important; padding: 8px 15px; font-size: 0.85rem; text-align: right; }
+.dropdown-menu a:hover { background: var(--light-gold) !important; color: var(--primary-green) !important; padding-right: 20px; }
 
-/* هنا يتم إظهار القائمة تلقائياً عند تمرير المؤشر أو الضغط */
-.nav-links li:hover .dropdown-menu,
-.nav-links li:focus-within .dropdown-menu {
-    display: flex;
+.admin-nav-btn { background-color: var(--accent-gold) !important; color: var(--white) !important; }
+
+.container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+.section-title { text-align: center; margin-bottom: 40px; }
+.section-title h3 { font-size: 2rem; color: var(--primary-green); margin-bottom: 10px; font-weight: 900; }
+.section-title p { color: #666; font-size: 0.95rem; }
+
+.form-box, .admin-action-box { background: var(--white); padding: 25px; border-radius: 15px; box-shadow: var(--shadow); margin-bottom: 25px; border-top: 5px solid var(--primary-green); max-width: 750px; margin-left: auto; margin-right: auto; }
+.form-group { margin-bottom: 15px; text-align: right; }
+.form-group label { display: block; margin-bottom: 6px; font-weight: 700; color: var(--primary-green); font-size: 0.9rem; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #dcdcdc; border-radius: 8px; font-size: 0.9rem; outline: none; }
+.submit-btn { background-color: var(--primary-green); color: var(--white); border: none; width: 100%; padding: 12px; font-size: 1rem; font-weight: 700; border-radius: 8px; cursor: pointer; }
+.submit-btn:hover { background-color: var(--light-green); }
+
+.btn-danger { background-color: var(--danger-red); color: white; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.75rem; }
+.badge { padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; }
+.badge-success { background: #e8f5e9; color: var(--light-green); }
+.badge-danger { background: #ffebee; color: var(--danger-red); }
+
+footer { background-color: var(--primary-green); color: var(--white); padding: 40px 20px 20px; margin-top: 50px; }
+.footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 20px; }
+.footer-bottom { text-align: center; padding-top: 15px; font-size: 0.8rem; color: #bbb; }
+
+@media (max-width: 768px) {
+    .navbar { flex-direction: column; gap: 10px; }
+    .nav-links { justify-content: center; width: 100%; overflow-x: auto; padding-bottom: 5px; }
 }
-
-.dropdown-menu a {
-    color: var(--text-dark) !important;
-    background: transparent !important;
-    padding: 10px 15px;
-    font-size: 0.85rem;
-    text-align: right;
-    white-space: nowrap;
-}
-
-.dropdown-menu a:hover {
-    background: var(--light-gold) !important;
-    color: var(--primary-green) !important;
-    padding-right: 20px;
-}
-
-
-/* تحسين الاتساق بين الصفحات والنماذج والوسائط */
-.container { width: min(1200px, 100% - 32px); margin-inline: auto; }
-.admin-action-box { background: #fff; border-radius: 12px; padding: 22px; margin: 22px 0; box-shadow: 0 4px 16px rgba(0,0,0,.06); border-top: 4px solid var(--primary-green); }
-input[type="file"] { max-width: 100%; background: #fff; padding: 8px; border: 1px solid #ddd; border-radius: 8px; }
-.empty-state { background: #fff; padding: 22px; border-radius: 10px; color: #555; text-align: center; grid-column: 1 / -1; }
-@media (max-width: 640px) { .container { width: min(100% - 20px, 1200px); } .section-title h3 { font-size: 1.2rem; } .admin-action-box { padding: 14px; } }
