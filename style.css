@@ -247,6 +247,46 @@ footer {
     .nav-links.active { display: flex; }
     .menu-toggle { display: block; }
 }
+/* خصائص القائمة المنسدلة وعرضها عند التحويم */
+.nav-links li {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--white);
+    box-shadow: var(--shadow);
+    border-radius: 10px;
+    padding: 10px 0;
+    min-width: 180px;
+    display: none;
+    flex-direction: column;
+    border-top: 3px solid var(--accent-gold);
+    z-index: 1100;
+}
+
+/* هنا يتم إظهار القائمة تلقائياً عند تمرير المؤشر أو الضغط */
+.nav-links li:hover .dropdown-menu,
+.nav-links li:focus-within .dropdown-menu {
+    display: flex;
+}
+
+.dropdown-menu a {
+    color: var(--text-dark) !important;
+    background: transparent !important;
+    padding: 10px 15px;
+    font-size: 0.85rem;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.dropdown-menu a:hover {
+    background: var(--light-gold) !important;
+    color: var(--primary-green) !important;
+    padding-right: 20px;
+}
 
 
 /* تحسين الاتساق بين الصفحات والنماذج والوسائط */
