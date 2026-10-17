@@ -4,26 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون</title>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- شريط أسعار السوق والمؤشرات الدولية المتحرك مع التحديث التلقائي -->
+    <!-- شريط السوق المتحرك -->
     <div class="market-ticker">
         <div class="ticker-content" id="live-market-ticker">
             <span>🫒 جاري جلب أحدث مؤشرات الأسواق الدولية والمحلية الحية...</span>
         </div>
     </div>
 
-    <!-- الهيدر والقوائم المنسدلة الذكية والمتكاملة مع فضاء الإدارة -->
+    <!-- الهيدر الموحد بالقوائم المنسدلة -->
     <header>
         <div class="navbar">
             <div class="logo-area">
-                <img src="1000096843.jpg" alt="شعار جمعية نماء العطاوية" class="logo-img">
+                <img src="1000096843.jpg" alt="شعار جمعية نماء" class="logo-img">
                 <div class="logo-text">
                     <h1>جمعية نماء العطاوية</h1>
                     <span>لأصحاب وحدات إنتاج زيت الزيتون</span>
@@ -32,98 +30,76 @@
             <ul class="nav-links">
                 <li><a href="index.html" class="active"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
                 
-                <!-- قائمة منسدلة خاصة بالأخبار والأنشطة -->
                 <li>
-                    <a><i class="fa-solid fa-newspaper"></i> المستجدات <i class="fa-solid fa-angle-down" style="font-size:0.7rem;"></i></a>
+                    <a><i class="fa-solid fa-newspaper"></i> المستجدات <i class="fa-solid fa-angle-down" style="font-size:0.6rem;"></i></a>
                     <div class="dropdown-menu">
                         <a href="news.html"><i class="fa-solid fa-globe"></i> أخبار القطاع</a>
                         <a href="activities.html"><i class="fa-solid fa-calendar-days"></i> أنشطة الجمعية</a>
                     </div>
                 </li>
 
-                <!-- قائمة منسدلة خاصة بالخدمات والتكوين -->
                 <li>
-                    <a><i class="fa-solid fa-briefcase"></i> المهنية <i class="fa-solid fa-angle-down" style="font-size:0.7rem;"></i></a>
+                    <a><i class="fa-solid fa-briefcase"></i> المهنية <i class="fa-solid fa-angle-down" style="font-size:0.6rem;"></i></a>
                     <div class="dropdown-menu">
                         <a href="services.html"><i class="fa-solid fa-handshake-angle"></i> خدمات المعاصر</a>
                         <a href="training.html"><i class="fa-solid fa-graduation-cap"></i> التكوين والتأطير</a>
                     </div>
                 </li>
 
-                <!-- قائمة منسدلة خاصة بفضاء الإدارة والمشرفين لضمان ربطها بجميع الصفحات -->
                 <li>
-                    <a><i class="fa-solid fa-user-gear"></i> الإدارة <i class="fa-solid fa-angle-down" style="font-size:0.7rem;"></i></a>
+                    <a><i class="fa-solid fa-user-gear"></i> الإدارة <i class="fa-solid fa-angle-down" style="font-size:0.6rem;"></i></a>
                     <div class="dropdown-menu">
                         <a href="admin-login.html"><i class="fa-solid fa-lock"></i> تسجيل دخول المشرف</a>
-                        <a href="admin-dashboard.html"><i class="fa-solid fa-gauge-high"></i> لوحة التحكم والإدارة</a>
+                        <a href="admin-dashboard.html"><i class="fa-solid fa-gauge-high"></i> لوحة الإدارة</a>
                     </div>
                 </li>
 
-                <li><a href="membership.html"><i class="fa-solid fa-user-plus"></i> طلب الانخراط</a></li>
+                <li><a href="membership.html"><i class="fa-solid fa-user-plus"></i> الانخراط</a></li>
                 <li><a href="register.html" class="admin-nav-btn"><i class="fa-solid fa-user-shield"></i> فضاء المنخرط</a></li>
             </ul>
         </div>
     </header>
 
-    <!-- واجهة البطل الترحيبية للرئيسية -->
+    <!-- محتوى الرئيسية النظيف -->
     <div class="container">
-        <div style="background: linear-gradient(135deg, rgba(27, 77, 62, 0.95), rgba(46, 125, 50, 0.9)), url('https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=1400&q=80') center/cover; color: white; padding: 100px 20px; text-align: center; border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 50px;">
-            <h2 style="font-size: 2.5rem; margin-bottom: 15px; font-weight: 900; line-height: 1.3;">بوابة أصحاب وحدات إنتاج زيت الزيتون بالعطاوية</h2>
-            <p style="font-size: 1.15rem; margin-bottom: 30px; color: var(--light-gold); max-width: 750px; margin-left: auto; margin-right: auto;">منصة رقمية مهنية متكاملة، تهدف إلى تنظيم القطاع، توحيد الجهود، مواكبة معايير الجودة الصحية (ONSSA)، وتثمين سلسلة قيمة الزيتون بإقليم قلعة السراغنة.</p>
-            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                <a href="membership.html" style="background-color: var(--accent-gold); color: white; padding: 12px 28px; border-radius: 30px; text-decoration: none; font-weight: 700; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">انضم إلينا الآن</a>
-                <a href="news.html" style="background: rgba(255,255,255,0.15); border: 2px solid white; color: white; padding: 12px 28px; border-radius: 30px; text-decoration: none; font-weight: 700;">تصفح المستجدات</a>
-            </div>
+        <div style="background: linear-gradient(135deg, rgba(27, 77, 62, 0.95), rgba(46, 125, 50, 0.9)), url('https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=1400&q=80') center/cover; color: white; padding: 80px 20px; text-align: center; border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 40px;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 15px; font-weight: 900;">بوابة أصحاب وحدات إنتاج زيت الزيتون بالعطاوية</h2>
+            <p style="font-size: 1.05rem; margin-bottom: 25px; color: var(--light-gold); max-width: 700px; margin-left: auto; margin-right: auto;">منصة رقمية مهنية متكاملة لتنظيم القطاع، مواكبة معايير الجودة الصحية، وتثمين سلسلة قيمة الزيتون.</p>
+            <a href="membership.html" style="background-color: var(--accent-gold); color: white; padding: 12px 25px; border-radius: 30px; text-decoration: none; font-weight: 700; display: inline-block;">انضم إلينا الآن</a>
         </div>
 
-        <!-- البطاقات التوجيهية الأنيقة لربط الصفحة الرئيسية بباقي صفحات الموقع دون تكرار -->
-        <div style="text-align: center; margin-bottom: 30px;">
-            <h3 style="font-size: 2rem; color: var(--primary-green); font-weight: 900; margin-bottom: 10px;">أقسام وبوابات المنصة</h3>
-            <p style="color: #666;">اختر القسم المطلوب للانتقال الفوري إلى تفاصيله الكاملة</p>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; margin-bottom: 60px;">
-            
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 40px;">
             <a href="news.html" style="text-decoration: none; color: inherit;">
-                <div style="background: white; padding: 35px 20px; border-radius: 15px; box-shadow: var(--shadow); text-align: center; border-top: 5px solid var(--primary-green); transition: var(--transition);">
-                    <i class="fa-solid fa-bullhorn" style="font-size: 2.5rem; color: var(--primary-green); margin-bottom: 15px; background: var(--light-gold); width: 70px; height: 70px; line-height: 70px; border-radius: 50%;"></i>
-                    <h4 style="font-size: 1.2rem; color: var(--primary-green); margin-bottom: 10px; font-weight: 800;">أخبار القطاع</h4>
-                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">تابع آخر المستجدات والتقارير الاقتصادية والأنشطة الموازية.</p>
-                    <span style="color: var(--accent-gold); font-weight: 700; font-size: 0.85rem;">استكشف الأخبار <i class="fa-solid fa-arrow-left"></i></span>
+                <div style="background: white; padding: 30px 20px; border-radius: 12px; box-shadow: var(--shadow); text-align: center; border-top: 4px solid var(--primary-green);">
+                    <i class="fa-solid fa-bullhorn" style="font-size: 2rem; color: var(--primary-green); margin-bottom: 12px; background: var(--light-gold); width: 60px; height: 60px; line-height: 60px; border-radius: 50%;"></i>
+                    <h4 style="color: var(--primary-green); margin-bottom: 8px;">أخبار القطاع</h4>
+                    <p style="font-size: 0.85rem; color: #666;">تابع آخر المستجدات والتقارير الاقتصادية.</p>
                 </div>
             </a>
-
             <a href="activities.html" style="text-decoration: none; color: inherit;">
-                <div style="background: white; padding: 35px 20px; border-radius: 15px; box-shadow: var(--shadow); text-align: center; border-top: 5px solid var(--accent-gold); transition: var(--transition);">
-                    <i class="fa-solid fa-calendar-days" style="font-size: 2.5rem; color: var(--primary-green); margin-bottom: 15px; background: var(--light-gold); width: 70px; height: 70px; line-height: 70px; border-radius: 50%;"></i>
-                    <h4 style="font-size: 1.2rem; color: var(--primary-green); margin-bottom: 10px; font-weight: 800;">أنشطة الجمعية</h4>
-                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">الأنشطة الميدانية المنجزة والبرامج التنموية المسطرة للوحدات.</p>
-                    <span style="color: var(--accent-gold); font-weight: 700; font-size: 0.85rem;">عرض الأنشطة <i class="fa-solid fa-arrow-left"></i></span>
+                <div style="background: white; padding: 30px 20px; border-radius: 12px; box-shadow: var(--shadow); text-align: center; border-top: 4px solid var(--accent-gold);">
+                    <i class="fa-solid fa-calendar-days" style="font-size: 2rem; color: var(--primary-green); margin-bottom: 12px; background: var(--light-gold); width: 60px; height: 60px; line-height: 60px; border-radius: 50%;"></i>
+                    <h4 style="color: var(--primary-green); margin-bottom: 8px;">أنشطة الجمعية</h4>
+                    <p style="font-size: 0.85rem; color: #666;">الأنشطة الميدانية والبرامج التنموية.</p>
                 </div>
             </a>
-
             <a href="services.html" style="text-decoration: none; color: inherit;">
-                <div style="background: white; padding: 35px 20px; border-radius: 15px; box-shadow: var(--shadow); text-align: center; border-top: 5px solid var(--primary-green); transition: var(--transition);">
-                    <i class="fa-solid fa-handshake-angle" style="font-size: 2.5rem; color: var(--primary-green); margin-bottom: 15px; background: var(--light-gold); width: 70px; height: 70px; line-height: 70px; border-radius: 50%;"></i>
-                    <h4 style="font-size: 1.2rem; color: var(--primary-green); margin-bottom: 10px; font-weight: 800;">خدمات المعاصر</h4>
-                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">المواكبة الصحية (ONSSA) والحلول البيئية لتدبير مخلفات العصر.</p>
-                    <span style="color: var(--accent-gold); font-weight: 700; font-size: 0.85rem;">معرفة الخدمات <i class="fa-solid fa-arrow-left"></i></span>
+                <div style="background: white; padding: 30px 20px; border-radius: 12px; box-shadow: var(--shadow); text-align: center; border-top: 4px solid var(--primary-green);">
+                    <i class="fa-solid fa-handshake-angle" style="font-size: 2rem; color: var(--primary-green); margin-bottom: 12px; background: var(--light-gold); width: 60px; height: 60px; line-height: 60px; border-radius: 50%;"></i>
+                    <h4 style="color: var(--primary-green); margin-bottom: 8px;">خدمات المعاصر</h4>
+                    <p style="font-size: 0.85rem; color: #666;">المواكبة الصحية والحلول البيئية للمرجان.</p>
                 </div>
             </a>
-
             <a href="training.html" style="text-decoration: none; color: inherit;">
-                <div style="background: white; padding: 35px 20px; border-radius: 15px; box-shadow: var(--shadow); text-align: center; border-top: 5px solid var(--accent-gold); transition: var(--transition);">
-                    <i class="fa-solid fa-graduation-cap" style="font-size: 2.5rem; color: var(--primary-green); margin-bottom: 15px; background: var(--light-gold); width: 70px; height: 70px; line-height: 70px; border-radius: 50%;"></i>
-                    <h4 style="font-size: 1.2rem; color: var(--primary-green); margin-bottom: 10px; font-weight: 800;">التكوين والتأطير</h4>
-                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">دورات تكوينية ودلائل تقنية حصرية لأرباب المعاصر والمهنيين.</p>
-                    <span style="color: var(--accent-gold); font-weight: 700; font-size: 0.85rem;">عرض الدورات <i class="fa-solid fa-arrow-left"></i></span>
+                <div style="background: white; padding: 30px 20px; border-radius: 12px; box-shadow: var(--shadow); text-align: center; border-top: 4px solid var(--accent-gold);">
+                    <i class="fa-solid fa-graduation-cap" style="font-size: 2rem; color: var(--primary-green); margin-bottom: 12px; background: var(--light-gold); width: 60px; height: 60px; line-height: 60px; border-radius: 50%;"></i>
+                    <h4 style="color: var(--primary-green); margin-bottom: 8px;">التكوين والتأطير</h4>
+                    <p style="font-size: 0.85rem; color: #666;">دورات تكوينية ودلائل تقنية حصرية.</p>
                 </div>
             </a>
-
         </div>
     </div>
 
-    <!-- تذييل الصفحة -->
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
@@ -132,7 +108,6 @@
             </div>
             <div>
                 <p><i class="fa-solid fa-location-dot"></i> مقر الجمعية: العطاوية</p>
-                <p><i class="fa-solid fa-envelope"></i> contact@namaa-attaouia.ma</p>
             </div>
         </div>
         <div class="footer-bottom">
@@ -140,8 +115,7 @@
         </div>
     </footer>
 
-    <!-- سكريبت التشغيل وجلب مؤشرات السوق الحية -->
-    <script src="https://cdn.jsdelivr.5net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script src="main.js"></script>
 </body>
