@@ -92,6 +92,37 @@
             </div>
         </div>
 
+        <!-- إدارة أخبار الجمعية والقطاع -->
+        <div class="admin-action-box" style="border-top-color: var(--accent-gold);">
+            <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-newspaper"></i> إدارة أخبار الجمعية والقطاع</h4>
+            <form id="news-admin-form" onsubmit="handleAddNews(event)" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-bottom:20px; align-items:end;">
+                <input type="hidden" id="news-id">
+                <div class="form-group" style="margin:0;"><label for="news-title">عنوان الخبر:</label><input type="text" id="news-title" required maxlength="180" placeholder="عنوان واضح ومختصر"></div>
+                <div class="form-group" style="margin:0;"><label for="news-category">التصنيف:</label><select id="news-category" required>
+                    <option value="أخبار الجمعية">أخبار الجمعية</option>
+                    <option value="القوانين والتراخيص">القوانين والتراخيص</option>
+                    <option value="أخبار القطاع">أخبار القطاع</option>
+                    <option value="الأسعار والأسواق">الأسعار والأسواق</option>
+                    <option value="بلاغات ومذكرات">بلاغات ومذكرات</option>
+                    <option value="أخبار دولية">أخبار دولية</option>
+                </select></div>
+                <div class="form-group" style="margin:0;"><label for="news-date">التاريخ:</label><input type="date" id="news-date" required></div>
+                <div class="form-group" style="margin:0;"><label for="news-image-file">صورة الخبر (اختياري):</label><input type="file" id="news-image-file" accept="image/*"></div>
+                <div class="form-group" style="margin:0; grid-column:1/-1;"><label for="news-content">تفاصيل الخبر:</label><textarea id="news-content" rows="5" required maxlength="12000" placeholder="اكتب الخبر أو ملخص المستجد القانوني مع ذكر المصدر عند الاقتضاء..."></textarea></div>
+                <div style="grid-column:1/-1; display:flex; gap:10px; flex-wrap:wrap;">
+                    <button type="submit" id="news-submit-btn" class="submit-btn" style="width:auto; padding:10px 24px;"><i class="fa-solid fa-paper-plane"></i> نشر الخبر</button>
+                    <button type="button" class="btn-edit" onclick="resetNewsForm()" style="padding:10px 18px;">إلغاء التعديل</button>
+                </div>
+                <small style="grid-column:1/-1;color:#666;">يظهر الخبر للزوار بعد حفظه بنجاح. لا تضع معلومات غير متحقق منها أو أسعارًا غير مؤكدة.</small>
+            </form>
+            <div style="overflow-x:auto;">
+                <table style="width:100%; border-collapse:collapse; text-align:right; min-width:650px;">
+                    <thead><tr style="background:#ddd;"><th style="padding:8px;">العنوان</th><th style="padding:8px;">التصنيف</th><th style="padding:8px;">التاريخ</th><th style="padding:8px;">الإجراءات</th></tr></thead>
+                    <tbody id="admin-news-table"></tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- إدارة التكوينات (إضافة وحذف) -->
         <div class="admin-action-box" style="border-top-color: var(--accent-gold);">
             <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-graduation-cap"></i> إدارة التكوينات (نشر وحذف)</h4>
