@@ -184,6 +184,33 @@ header {
   display: flex;
   align-items: center;
 }
+/* --- تعديل عارضة الأسعار لتتكرر باستمرار --- */
+.ticker-container {
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+.ticker-wrapper {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee-infinite 25s linear infinite;
+}
+@keyframes marquee-infinite {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* --- تنسيق اللوغو والإسم باحترافية --- */
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-container img, .brand-logo {
+  max-height: 40px;
+  object-fit: contain;
+}
 
 .ticker-wrapper {
   display: inline-block;
