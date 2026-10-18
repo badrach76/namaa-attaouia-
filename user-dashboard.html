@@ -11,66 +11,81 @@
 <body style="background-color: #f9f6f0;">
 
     <header>
-        <div class="navbar" style="padding: 15px 5%;">
-            <div class="logo-area" style="display: flex; align-items: center; gap: 15px;">
-                <img src="1000096843.jpg" alt="شعار جمعية نماء" class="logo-img" style="width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-gold);">
+        <div class="navbar">
+            <a href="index.html" class="logo-area">
+                <img src="1000096843.jpg" alt="شعار جمعية نماء" class="logo-img">
                 <div class="logo-text">
-                    <h1 style="font-size: 1.2rem; color: var(--primary-green); margin: 0;">جمعية نماء العطاوية</h1>
-                    <span style="font-size: 0.8rem; color: #666;">فضاء تسيير المنخرطين والمعاصر</span>
+                    <h1>جمعية نماء العطاوية</h1>
+                    <span>فضاء تسيير المنخرطين والمعاصر</span>
                 </div>
-            </div>
+            </a>
             <div>
                 <button onclick="logoutMember()" style="background: #c0392b; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
             </div>
         </div>
     </header>
 
-    <div class="container" style="max-width: 1000px; margin: 30px auto; padding: 0 20px;">
-        <div class="section-title" style="text-align: center; margin-bottom: 30px;">
-            <h3 style="color: var(--primary-green); font-size: 1.8rem;"><i class="fa-solid fa-user-gear"></i> لوحة تحكم المنخرط المهني</h3>
-            <p style="color: #666;">متابعة حالة الانخراط، تحديث بيانات المعصرة، والاطلاع على التكوينات التأطيرية الحصرية</p>
+    <div class="container" style="max-width: 900px; margin: 30px auto; padding: 0 20px;">
+        <div class="section-title" style="text-align: center; margin-bottom: 25px;">
+            <h3 style="color: var(--primary-green); font-size: 1.7rem;"><i class="fa-solid fa-user-shield"></i> لوحة تحكم المنخرط المهني</h3>
+            <p style="color: #666; font-size: 0.9rem;">إدارة بيانات معصرتكم ومتابعة التكوينات التأطيرية الحصرية</p>
         </div>
 
         <!-- بطاقة معلومات المنخرط -->
-        <div id="user-dashboard-info" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 30px; border-top: 5px solid var(--primary-green);">
-            <!-- يتم تحميل بيانات المنخرط هنا ديناميكياً -->
+        <div id="user-dashboard-info" style="background: white; padding: 25px; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 25px; border-top: 4px solid var(--primary-green);">
+            <!-- يتم تعبئتها ديناميكياً -->
         </div>
 
-        <!-- قسم تحديث بيانات الحساب ومعلومات المعصرة -->
-        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 30px;">
-            <h4 style="color: var(--primary-green); margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> تحديث بيانات المعصرة والحساب</h4>
-            <form onsubmit="handleUpdateMemberProfile(event)" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div class="form-group" style="grid-column: span 1;">
-                    <label style="font-weight: bold; font-size: 0.9rem; color: #444;">اسم المسير / المستغل:</label>
-                    <input type="text" id="update-name" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px;">
+        <!-- زر إظهار نموذج التعديل -->
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button onclick="toggleEditForm()" style="background: var(--accent-gold); color: var(--primary-green); font-weight: bold; padding: 10px 25px; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1);"><i class="fa-solid fa-pen-to-square"></i> تعديل بيانات الحساب والمعصرة</button>
+        </div>
+
+        <!-- نموذج تحديث الحساب (مخفي افتراضياً ويظهر عند الضغط) -->
+        <div id="edit-form-container" style="display: none; background: white; padding: 25px; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 30px; border-right: 5px solid var(--accent-gold);">
+            <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid.fa-sliders"></i> تحديث معلومات المعصرة والمسير</h4>
+            <form onsubmit="handleUpdateMemberProfile(event)" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label>اسم المسير:</label>
+                    <input type="text" id="update-name" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
                 </div>
-                <div class="form-group" style="grid-column: span 1;">
-                    <label style="font-weight: bold; font-size: 0.9rem; color: #444;">اسم المعصرة:</label>
-                    <input type="text" id="update-mill" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px;">
+                <div class="form-group">
+                    <label>اسم المعصرة:</label>
+                    <input type="text" id="update-mill" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
                 </div>
-                <div class="form-group" style="grid-column: span 1;">
-                    <label style="font-weight: bold; font-size: 0.9rem; color: #444;">رقم الهاتف:</label>
-                    <input type="text" id="update-phone" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px; direction: ltr; text-align: right;">
+                <div class="form-group">
+                    <label>رقم الهاتف:</label>
+                    <input type="text" id="update-phone" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; direction: ltr; text-align: right;">
                 </div>
-                <div class="form-group" style="grid-column: span 1;">
-                    <label style="font-weight: bold; font-size: 0.9rem; color: #444;">كلمة المرور الجديدة:</label>
-                    <input type="password" id="update-pass" placeholder="اتركها فارغة إذا لمغن ترغب بتغييرها" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px; direction: ltr; text-align: right;">
+                <div class="form-group">
+                    <label>كلمة المرور الجديدة:</label>
+                    <input type="password" id="update-pass" placeholder="اتركها فارغة إن لم ترغب بتغييرها" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; direction: ltr; text-align: right;">
                 </div>
                 <div style="grid-column: span 2; text-align: left;">
-                    <button type="submit" style="background: var(--accent-gold); color: var(--primary-green); font-weight: bold; padding: 10px 25px; border: none; border-radius: 6px; cursor: pointer;">حفظ التعديلات</button>
+                    <button type="submit" style="background: var(--primary-green); color: white; padding: 10px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">حفظ التغييرات</button>
                 </div>
             </form>
         </div>
 
-        <!-- قسم التكوينات الحصرية للمنخرطين -->
-        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 40px;">
-            <h4 style="color: var(--primary-green); margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px;"><i class="fa-solid fa-graduation-cap"></i> التكوينات والبرامج التأطيرية الحصرية للمنخرطين</h4>
-            <div id="member-trainings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-                <!-- يتم جلب التكوينات الخاصة هنا -->
+        <!-- قسم التكوينات الحصرية الكاملة للمنخرطين -->
+        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 40px;">
+            <h4 style="color: var(--primary-green); margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;"><i class="fa-solid fa-graduation-cap"></i> البرامج التكوينية والتأطيرية الحصرية</h4>
+            <div id="member-trainings-grid" style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                <!-- يتم جلب التكوينات كاملة هنا -->
             </div>
         </div>
     </div>
 
+    <script>
+        function toggleEditForm() {
+            const form = document.getElementById('edit-form-container');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+        function logoutMember() {
+            sessionStorage.removeItem('currentMember');
+            window.location.href = 'register.html';
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script src="main.js"></script>
