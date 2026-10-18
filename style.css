@@ -1,18 +1,135 @@
 :root {
     --primary-green: #1b4d3e;
-    --light-green: #2e7d32;
     --accent-gold: #c5a059;
     --light-gold: #f4ecdf;
-    --bg-light: #f7f9f7;
-    --text-dark: #2c3e50;
-    --white: #ffffff;
-    --danger-red: #d32f2f;
-    --shadow: 0 10px 30px rgba(0,0,0,0.06);
-    --transition: all 0.3s ease;
+    --dark-bg: #13382c;
+    --shadow: 0 4px 20px rgba(0,0,0,0.06);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; scroll-behavior: smooth; }
-body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.7; }
+body {
+    font-family: 'Cairo', sans-serif;
+    background-color: #fcfbf9;
+    margin: 0;
+    direction: rtl;
+    color: #333;
+}
+
+/* هيدر احترافي متناسق ومرتب */
+header {
+    background: #ffffff;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 3px solid var(--accent-gold);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 4%;
+    max-width: 1300px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.logo-img {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-gold);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.logo-text h1 {
+    font-size: 1.15rem;
+    color: var(--primary-green);
+    font-weight: 900;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.logo-text span {
+    font-size: 0.75rem;
+    color: #666;
+    font-weight: 600;
+}
+
+/* روابط التنقل والقوائم المنسدلة القابلة للطي */
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    position: relative;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--primary-green);
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.nav-links a:hover, .nav-links li.active > a {
+    background: var(--light-gold);
+    color: var(--primary-green);
+}
+
+/* القائمة المنسدلة القابلة للطي التفاعلية */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    min-width: 180px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 1100;
+    border-top: 3px solid var(--accent-gold);
+    padding: 5px 0;
+}
+
+.dropdown-menu a {
+    padding: 10px 15px;
+    color: #444;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dropdown-menu a:hover {
+    background: var(--light-gold);
+    color: var(--primary-green);
+}
+
+.dropdown.active .dropdown-menu {
+    display: block;
+}
 
 /* شريط أسعار السوق مقسم إلى قسمين: ثابت ومتحرك */
 .market-ticker { 
@@ -27,7 +144,6 @@ body { background-color: var(--bg-light); color: var(--text-dark); line-height: 
     font-size: 0.9rem;
 }
 
-/* القسم الثابت (عنوان الشريط) */
 .ticker-title-part {
     background: #13382c;
     color: var(--light-gold);
@@ -41,7 +157,6 @@ body { background-color: var(--bg-light); color: var(--text-dark); line-height: 
     z-index: 2;
 }
 
-/* القسم المتحرك (الأسعار الحية والدورية) */
 .ticker-moving-part {
     overflow: hidden;
     white-space: nowrap;
@@ -63,117 +178,4 @@ body { background-color: var(--bg-light); color: var(--text-dark); line-height: 
 @keyframes ticker { 
     0% { transform: translate3d(0, 0, 0); } 
     100% { transform: translate3d(-50%, 0, 0); } 
-}
-
-/* الهيدر والقوائم المنسدلة */
-header { background: var(--white); box-shadow: 0 4px 20px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
-.navbar { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
-.logo-area { display: flex; align-items: center; gap: 12px; }
-.logo-img { width: 50px; height: 50px; object-fit: contain; border-radius: 50%; background: #fff; border: 2px solid var(--accent-gold); }
-.logo-text h1 { font-size: 1.1rem; color: var(--primary-green); font-weight: 900; }
-.logo-text span { font-size: 0.75rem; color: var(--accent-gold); font-weight: 700; }
-
-.nav-links { display: flex; list-style: none; gap: 8px; align-items: center; flex-wrap: wrap; }
-.nav-links li { position: relative; }
-.nav-links a { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.85rem; padding: 8px 12px; border-radius: 8px; transition: var(--transition); display: flex; align-items: center; gap: 5px; cursor: pointer; }
-.nav-links a:hover, .nav-links a.active { color: var(--white); background-color: var(--primary-green); }
-
-/* إظهار القائمة المنسدلة عند التحويم أو اللمس */
-.nav-links li:hover .dropdown-menu,
-.nav-links li:focus-within .dropdown-menu {
-    display: flex;
-}
-
-.dropdown-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background: var(--white);
-    box-shadow: var(--shadow);
-    border-radius: 10px;
-    padding: 10px 0;
-    min-width: 180px;
-    display: none;
-    flex-direction: column;
-    border-top: 3px solid var(--accent-gold);
-    z-index: 1100;
-}
-/* تحسين عارضة اللوغو والإسم العلوية */
-header {
-    background: #ffffff;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    border-bottom: 3px solid var(--accent-gold);
-}
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 5%;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-.logo-area {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    text-decoration: none;
-}
-
-.logo-img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--accent-gold);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.logo-text h1 {
-    font-size: 1.25rem;
-    color: var(--primary-green);
-    font-weight: 900;
-    margin: 0;
-    line-height: 1.2;
-}
-
-.logo-text span {
-    font-size: 0.8rem;
-    color: #666;
-    font-weight: 600;
-}
-
-.dropdown-menu a { color: var(--text-dark) !important; background: transparent !important; padding: 8px 15px; font-size: 0.85rem; text-align: right; }
-.dropdown-menu a:hover { background: var(--light-gold) !important; color: var(--primary-green) !important; padding-right: 20px; }
-
-.admin-nav-btn { background-color: var(--accent-gold) !important; color: var(--white) !important; }
-
-.container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-.section-title { text-align: center; margin-bottom: 40px; }
-.section-title h3 { font-size: 2rem; color: var(--primary-green); margin-bottom: 10px; font-weight: 900; }
-.section-title p { color: #666; font-size: 0.95rem; }
-
-.form-box, .admin-action-box { background: var(--white); padding: 25px; border-radius: 15px; box-shadow: var(--shadow); margin-bottom: 25px; border-top: 5px solid var(--primary-green); max-width: 750px; margin-left: auto; margin-right: auto; }
-.form-group { margin-bottom: 15px; text-align: right; }
-.form-group label { display: block; margin-bottom: 6px; font-weight: 700; color: var(--primary-green); font-size: 0.9rem; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #dcdcdc; border-radius: 8px; font-size: 0.9rem; outline: none; }
-.submit-btn { background-color: var(--primary-green); color: var(--white); border: none; width: 100%; padding: 12px; font-size: 1rem; font-weight: 700; border-radius: 8px; cursor: pointer; }
-.submit-btn:hover { background-color: var(--light-green); }
-
-.btn-danger { background-color: var(--danger-red); color: white; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.75rem; }
-.badge { padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; }
-.badge-success { background: #e8f5e9; color: var(--light-green); }
-.badge-danger { background: #ffebee; color: var(--danger-red); }
-
-footer { background-color: var(--primary-green); color: var(--white); padding: 40px 20px 20px; margin-top: 50px; }
-.footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 20px; }
-.footer-bottom { text-align: center; padding-top: 15px; font-size: 0.8rem; color: #bbb; }
-
-@media (max-width: 768px) {
-    .navbar { flex-direction: column; gap: 10px; }
-    .nav-links { justify-content: center; width: 100%; overflow-x: auto; padding-bottom: 5px; }
 }
