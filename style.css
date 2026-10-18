@@ -130,6 +130,15 @@ header {
 .dropdown.active .dropdown-menu {
     display: block;
 }
+.dropdown-menu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+  display: block !important; /* تجاوز العرض الافتراضي للتحكم عبر الجافاسكريبت */
+}
+.dropdown-menu.show-collapse {
+  max-height: 300px;
+}
 
 /* شريط أسعار السوق مقسم إلى قسمين: ثابت ومتحرك */
 .market-ticker { 
