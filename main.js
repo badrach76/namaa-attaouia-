@@ -238,6 +238,32 @@ async function handleAddLocalPrice(e) {
         fetchGlobalMarketPrices();
     }
 }
+// تفعيل القوائم المنسدلة القابلة للطي بالضغط عليها
+document.addEventListener('DOMContentLoaded', () => {
+    const dropdowns = document.querySelectorAll('.nav-links li');
+    dropdowns.forEach(item => {
+        const link = item.querySelector('a');
+        const menu = item.querySelector('.dropdown-menu');
+        if (menu) {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                // إغلاق الباقي
+                dropdowns.forEach(d => {
+                    if (d !== item) d.classList.remove('active');
+                });
+                item.classList.toggle('active');
+            });
+        }
+    });
+
+    // إغلاق القوائم عند النقر خارجها
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.nav-links')) {
+            dropdowns.forEach(d => d.classList.remove('active'));
+        }
+    });
+});
+
 
 // تحميل الأسعار المحلية في لوحة المشرف لإدارتها وحذفها
 async function loadAdminLocalPrices() {
