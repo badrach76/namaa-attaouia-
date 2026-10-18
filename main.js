@@ -263,8 +263,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+// عرض تكوينات المنخرطين الخاصة (كاملة التفاصيل)
+async function loadMemberTrainings() {
+    const grid = document.getElementById('member-trainings-grid');
+    if (!grid) return;
+    const { data: trs } = await supabaseClient.from('trainings').select('*').order('id', { ascending: false });
+    if (!trs) return;
+    let html = '';
+    trs.forEach(t => {
+        html += `<div style="background:#fdfcf9; border: 1px solid #e8dfd1; padding: 20px; border-radius: 10px; border-right: 4px solid var(--accent-gold);">
+            <h4 style="color:var(--primary-green); margin-bottom: 8px; font-size: 1.1rem;"><i class="fa-solid fa-graduation-cap"></i> ${t.title}</h4>
+            <div style="display: flex; gap: 20px; font-size: 0.85rem; color: #666; margin-bottom: 12px;">
+                <span><i class="fa-solid fa-chalkboard-user"></i> <strong>المؤطر:</strong> ${t.trainer}</span>
+                <span><i class="fa-solid fa-calendar-days"></i> <strong>التاريخ:</strong> ${t.date}</span>
+            </div>
+            <p style="color:#444; font-size: 0.95rem; line-height: 1.6; background: white; padding: 12px; border-radius: 6px; border: 1px solid #eee;">${t.description || 'لا توجد تفاصيل إضافية مسجلة لهذا البرنامج التكويني حالياً.'}</p>
+        </div>`;
+    });
+    grid.innerHTML = html;
+}
 
+// دالة تحديث بيانات المنخرط من لوحة تحكمه
+async function handleUpdateMemberProfile(e) {
+    e.preventDefault();
+    const member = JSON.parse(sessionStorage.getItem('currentMember'));
+    if (!member) return;
 
+    const name = document.getElementById('update-name').value;
+    const mill = document.getElementById('update-mill').value;
+    const phone = document.getElementById('update-phone').value;
+    const password = document.getElementById('update-pass').value;
+
+    let updateData = { name, mill, phone };
+    if (password.trim() !== '') {
+        updateData.password = password.trim();
+    }
+
+    const { error } = await supabaseClient.from('members').update(updateData).eq('id', member.id);
+    if (error) {
+        alert('خطأ أثناء التحديث: ' + error.message);
+    } else {
+        alert('تم تحديث بياناتكم بنجاح!');
+        // تحديث الجلسة
+        Object.assign(member, updateData);
+        sessionStorage.setItem('currentMember', JSON.stringify(member));
+        location.reload();
+    }
+}
 // تحميل الأسعار المحلية في لوحة المشرف لإدارتها وحذفها
 async function loadAdminLocalPrices() {
     const table = document.getElementById('admin-local-prices-table');
