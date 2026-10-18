@@ -316,6 +316,26 @@ async function handleMembership(e) {
     if (error) alert('خطأ: ' + error.message);
     else { alert('تم إرسال طلب انخراطكم بنجاح.'); e.target.reset(); window.location.href = 'index.html'; }
 }
+// جلب الإنجازات والأرشيف السابق بتمامها في لوحة الإدارة
+async function fetchAdminHistory(tableName, containerId) {
+  if (typeof supabaseClient === 'undefined') return;
+  const { data, error } = await supabaseClient
+    .from(tableName)
+    .select('*')
+    .order('created_at', { ascending: false }); // جلب الكل مرتبة من الأحدث للأقدم
+
+  const container = document.getElementById(containerId);
+  if (container && data) {
+    container.innerHTML = data.map(item => `
+      <div class="admin-history-item p-2 border-bottom">
+        <strong>${item.title || item.name}</strong>
+        <p class="mb-1 text-muted">${item.description || item.content || ''}</p>
+        <small>${item.created_at ? new Date(item.created_at).toLocaleDateString('ar-MA') : ''}</small>
+      </div>
+    `).join('');
+  }
+}
+// استدعِ الدالة للصفحات الثلاث (الأنشطة، التكوينات، الأخبار) عند تحميل لوحة الإدارة
 
 // نشر خبر جديد
 async function handleAddNews(e) {
