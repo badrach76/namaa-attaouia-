@@ -71,6 +71,118 @@ async function fetchGlobalMarketPrices() {
         console.error('تعذر تحديث أسعار السوق:', error);
     }
 }
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. تفعيل القائمة المنسدلة القابلة للطي
+  const dropdownToggles = document.querySelectorAll('.dropdown-toggle-btn');
+  dropdownToggles.forEach(toggle => {
+    toggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      const menu = toggle.nextElementSibling;
+      if (menu && menu.classList.contains('dropdown-menu-collapsible')) {
+        menu.classList.toggle('show');
+      }
+    });
+  });
+
+  // إغلاق القائمة عند النقر خارجها
+  window.addEventListener('click', (e) => {
+    if (!e.target.closest('.dropdown-container')) {
+      document.querySelectorAll('.dropdown-menu-collapsible').forEach(menu => {
+        menu.classList.remove('show');
+      });
+    }
+  });
+
+  // 2. تهيئة عارضة الأسعار لضمان الاستمرارية
+  initTicker();
+
+  // 3. التحقق من الصفحة الحالية وجلب البيانات المناسبة (إدارة / منخرط)
+  if (document.body.classList.contains('admin-dashboard-page')) {
+    loadAdminPreviousAchievements();
+  }
+
+  if (document.body.classList.contains('user-dashboard-page')) {
+    loadMemberCompleteTrainings();
+  }
+});
+
+// وظيفة عارضة الأسعار
+function initTicker() {
+  const tickerWrapper = document.querySelector('.ticker-wrapper');
+  if (tickerWrapper) {
+    // التأكد من تكرار المحتوى بسلاسة إن لزم الأمر
+    tickerWrapper.style.animationPlayState = 'running';
+  }
+}
+
+// جلب الإنجازات السابقة في لوحة الإدارة (الأنشطة، التكوين، الأخبار)
+async function loadAdminPreviousAchievements() {
+  try {
+    if (typeof supabaseClient === 'undefined') return;
+    
+    // مثال لجلب الأرشيف للوحات الإدارة
+    const tables = ['activities', 'trainings', 'news'];
+    for (const table of tables) {
+      const { data, error } = await supabaseClient
+        .from(table)
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        const container = document.getElementById(`admin-${table}-archive`);
+        if (container) {
+          container.innerHTML = data.map(item => `
+            <div class="archive-item p-3 mb-2 border rounded bg-light">
+              <h5>${item.title || item.name}</h5>
+              <p>${item.description || item.content || ''}</p>
+              <small class="text-muted">تاريخ النشر: ${new Date(item.created_at).toLocaleDateString('ar-MA')}</small>
+            </div>
+          `).join('');
+        }
+      }
+    }
+  } catch (err) {
+    console.error('خطأ في تحميل إنجازات لوحة الإدارة:', err);
+  }
+}
+
+// جلب التكوينات كاملة (صور، نص، بيانات) داخل فضاء المنخرط
+async function loadMemberCompleteTrainings() {
+  try {
+    if (typeof supabaseClient === 'undefined') return;
+
+    const { data, error } = await supabaseClient
+      .from('trainings')
+      .select('id, title, description, image_url, start_date, location, trainer')
+      .order('start_date', { ascending: false });
+
+    if (error) throw error;
+
+    const container = document.getElementById('member-trainings-list');
+    if (container && data) {
+      container.innerHTML = data.map(training => `
+        <div class="col-md-4 mb-4">
+          <div class="card h-100 shadow-sm border-0">
+            ${training.image_url ? `<img src="${training.image_url}" class="card-img-top" alt="${training.title}" style="height: 180px; object-fit: cover;">` : ''}
+            <div class="card-body">
+              <h5 class="card-title text-success font-weight-bold">${training.title}</h5>
+              <p class="card-text text-muted">${training.description || 'لا توجد تفاصيل متاحة حالياً.'}</p>
+              <ul class="list-unstyled small mb-3">
+                <li><strong>التاريخ:</strong> ${training.ئنart_date || 'يحدد لاحقاً'}</li>
+                <li><strong>المؤطر:</strong> ${training.trainer || 'غير محدد'}</li>
+                <li><strong>المكان:</strong> ${training.location || 'العطاوية'}</li>
+              </ul>
+              <button class="btn btn-outline-success btn-sm btn-block" onclick="viewTrainingDetails('${training.id}')">عرض التفاصيل كاملة</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+  } catch (err) {
+    console.error('خطأ في جلب تكوينات المنخرط:', err);
+  }
+}
+
 
 // تسجيل دخول المشرف
 function handleAdminLogin(e) {
