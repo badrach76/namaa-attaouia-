@@ -14,7 +14,25 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
-
+// القائمة المنسدلة القابلة للطي
+document.addEventListener('click', function (e) {
+  const dropdownToggle = e.target.closest('.dropdown-toggle, [data-toggle="dropdown"]');
+  if (dropdownToggle) {
+    e.preventDefault();
+    const dropdownMenu = dropdownToggle.nextElementSibling || dropdownToggle.parentElement.querySelector('.dropdown-menu');
+    if (dropdownMenu) {
+      dropdownMenu.classList.toggle('show-collapse');
+      dropdownMenu.style.maxHeight = dropdownMenu.classList.contains('show-collapse') ? dropdownMenu.scrollHeight + 'px' : '0px';
+    }
+  } else {
+    // إغلاق القوائم عند النقر خارجها
+    document.querySelectorAll('.dropdown-menu.show-collapse').forEach(menu => {
+      menu.classList.remove('show-collapse');
+      menu.style.maxHeight = '0px';
+    });
+  }
+});
+    
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.nav-links')) {
             dropdowns.forEach(d => d.classList.remove('active'));
