@@ -467,6 +467,32 @@ async function loadAdminData() {
     });
     table.innerHTML = html;
 }
+async function loadMemberTrainingsComplete() {
+  if (typeof supabaseClient === 'undefined') return;
+  
+  // جلب كافة الحقول المطلوبة (الصور، النصوص، البيانات)
+  const { data, error } = await supabaseClient
+    .from('trainings')
+    .select('id, title, description, image_url, start_date, location, trainer, details')
+    .order('start_date', { ascending: false });
+
+  const container = document.getElementById('member-trainings-container');
+  if (container && data) {
+    container.innerHTML = data.map(item => `
+      <div class="training-card mb-3 p-3 border rounded shadow-sm bg-white">
+        ${item.image_url ? `<img src="${item.image_url}" alt="${item.title}" style="width:100%; height:160px; object-fit:cover; border-radius:4px; margin-bottom:10px;">` : ''}
+        <h4 class="text-success">${item.title}</h4>
+        <p>${item.description || ''}</p>
+        <div class="training-meta text-muted small">
+          <span>📅 التاريخ: ${item.start_date || 'غير محدد'}</span> | 
+          <span>📍 المكان: ${item.location || 'العطاوية'}</span> | 
+          <span>👨‍🏫 المؤطر: ${item.trainer || 'غير محدد'}</span>
+        </div>
+        ${item.details ? `<div class="mt-2 text-dark">${item.details}</div>` : ''}
+      </div>
+    `).join('');
+  }
+}
 
 async function editMemberStatus(id, currentStatus) {
     const newStatus = prompt("أدخل الحالة الجديدة للمنخرط (مثال: مقبول أو معالجة):", currentStatus);
