@@ -299,19 +299,32 @@ async function loadAdminActivities() {
  const table=document.getElementById('admin-activities-table'); if(!table)return;
  const {data,error}=await supabaseClient.from('activities').select('*').order('id',{ascending:false});
  if(error){table.innerHTML='<tr><td colspan="5">تعذر تحميل الأنشطة.</td></tr>';return;}
- table.innerHTML=(data||[]).map(a=>`<tr><td>${escapeHTML(a.title)}</td><td>${escapeHTML(a.date)}</td><td>${escapeHTML(a.type)}</td><td>${a.image_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(a.image_url)+'">صورة</a> ':''}${a.video_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(a.video_url)+'">فيديو</a>':''}</td><td><button class="btn-danger" onclick="deleteContentRecord('activities',${a.id})">حذف</button></td></tr>`).join('');
+ table.innerHTML=(data||[]).map(a=>`<tr><td>${escapeHTML(a.title)}</td><td>${escapeHTML(a.date)}</td><td>${escapeHTML(a.type)}</td><td>${a.image_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(a.image_url)+'">صورة</a> ':''}${a.video_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(a.video_url)+'">فيديو</a>':''}</td><td><button class="admin-small-btn" onclick="editContentRecord('activities',${a.id})">تعديل</button><button class="admin-delete-btn" onclick="deleteContentRecord('activities',${a.id})">حذف</button></td></tr>`).join('');
 }
 async function loadAdminTrainings() {
  const table=document.getElementById('admin-trainings-table'); if(!table)return;
  const {data,error}=await supabaseClient.from('trainings').select('*').order('id',{ascending:false});
  if(error){table.innerHTML='<tr><td colspan="5">تعذر تحميل التكوينات.</td></tr>';return;}
- table.innerHTML=(data||[]).map(t=>`<tr><td>${escapeHTML(t.title)}</td><td>${escapeHTML(t.trainer)}</td><td>${escapeHTML(t.date)}</td><td>${t.image_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(t.image_url)+'">صورة</a> ':''}${t.video_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(t.video_url)+'">فيديو</a>':''}</td><td><button class="btn-danger" onclick="deleteContentRecord('trainings',${t.id})">حذف</button></td></tr>`).join('');
+ table.innerHTML=(data||[]).map(t=>`<tr><td>${escapeHTML(t.title)}</td><td>${escapeHTML(t.trainer)}</td><td>${escapeHTML(t.date)}</td><td>${t.image_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(t.image_url)+'">صورة</a> ':''}${t.video_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(t.video_url)+'">فيديو</a>':''}</td><td><button class="admin-small-btn" onclick="editContentRecord('trainings',${t.id})">تعديل</button><button class="admin-delete-btn" onclick="deleteContentRecord('trainings',${t.id})">حذف</button></td></tr>`).join('');
 }
 async function loadAdminNews() {
  const table=document.getElementById('admin-news-table'); if(!table)return;
  const {data,error}=await supabaseClient.from('news').select('*').order('id',{ascending:false});
  if(error){table.innerHTML='<tr><td colspan="5">تعذر تحميل الأخبار.</td></tr>';return;}
- table.innerHTML=(data||[]).map(n=>`<tr><td>${escapeHTML(n.title)}</td><td>${escapeHTML(n.category)}</td><td>${escapeHTML(n.date)}</td><td>${n.image_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(n.image_url)+'">صورة</a> ':''}${n.document_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(n.document_url)+'">وثيقة</a>':''}</td><td><button class="btn-danger" onclick="deleteContentRecord('news',${n.id})">حذف</button></td></tr>`).join('');
+ table.innerHTML=(data||[]).map(n=>`<tr><td>${escapeHTML(n.title)}</td><td>${escapeHTML(n.category)}</td><td>${escapeHTML(n.date)}</td><td>${n.image_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(n.image_url)+'">صورة</a> ':''}${n.document_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(n.document_url)+'">وثيقة</a>':''}</td><td><button class="admin-small-btn" onclick="editContentRecord('news',${n.id})">تعديل</button><button class="admin-delete-btn" onclick="deleteContentRecord('news',${n.id})">حذف</button></td></tr>`).join('');
+}
+async function editContentRecord(table,id) {
+ const fields={activities:[['title','العنوان'],['date','التاريخ'],['type','النوع'],['description','التفاصيل'],['image_url','رابط الصورة'],['video_url','رابط الفيديو']],trainings:[['title','العنوان'],['date','التاريخ'],['trainer','المؤطر'],['target','الفئة المستهدفة'],['description','المحتوى'],['image_url','رابط الصورة'],['video_url','رابط الفيديو']],news:[['title','العنوان'],['category','التصنيف'],['date','التاريخ'],['content','مضمون الخبر'],['image_url','رابط الصورة'],['document_url','رابط الوثيقة']]};
+ const {data,error}=await supabaseClient.from(table).select('*').eq('id',id).single();
+ if(error||!data){alert('تعذر جلب المنشور للتعديل.');return;}
+ const updates={};
+ for(const [key,label] of fields[table]||[]){const value=prompt('تعديل '+label+' (اتركه كما هو واضغط إلغاء للتوقف):',data[key]??'');if(value===null)return;updates[key]=value.trim();}
+ const {error:saveError}=await supabaseClient.from(table).update(updates).eq('id',id);
+ if(saveError){alert('تعذر حفظ التعديلات: '+saveError.message);return;}
+ alert('تم حفظ التعديلات بنجاح.');
+ if(table==='activities'){await loadAdminActivities();await loadPublicActivities();}
+ if(table==='trainings'){await loadAdminTrainings();await loadPublicTrainings();await loadMemberTrainings();}
+ if(table==='news'){await loadAdminNews();await loadPublicNews();}
 }
 async function deleteContentRecord(table,id) { if(!confirm('هل تريد حذف هذا المحتوى نهائياً؟'))return; const {error}=await supabaseClient.from(table).delete().eq('id',id); if(error){alert('تعذر الحذف: '+error.message);return;} if(table==='activities'){loadAdminActivities();loadPublicActivities();} if(table==='trainings'){loadAdminTrainings();loadPublicTrainings();loadMemberTrainings();} if(table==='news'){loadAdminNews();loadPublicNews();} }
 
