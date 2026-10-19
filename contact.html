@@ -14,7 +14,10 @@
 <form id="contact-form">
 <label for="contact-name">الاسم الكامل</label><input id="contact-name" name="name" required maxlength="120" placeholder="الاسم الكامل">
 <label for="contact-topic">موضوع الرسالة</label><select id="contact-topic" name="topic"><option>استفسار عام</option><option>الانخراط في الجمعية</option><option>التكوين والتأطير</option><option>خدمات مهنية</option><option>اقتراح أو شراكة</option></select>
-<label for="contact-email">البريد الإلكتروني للتواصل</label><input id="contact-email" name="email" type="email" required placeholder="name@example.com">
+
+<!-- تم جعل البريد الإلكتروني اختيارياً بإزالة خاصية required -->
+<label for="contact-email">البريد الإلكتروني للتواصل (اختياري)</label><input id="contact-email" name="email" type="email" placeholder="name@example.com">
+
 <label for="contact-phone">رقم الهاتف (اختياري)</label><input id="contact-phone" name="phone" type="tel" placeholder="06XXXXXXXX">
 <label for="contact-message">نص الرسالة</label><textarea id="contact-message" name="message" rows="6" required maxlength="4000" placeholder="اكتب رسالتك هنا..."></textarea>
 <button class="contact-submit" type="submit" id="submit-btn" style="background-color: #174b3b; margin-top: 15px;"><i class="fa-solid fa-paper-plane"></i> إرسال الرسالة إلى الإدارة</button>
@@ -34,12 +37,11 @@ document.getElementById('contact-form').addEventListener('submit', async functio
 
     const name = document.getElementById('contact-name').value.trim();
     const topic = document.getElementById('contact-topic').value;
-    const email = document.getElementById('contact-email').value.trim();
-    const phone = document.getElementById('contact-phone').value.trim();
+    const email = document.getElementById('contact-email').value.trim() || 'غير متوفر';
+    const phone = document.getElementById('contact-phone').value.trim() || 'غير متوفر';
     const message = document.getElementById('contact-message').value.trim();
 
     try {
-        // التأكد من تهيئة عميل Supabase من ملف supabase-config.js
         const { data, error } = await _supabase.from('contact_messages').insert([
             { name: name, topic: topic, email: email, phone: phone, message: message, status: 'جديدة' }
         ]);
@@ -50,7 +52,7 @@ document.getElementById('contact-form').addEventListener('submit', async functio
         document.getElementById('contact-form').reset();
     } catch (err) {
         console.error(err);
-        alert('حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى لاحقاً.');
+        alert('حدث خطأ أثناء إرسال الرسالة. يرجى التأكد من تفعيل صلاحيات الإدخال (Policies) في قاعدة البيانات.');
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال الرسالة إلى الإدارة';
