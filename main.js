@@ -17,25 +17,18 @@ async function fetchGlobalMarketPrices() {
     if (!tickerContainer) return;
 
     try {
-        // 1. المؤشرات الدولية المعتمدة (المجلس الدولي لزيت الزيتون IOC والبورصات الكبرى)
+        // لا نعرض أسعاراً دولية ثابتة أو تقديرية. إلى حين إعداد نقطة API موثوقة
+        // تقرأ ملف المفوضية الأوروبية وتتحقق من تاريخ البيانات، نعرض رابط المصدر فقط.
         let marketData = [
-            "🏛️ مرجعيات المجلس الدولي لزيت الزيتون (IOC): اعتماد معايير الجودة والشفافية الدولية",
-            "🇪🇸 بورصة إسبانيا (أندلسية - Extra Virgin): 8.35 - 8.50 أورو / لتر",
-            "🇮🇹 بورصة إيطاليا (باري - Extra Virgin): 9.00 - 9.20 أورو / لتر",
-            "🇹🇳 السوق التونسية (تصدير - معايير IOC): 22.00 - 23.00 دينار / لتر",
-            "🌱 مؤشر العصر والإنتاج الإقليمي (العصر على البارد): مستقر في حدود 18%"
+            "🌍 الأسعار الدولية: راجع البيانات الرسمية وتاريخ آخر تحديث لدى المفوضية الأوروبية",
+            "🔎 المجلس الدولي للزيتون: تقارير السوق والإحصاءات الرسمية"
         ];
 
-        // 2. جلب الأسعار المحلية المدخلة يدوياً من لوحة الإدارة من قاعدة بيانات Supabase
         const { data: localPrices, error } = await supabaseClient.from('market_prices').select('*');
         if (!error && localPrices && localPrices.length > 0) {
-            localPrices.forEach(item => {
-                marketData.push(`🇲🇦 ${item.price_text}`);
-            });
-        } else {
-            // سعر افتراضي محلي في حال لم يتم إدخال أسعار بعد
-            marketData.push("🇲🇦 السوق المحلية (إقليم قلعة السراغنة - العطاوية): يرجى التحيين من لوحة الإدارة");
+            localPrices.forEach(item => marketData.push(`🇲🇦 أسعار محلية مدخلة من الإدارة: ${item.price_text} (يرجى مراجعة تاريخ ومصدر الإدخال)`));
         }
+        marketData.push("المصادر الرسمية: agriculture.ec.europa.eu و internationaloliveoil.org");
 
         // مساران متطابقان يضمنان حركة متصلة دون اختفاء النص عند نهاية الدورة
         const track = marketData.map(item => `<span>${escapeHTML(item)}</span>`).join(' <b class="ticker-separator">✦</b> ');
