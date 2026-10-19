@@ -34,7 +34,7 @@ document.getElementById('contact-form').addEventListener('submit', async functio
     e.preventDefault();
     
     // التحقق من تعريف متغير الاتصال بقاعدة البيانات (سواء كان باسم supabase أو _supabase)
-    const dbClient = typeof supabase !== 'undefined' ? supabase : (typeof _supabase !== 'undefined' ? _supabase : null);
+    const dbClient = typeof supabaseClient !== 'undefined' ? supabaseClient : null;
     
     if (!dbClient) {
         alert('خطأ: تعذر الاتصال بقاعدة البيانات (Supabase غير معرّف). يرجى التحقق من ملف supabase-config.js');
