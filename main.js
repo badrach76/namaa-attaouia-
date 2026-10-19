@@ -20,8 +20,8 @@ async function fetchGlobalMarketPrices() {
         // لا نعرض أسعاراً دولية ثابتة أو تقديرية. إلى حين إعداد نقطة API موثوقة
         // تقرأ ملف المفوضية الأوروبية وتتحقق من تاريخ البيانات، نعرض رابط المصدر فقط.
         let marketData = [
-            "🌍 الأسعار الدولية: راجع البيانات الرسمية وتاريخ آخر تحديث لدى المفوضية الأوروبية",
-            "🔎 المجلس الدولي للزيتون: تقارير السوق والإحصاءات الرسمية"
+            "🌍 الأسعار الدولية: لا تتوفر حالياً بيانات رقمية موثقة داخل المنصة؛ راجع المصدر الرسمي",
+            "🔎 المجلس الدولي للزيتون: الإحصاءات وتقارير السوق الرسمية"
         ];
 
         const { data: localPrices, error } = await supabaseClient.from('market_prices').select('*');
@@ -88,9 +88,7 @@ async function loadUserDashboard() {
         window.location.href = 'register.html'; 
         return; 
     }
-    ['update-name','name'].forEach(([id,key]) => { const el=document.getElementById(id); if(el) el.value=member[key] || ''; });
-    ['update-mill','mill'].forEach(([id,key]) => { const el=document.getElementById(id); if(el) el.value=member[key] || ''; });
-    ['update-phone','phone'].forEach(([id,key]) => { const el=document.getElementById(id); if(el) el.value=member[key] || ''; });
+    [['update-name','name'],['update-mill','mill'],['update-phone','phone']].forEach(([id,key]) => { const el=document.getElementById(id); if(el) el.value=member[key] || ''; });
     const infoBox = document.getElementById('user-dashboard-info');
     if (infoBox) {
         infoBox.innerHTML = `
