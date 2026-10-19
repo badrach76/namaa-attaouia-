@@ -4,10 +4,8 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="تواصل مع جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون."><meta name="theme-color" content="#174b3b">
 <title>تواصل معنا | جمعية نماء العطاوية</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<!-- تحميل مكتبة Supabase وملف الإعدادات -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css">
+<!-- تحميل مكتبة Supabase وملف الإعدادات في رأس الصفحة لضمان توفر الاتصال -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 </head>
@@ -35,6 +33,14 @@
 document.getElementById('contact-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     
+    // التحقق من تعريف متغير الاتصال بقاعدة البيانات (سواء كان باسم supabase أو _supabase)
+    const dbClient = typeof supabase !== 'undefined' ? supabase : (typeof _supabase !== 'undefined' ? _supabase : null);
+    
+    if (!dbClient) {
+        alert('خطأ: تعذر الاتصال بقاعدة البيانات (Supabase غير معرّف). يرجى التحقق من ملف supabase-config.js');
+        return;
+    }
+
     const submitBtn = document.getElementById('submit-btn');
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
@@ -46,13 +52,7 @@ document.getElementById('contact-form').addEventListener('submit', async functio
     const message = document.getElementById('contact-message').value.trim();
 
     try {
-        const activeSupabase = typeof _supabase !== 'undefined' ? _supabase : (typeof supabase !== 'undefined' ? supabase : null);
-        
-        if (!activeSupabase) {
-            throw new Error('تعذر العثور على إعدادات اتصال قاعدة البيانات.');
-        }
-
-        const { data, error } = await activeSupabase.from('contact_messages').insert([
+        const { data, error } = await dbClient.from('contact_messages').insert([
             { name: name, topic: topic, email: email, phone: phone, message: message, status: 'جديدة' }
         ]);
 
@@ -68,6 +68,4 @@ document.getElementById('contact-form').addEventListener('submit', async functio
         submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال الرسالة إلى الإدارة';
     }
 });
-</script>
-</body>
-</html>
+</script></body></html>
