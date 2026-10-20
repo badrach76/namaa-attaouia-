@@ -407,3 +407,17 @@ button,a,input,select,textarea { -webkit-tap-highlight-color:transparent; }
 @keyframes adminPanelIn { from { opacity:.65; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
 .nav-links > li > a[href="#"] { cursor:pointer; }
 @media (prefers-reduced-motion: reduce) { .admin-panel.active { animation:none; } }
+
+
+/* تحسين نهائي: عرض قسم الإدارة المختار وحده مع العودة للوحة الرئيسية */
+.admin-section-nav[hidden], .section-title[hidden], .admin-back-row[hidden] { display:none !important; }
+.admin-back-row { max-width:1180px; margin:0 auto 18px; padding:0 2px; }
+.admin-back-row .member-secondary-btn { display:inline-flex; align-items:center; gap:9px; border:1px solid #dce7df; border-radius:10px; background:#fff; color:var(--primary-green); padding:10px 16px; font-weight:800; box-shadow:0 4px 14px rgba(27,77,62,.07); cursor:pointer; }
+.admin-panel-focused .admin-panel.active { min-height:45vh; }
+.admin-panel-focused .container { padding-top:18px; }
+.admin-panel-focused .admin-panel.active > .admin-action-box,
+.admin-panel-focused .admin-panel.active > div { max-width:1180px; margin-left:auto; margin-right:auto; }
+/* عارضة الأخبار تستخدم نفس بنية واتجاه وسرعة عارضة الأسعار */
+.market-ticker .ticker-track { animation-duration:58s; }
+.news-ticker-placeholder { color:#fff; }
+@media (prefers-reduced-motion: reduce) { .market-ticker .ticker-track { animation-duration:120s; } }

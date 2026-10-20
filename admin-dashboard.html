@@ -65,11 +65,11 @@
 
 
     <div class="container">
-        <div class="section-title">
+        <div class="section-title" id="admin-overview-title">
             <h3>مركز إدارة منصة جمعية نماء</h3>
             <p>اختر القسم المطلوب؛ سيظهر القسم المحدد وحده مع الاحتفاظ بجميع وظائف الإدارة.</p>
         </div>
-        <nav class="admin-section-nav" aria-label="أقسام لوحة الإدارة">
+        <nav class="admin-section-nav" id="admin-section-nav" aria-label="أقسام لوحة الإدارة">
             <button type="button" class="admin-section-link active" data-target="panel-whatsapp"><i class="fa-brands fa-whatsapp"></i><span>إشعارات واتساب</span></button>
             <button type="button" class="admin-section-link" data-target="panel-local-prices"><i class="fa-solid fa-tags"></i><span>الأسعار المحلية</span></button>
             <button type="button" class="admin-section-link" data-target="panel-messages"><i class="fa-solid fa-envelope-open-text"></i><span>رسائل الزوار</span></button>
@@ -310,24 +310,44 @@
     // استدعاء دالة جلب الرسائل عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', loadAdminMessages);
     
-    // تنقل لوحة الإدارة: عرض قسم واحد فقط مع حفظ جميع روابط الأقسام.
-    document.addEventListener('DOMContentLoaded', () => {
+    // تنقل لوحة الإدارة: عرض واجهة الأقسام أو القسم المختار وحده.
+    function showAdminPanel(id) {
         const buttons = Array.from(document.querySelectorAll('.admin-section-link[data-target]'));
         const panels = Array.from(document.querySelectorAll('[data-admin-panel]'));
-        function activateAdminPanel(id) {
-            panels.forEach(panel => panel.classList.toggle('active', panel.id === id));
-            const backRow = document.getElementById('admin-back-row'); if (backRow) backRow.hidden = (id === 'panel-overview');
-            buttons.forEach(button => { const active = button.dataset.target === id; button.classList.toggle('active', active); button.setAttribute('aria-current', active ? 'page' : 'false'); });
+        const title = document.getElementById('admin-overview-title');
+        const nav = document.getElementById('admin-section-nav');
+        const backRow = document.getElementById('admin-back-row');
+        const overview = id === 'panel-overview' || !panels.some(panel => panel.id === id);
+        panels.forEach(panel => panel.classList.toggle('active', !overview && panel.id === id));
+        if (title) title.hidden = !overview;
+        if (nav) nav.hidden = !overview;
+        if (backRow) backRow.hidden = overview;
+        document.body.classList.toggle('admin-panel-focused', !overview);
+        buttons.forEach(button => {
+            const active = !overview && button.dataset.target === id;
+            button.classList.toggle('active', active);
+            button.setAttribute('aria-current', active ? 'page' : 'false');
+        });
+        if (!overview) {
+            history.replaceState(null, '', '#' + id);
             if (id === 'panel-messages' && typeof loadAdminMessages === 'function') loadAdminMessages();
             if (id === 'panel-member-comms' && typeof loadAdminMemberComms === 'function') loadAdminMemberComms();
             if (id === 'panel-members' && typeof loadAdminData === 'function') loadAdminData();
             if (id === 'panel-local-prices' && typeof loadAdminLocalPrices === 'function') loadAdminLocalPrices();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        } else {
+            history.replaceState(null, '', location.pathname + location.search);
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
-        buttons.forEach(button => button.addEventListener('click', () => activateAdminPanel(button.dataset.target)));
-        const first = buttons.find(button => button.dataset.target === 'panel-whatsapp');
-        activateAdminPanel(first ? first.dataset.target : panels[0]?.id);
+    }
+    window.showAdminPanel = showAdminPanel;
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.admin-section-link[data-target]').forEach(button => {
+            button.addEventListener('click', () => showAdminPanel(button.dataset.target));
+        });
+        const requestedPanel = location.hash.slice(1);
+        showAdminPanel(requestedPanel || 'panel-overview');
     });
-
     </script>
 </body>
 </html>
