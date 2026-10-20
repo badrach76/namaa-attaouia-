@@ -377,8 +377,33 @@ button,a,input,select,textarea { -webkit-tap-highlight-color:transparent; }
 .contact-detail p { color:#65736b; font-size:.92rem; }
 .contact-visual { width:100%; display:block; margin-top:22px; border-radius:14px; aspect-ratio:16/9; object-fit:cover; }
 @media(max-width:760px){.contact-grid{grid-template-columns:1fr}.contact-card{padding:20px}.contact-page .about-hero{padding:28px 20px}}
+/* نماذج إدارة احترافية موحدة */
+.admin-modal-backdrop{position:fixed;inset:0;z-index:9999;background:rgba(12,30,23,.58);display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(5px)}.admin-edit-modal{width:min(760px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:20px;box-shadow:0 25px 80px #0003;padding:24px;border-top:5px solid var(--accent-gold)}.admin-edit-modal>header{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #e8ece6;padding-bottom:14px;margin-bottom:18px}.admin-edit-modal h3{margin:0;color:var(--primary-green)}.modal-close{font-size:1.7rem;background:#f2f4f1;border:0;border-radius:10px;width:40px;height:40px;cursor:pointer}.edit-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.edit-fields label{display:flex;flex-direction:column;gap:6px;font-weight:700;color:#34483e}.edit-fields input{width:100%;box-sizing:border-box;border:1px solid #d8e0d8;border-radius:10px;padding:11px;font:inherit}.admin-edit-modal footer{display:flex;justify-content:flex-start;gap:10px;margin-top:22px}.modal-save,.modal-cancel{border:0;border-radius:10px;padding:11px 20px;font:inherit;font-weight:800;cursor:pointer}.modal-save{background:var(--primary-green);color:white}.modal-cancel{background:#eef1ed;color:#34483e}@media(max-width:600px){.edit-fields{grid-template-columns:1fr}.admin-edit-modal{padding:17px}}
 
-/* توحيد القوائم المنسدلة وحقول الاختيار في صفحة التواصل */
-#contact-form select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%231b4d3e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:14px center;padding-left:42px;cursor:pointer}
-#contact-form select:hover{border-color:var(--accent-gold)}
-#contact-form select:focus{box-shadow:0 0 0 3px rgba(27,77,62,.12)}
+/* لوحة إدارة موحدة: روابط أقسام أنيقة مع عرض قسم واحد فقط */
+.admin-section-nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:0 auto 28px;max-width:1180px;padding:16px;background:linear-gradient(135deg,#fff,#f5f8f5);border:1px solid #e4ebe5;border-radius:18px;box-shadow:0 12px 32px rgba(27,77,62,.08)}
+.admin-section-link{display:flex;align-items:center;justify-content:flex-start;gap:11px;min-height:58px;padding:13px 15px;border:1px solid #e1e8e2;border-radius:12px;background:#fff;color:#244c3f;text-decoration:none;font:inherit;font-weight:800;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease;text-align:right}
+.admin-section-link i:first-child{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:#edf4ef;color:#1b4d3e}
+.admin-section-link span{flex:1}
+.admin-section-link:hover{transform:translateY(-2px);border-color:#c5a059;box-shadow:0 8px 18px rgba(27,77,62,.1)}
+.admin-section-link.active{background:#1b4d3e;color:#fff;border-color:#1b4d3e;box-shadow:0 8px 20px rgba(27,77,62,.2)}
+.admin-section-link.active i:first-child{background:rgba(255,255,255,.14);color:#f4d69c}
+.admin-section-link.external{border-style:dashed}
+.admin-panel{display:none;animation:adminPanelIn .24s ease both}
+.admin-panel.active{display:block}
+.admin-panel>.admin-action-box,.admin-panel>div[style*="background: white"]{max-width:1180px;margin:0 auto 24px}
+.official-price-note{max-width:1180px;margin:0 auto 24px;padding:22px 24px;border:1px solid #dce8df;border-right:5px solid #c5a059;border-radius:14px;background:#f7faf7;color:#304b40}
+.official-price-note h4{margin:0 0 10px;color:#1b4d3e;font-size:1.08rem}
+.official-price-note p{margin:0 0 14px;line-height:1.9}
+.official-price-note a{display:inline-flex;gap:8px;align-items:center;padding:10px 16px;border-radius:9px;background:#1b4d3e;color:white;text-decoration:none;font-weight:800}
+@keyframes adminPanelIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.admin-section-nav{grid-template-columns:1fr 1fr;padding:10px;gap:8px}.admin-section-link{padding:10px;min-height:62px;font-size:.82rem;gap:7px}.admin-section-link i:first-child{width:29px;height:29px;flex-basis:29px}.official-price-note{padding:16px}}
+.member-status-actions{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.member-status-actions button{border:0;border-radius:7px;padding:7px 9px;font:inherit;font-size:.78rem;font-weight:800;cursor:pointer}.status-processing{background:#fff4d6;color:#805b00}.status-approve{background:#e3f5e9;color:#17633a}.status-reject{background:#fde8e7;color:#a12622}.admin-wa-link{display:inline-block;margin:6px 0 0 6px;background:#25d366;color:#fff;text-decoration:none;border-radius:6px;padding:3px 7px;font-size:.75rem}
+.official-price-frame-wrap{margin-top:18px;width:100%;height:min(72vh,760px);min-height:420px;overflow:hidden;border:1px solid #dce5de;border-radius:12px;background:#fff}.official-price-frame-wrap iframe{width:100%;height:100%;border:0;background:#fff}
+
+/* تحسينات التناسق المضافة على النسخة الأحدث */
+.admin-panel { display:none; }
+.admin-panel.active { display:block; animation: adminPanelIn .18s ease-out; }
+@keyframes adminPanelIn { from { opacity:.65; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+.nav-links > li > a[href="#"] { cursor:pointer; }
+@media (prefers-reduced-motion: reduce) { .admin-panel.active { animation:none; } }
