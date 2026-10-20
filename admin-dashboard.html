@@ -10,9 +10,7 @@
     <!-- مكتبة Supabase للربط بقاعدة البيانات -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
-    <script>
-(async()=>{try{const {data:{session}}=await supabaseClient.auth.getSession();if(!session||session.user?.app_metadata?.role!=='admin'){await supabaseClient.auth.signOut();window.location.replace('admin-login.html');}}catch(e){window.location.replace('admin-login.html');}})();
-</script>
+    <script>if (sessionStorage.getItem('isAdmin') !== 'true') { alert('غير مسموح بالدخول.'); window.location.href = 'admin-login.html'; }</script>
 </head>
 <body>
     <header>
@@ -66,23 +64,11 @@
 
     <div class="container">
         <div class="section-title">
-            <h3>مركز إدارة منصة جمعية نماء</h3>
-            <p>اختر القسم المطلوب؛ سيظهر القسم المحدد وحده مع الاحتفاظ بجميع وظائف الإدارة.</p>
+            <h3>إدارة المنصة وقاعدة البيانات (Supabase)</h3>
+            <p>إدارة المنخرطين والأنشطة والتكوينات والأخبار والوسائط من مكان واحد</p>
         </div>
-        <nav class="admin-section-nav" aria-label="أقسام لوحة الإدارة">
-            <button type="button" class="admin-section-link active" data-target="panel-whatsapp"><i class="fa-brands fa-whatsapp"></i><span>إشعارات واتساب</span></button>
-            <button type="button" class="admin-section-link" data-target="panel-local-prices"><i class="fa-solid fa-tags"></i><span>الأسعار المحلية</span></button>
-            <button type="button" class="admin-section-link" data-target="panel-messages"><i class="fa-solid fa-envelope-open-text"></i><span>رسائل الزوار</span></button>
-            <button type="button" class="admin-section-link" data-target="panel-member-comms"><i class="fa-solid fa-bullhorn"></i><span>التواصل مع المنخرطين</span></button>
-            <button type="button" class="admin-section-link" data-target="panel-members"><i class="fa-solid fa-users-gear"></i><span>طلبات الانخراط والمنخرطون</span></button>
-            <button type="button" class="admin-section-link" data-target="panel-activities"><i class="fa-solid fa-calendar-days"></i><span>أنشطة الجمعية</span></button>
-            <button type="button" class="admin-section-link" data-target="panel-training"><i class="fa-solid fa-graduation-cap"></i><span>التكوين والتأطير</span></button>
-            <button type="button" class="admin-section-link" data-target="panel-news"><i class="fa-solid fa-newspaper"></i><span>أخبار القطاع</span></button>
-            <button type="button" class="admin-section-link" data-target="panel-international-prices"><i class="fa-solid fa-chart-line"></i><span>الأسعار الدولية المحيّنة</span></button>
-        </nav>
 
-        <section class="admin-panel active" id="panel-whatsapp" data-admin-panel>
-<!-- إرسال إشعار جماعي لمجموعة الواتساب -->
+        <!-- إرسال إشعار جماعي لمجموعة الواتساب -->
         <div class="admin-action-box" style="border-top-color: #25d366;">
             <h4 style="color: var(--primary-green); margin-bottom: 12px;"><i class="fa-brands fa-whatsapp" style="color:#25d366;"></i> إرسال رسالة جماعية لواتساب المهني</h4>
             <form onsubmit="window.open(`https://wa.me/?text=${encodeURIComponent(document.getElementById('group-wa-msg').value)}`, '_blank'); return false;">
@@ -91,10 +77,7 @@
             </form>
         </div>
 
-        
-</section>
-<section class="admin-panel" id="panel-local-prices" data-admin-panel>
-<!-- قسم تدبير الأسعار المحلية في لوحة المشرف -->
+        <!-- قسم تدبير الأسعار المحلية في لوحة المشرف -->
         <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; border-top: 4px solid var(--accent-gold);">
             <h3 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-tags"></i> إضافة وتدبير الأسعار المحلية في العارضة</h3>
             <form onsubmit="handleAddLocalPrice(event)" style="display: flex; gap: 10px; margin-bottom: 20px;">
@@ -116,18 +99,7 @@
             </div>
         </div>
 
-
-</section>
-<section class="admin-panel" id="panel-international-prices" data-admin-panel>
-        <div class="official-price-note">
-            <h4><i class="fa-solid fa-chart-line"></i> الأسعار الدولية المحيّنة — المصدر الرسمي</h4>
-            <p>لوحة المفوضية الأوروبية تعرض بيانات أسعار زيت الزيتون حسب الأصناف والأسواق الأوروبية، مع تحديثات دورية. تظهر البيانات داخل الإطار أدناه إذا سمح المصدر بالعرض المضمّن؛ ويمكن فتح المصدر مباشرة عند تعذّر ذلك. لن نعرض أرقاماً تقديرية على أنها أسعار حقيقية.</p>
-            <a href="https://agridata.ec.europa.eu/extensions/DataPortal/olive-oil.html" target="_blank" rel="noopener">فتح المصدر الرسمي في نافذة مستقلة <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-            <div class="official-price-frame-wrap"><iframe title="لوحة المفوضية الأوروبية لأسعار زيت الزيتون" src="https://agridata.ec.europa.eu/extensions/DataPortal/olive-oil.html" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-        </div>
-</section>
-<section class="admin-panel" id="panel-messages" data-admin-panel>
-<!-- قسم إدارة ورسائل تواصل معنا الواردة عبر المنصة -->
+        <!-- قسم إدارة ورسائل تواصل معنا الواردة عبر المنصة -->
         <div class="admin-action-box" style="border-top-color: #174b3b; background: white;">
             <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-envelope-open-text"></i> رسائل زوار المنصة والمنخرطين (الواردة عبر صفحة تواصل معنا)</h4>
             <div style="overflow-x: auto;">
@@ -137,26 +109,7 @@
             </div>
         </div>
 
-        
-</section>
-<section class="admin-panel" id="panel-member-comms" data-admin-panel>
-<div class="admin-action-box member-comms-admin">
- <h3><i class="fa-solid fa-bullhorn"></i> مركز التواصل مع المنخرطين</h3>
- <p>أنشئ إعلاناً عاماً لجميع المنخرطين أو رسالة خاصة لمنخرط محدد. تحفظ الرسائل في قاعدة البيانات لتظهر في فضاء المنخرط.</p>
- <form id="admin-member-message-form" onsubmit="sendMemberAnnouncement(event)" class="member-form">
-  <label>نوع الإرسال<select id="admin-announcement-audience" onchange="toggleAnnouncementMember()"><option value="all">إعلان جماعي لجميع المنخرطين</option><option value="member">رسالة فردية لمنخرط محدد</option></select></label>
-  <label id="announcement-member-field" style="display:none">المنخرط المستهدف<select id="admin-announcement-member"><option value="">جارٍ تحميل المنخرطين…</option></select></label>
-  <label>عنوان الإعلان<input id="admin-announcement-title" required maxlength="180" placeholder="مثال: موعد لقاء تكويني مهم"></label>
-  <label class="full-width">نص الإعلان<textarea id="admin-announcement-body" required rows="5" placeholder="اكتب مضمون الإعلان بوضوح..."></textarea></label>
-  <div class="member-form-actions"><button type="submit" class="member-primary-btn"><i class="fa-solid fa-paper-plane"></i> نشر / إرسال</button><button type="button" class="member-secondary-btn" onclick="loadAdminMemberComms()"><i class="fa-solid fa-rotate"></i> تحديث السجل</button></div>
- </form>
-</div>
-<div class="admin-action-box"><h3><i class="fa-solid fa-inbox"></i> رسائل المنخرطين الواردة</h3><div id="admin-member-messages-list"><p class="loading-state">جارٍ تحميل الرسائل...</p></div></div>
-<div class="admin-action-box"><h3><i class="fa-solid fa-clock-rotate-left"></i> سجل الإعلانات الصادرة</h3><div id="admin-announcements-list"><p class="loading-state">جارٍ تحميل الإعلانات...</p></div></div>
-</section>
-
-<section class="admin-panel" id="panel-members" data-admin-panel>
-<!-- إضافة منخرط قديم -->
+        <!-- إضافة منخرط قديم -->
         <div class="admin-action-box">
             <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-user-plus"></i> تسجيل منخرط قديم مباشرة</h4>
             <form onsubmit="handleAddOldMember(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; align-items: end;">
@@ -190,10 +143,7 @@
             </div>
         </div>
 
-        
-</section>
-<section class="admin-panel" id="panel-activities" data-admin-panel>
-<!-- إدارة الأنشطة (إضافة وحذف) -->
+        <!-- إدارة الأنشطة (إضافة وحذف) -->
         <div class="admin-action-box">
             <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-bullhorn"></i> إدارة أنشطة الجمعية (نشر وحذف)</h4>
             <form onsubmit="handleAddActivity(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; align-items: end;">
@@ -215,10 +165,7 @@
             </div>
         </div>
 
-        
-</section>
-<section class="admin-panel" id="panel-training" data-admin-panel>
-<!-- إدارة التكوينات (إضافة وحذف) -->
+        <!-- إدارة التكوينات (إضافة وحذف) -->
         <div class="admin-action-box" style="border-top-color: var(--accent-gold);">
             <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-graduation-cap"></i> إدارة التكوينات (نشر وحذف)</h4>
             <form onsubmit="handleAddTraining(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; align-items: end;">
@@ -241,10 +188,7 @@
             </div>
         </div>
 
-        
-</section>
-<section class="admin-panel" id="panel-news" data-admin-panel>
-<!-- إدارة أخبار الجمعية والقطاع -->
+        <!-- إدارة أخبار الجمعية والقطاع -->
         <div class="admin-action-box" style="border-top-color:#2e7d32;">
             <h4 style="color:var(--primary-green);margin-bottom:15px;"><i class="fa-solid fa-newspaper"></i> إدارة أخبار الجمعية والقطاع</h4>
             <form onsubmit="handleAddNews(event)" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:20px;align-items:end;">
@@ -259,8 +203,6 @@
             </form>
             <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;text-align:right;min-width:700px;"><thead><tr style="background:#ddd;"><th style="padding:8px;">العنوان</th><th style="padding:8px;">التصنيف</th><th style="padding:8px;">التاريخ</th><th style="padding:8px;">الوسائط والوثائق</th><th style="padding:8px;">حذف</th></tr></thead><tbody id="admin-news-table"></tbody></table></div>
         </div>
-</section>
-
     </div>
 
     <footer>
@@ -268,15 +210,77 @@
         <nav class="footer-quick-links" aria-label="روابط سريعة"><a href="about.html">من نحن</a><a href="news.html">أخبار القطاع</a><a href="activities.html">أنشطة الجمعية</a><a href="training.html">التكوين والتأطير</a><a href="membership.html">الانخراط</a></nav>
     <div class="footer-bottom"><p>جميع حقوق النشر محفوظة © 2026 - جمعية نماء العطاوية</p></div>
     </footer>
+    <style>
+    .admin-section-nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:24px 0 30px}
+    .admin-section-nav a{display:flex;align-items:center;gap:12px;min-height:58px;padding:15px 17px;border:1px solid #e3e9e3;border-radius:15px;background:linear-gradient(135deg,#fff,#f8faf7);color:var(--primary-green);text-decoration:none;font-weight:800;box-shadow:0 5px 18px rgba(24,62,43,.06);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
+    .admin-section-nav a:hover,.admin-section-nav a.active{transform:translateY(-2px);border-color:var(--accent-gold);box-shadow:0 10px 24px rgba(24,62,43,.11);background:#f8f4e9}
+    .admin-section-nav i{font-size:1.25rem;color:var(--accent-gold);width:26px;text-align:center}
+    .admin-section-panel{scroll-margin-top:22px}.admin-section-panel[hidden]{display:none!important}
+    .admin-section-title{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+    @media(max-width:600px){.admin-section-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.admin-section-nav a{padding:12px 10px;font-size:.86rem;min-height:54px}.admin-section-nav i{font-size:1rem;width:20px}}
+    </style>
     <script src="main.js"></script>
     <script>
-    function escapeAdminHTML(value) { return String(value ?? '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch])); }
-    async function setContactMessageStatus(id,status){const {error}=await supabaseClient.from('contact_messages').update({status}).eq('id',id);if(error){alert('تعذر تحديث حالة الرسالة: '+error.message);return;}loadAdminMessages();}
+    // تنقّل تلقائي بين أقسام لوحة الإدارة: إظهار القسم المختار وحده دون الحاجة إلى إظهاره يدويًا.
+    document.addEventListener('DOMContentLoaded', function () {
+      const root = document.querySelector('body > .container') || document.querySelector('.container');
+      if (!root) return;
+      const heading = root.querySelector('.section-title');
+      if (!heading) return;
+      const candidates = [...root.children].filter(el =>
+        el.classList.contains('admin-action-box') ||
+        (el.tagName === 'DIV' && el.querySelector('#admin-local-prices-table'))
+      );
+      if (!candidates.length) return;
+      const iconByText = [
+        [/رسائل|تواصل مع المنخرطين/, 'fa-envelope-open-text'], [/تسجيل منخرط|طلبات الانخراط|المنخرطين/, 'fa-users'],
+        [/أنشطة/, 'fa-calendar-check'], [/التكوين/, 'fa-graduation-cap'], [/الأخبار|القطاع/, 'fa-newspaper'],
+        [/الأسعار/, 'fa-tags'], [/واتساب/, 'fa-brands fa-whatsapp']
+      ];
+      const nav = document.createElement('nav'); nav.className = 'admin-section-nav';
+      nav.setAttribute('aria-label','أقسام لوحة الإشراف');
+      heading.insertAdjacentElement('afterend', nav);
+      const panels = candidates.map((panel,index) => {
+        panel.classList.add('admin-section-panel');
+        panel.id = 'admin-panel-' + (index + 1);
+        const label = panel.querySelector('h4,h3')?.textContent.trim() || 'قسم الإدارة';
+        const found = iconByText.find(([pattern]) => pattern.test(label));
+        const icon = found ? found[1] : 'fa-folder-open';
+        const link = document.createElement('a'); link.href = '#' + panel.id;
+        link.innerHTML = '<i class="fa-solid ' + icon + '"></i><span></span>';
+        link.querySelector('span').textContent = label;
+        link.addEventListener('click', event => { event.preventDefault(); showPanel(panel.id, true); });
+        nav.appendChild(link);
+        return {panel,link};
+      });
+      function showPanel(id, scroll) {
+        panels.forEach(({panel,link}) => {
+          const active = panel.id === id;
+          panel.hidden = !active;
+          link.classList.toggle('active',active);
+          link.setAttribute('aria-current',active ? 'page' : 'false');
+        });
+        if (scroll) {
+          const selected = panels.find(item => item.panel.id === id);
+          if (selected) selected.panel.scrollIntoView({behavior:'smooth',block:'start'});
+          history.replaceState(null,'','#'+id);
+        }
+      }
+      // يدعم الروابط المباشرة وزر الرجوع، وإلا يبدأ بالقسم الأول تلقائيًا.
+      const requested = location.hash ? panels.find(item => '#'+item.panel.id === location.hash) : null;
+      showPanel(requested ? requested.panel.id : panels[0].panel.id, false);
+      window.addEventListener('hashchange', () => {
+        const match = panels.find(item => '#'+item.panel.id === location.hash);
+        if (match) showPanel(match.panel.id, false);
+      });
+    });
+    </script>
+    <script>
     // دالة جلب وعرض الرسائل الواردة في لوحة الإشراف
     async function loadAdminMessages() {
         const container = document.getElementById('messages-container');
         try {
-            const { data, error } = await supabaseClient.from('contact_messages').select('*').order('created_at', { ascending: false });
+            const { data, error } = await _supabase.from('contact_messages').select('*').order('created_at', { ascending: false });
             if (error) throw error;
 
             if (!data || data.length === 0) {
@@ -285,46 +289,28 @@
             }
 
             let html = '<table style="width: 100%; border-collapse: collapse; text-align: right; font-size: 14px; min-width: 700px;">';
-            html += '<tr style="background: #f4ecdf; color: var(--primary-green); border-bottom: 2px solid #ddd;"><th style="padding: 10px;">التاريخ</th><th style="padding: 10px;">المرسل والهاتف</th><th style="padding: 10px;">الموضوع</th><th style="padding: 10px;">الرسالة</th><th style="padding: 10px;">الحالة</th><th style="padding: 10px;">الإجراءات</th></tr>';
+            html += '<tr style="background: #f4ecdf; color: var(--primary-green); border-bottom: 2px solid #ddd;"><th style="padding: 10px;">التاريخ</th><th style="padding: 10px;">المرسل والهاتف</th><th style="padding: 10px;">الموضوع</th><th style="padding: 10px;">الرسالة</th><th style="padding: 10px;">الحالة</th></tr>';
 
             data.forEach(msg => {
                 const date = new Date(msg.created_at).toLocaleDateString('ar-MA');
                 html += `<tr style="border-bottom: 1px solid #eee;">
                     <td style="padding: 10px; color: #555; white-space: nowrap;">${date}</td>
-                    <td style="padding: 10px;"><strong>${escapeAdminHTML(msg.name)}</strong><br><small style="color:#777">${escapeAdminHTML(msg.email || "—")}</small><br><small style="color:#0077cc">${escapeAdminHTML(msg.phone || 'بدون هاتف')}</small></td>
-                    <td style="padding: 10px;"><span style="background: #e6f4ea; color: #137333; padding: 3px 8px; border-radius: 4px; font-size: 12px; white-space: nowrap;">${escapeAdminHTML(msg.topic)}</span></td>
-                    <td style="padding: 10px; max-width: 300px; word-break: break-word;">${escapeAdminHTML(msg.message)}</td>
-                    <td style="padding: 10px; font-weight: bold; color: #b06000; white-space: nowrap;">${escapeAdminHTML(msg.status || "جديدة")}</td><td style="padding:10px;white-space:nowrap"><button onclick="setContactMessageStatus(${Number(msg.id)}, 'قيد المعالجة')">قيد المعالجة</button> <button onclick="setContactMessageStatus(${Number(msg.id)}, 'تم الرد')">تم الرد</button></td>
+                    <td style="padding: 10px;"><strong>${msg.name}</strong><br><small style="color:#777">${msg.email}</small><br><small style="color:#0077cc">${msg.phone || 'بدون هاتف'}</small></td>
+                    <td style="padding: 10px;"><span style="background: #e6f4ea; color: #137333; padding: 3px 8px; border-radius: 4px; font-size: 12px; white-space: nowrap;">${msg.topic}</span></td>
+                    <td style="padding: 10px; max-width: 300px; word-break: break-word;">${msg.message}</td>
+                    <td style="padding: 10px; font-weight: bold; color: #b06000; white-space: nowrap;">${msg.status}</td>
                 </tr>`;
             });
             html += '</table>';
             container.innerHTML = html;
         } catch (err) {
             console.error(err);
-            container.innerHTML = '<p style="color:red">تعذر جلب الرسائل. تحقق من وجود جدول contact_messages وصلاحيات SELECT/UPDATE في Supabase. التفاصيل: '+escapeAdminHTML(err.message)+'</p>'; 
+            container.innerHTML = '<p style="color: red;">تعذر جلب الرسائل من قاعدة البيانات.</p>';
         }
     }
 
     // استدعاء دالة جلب الرسائل عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', loadAdminMessages);
-    
-    // تنقل لوحة الإدارة: عرض قسم واحد فقط مع حفظ جميع روابط الأقسام.
-    document.addEventListener('DOMContentLoaded', () => {
-        const buttons = Array.from(document.querySelectorAll('.admin-section-link[data-target]'));
-        const panels = Array.from(document.querySelectorAll('[data-admin-panel]'));
-        function activateAdminPanel(id) {
-            panels.forEach(panel => panel.classList.toggle('active', panel.id === id));
-            buttons.forEach(button => { const active = button.dataset.target === id; button.classList.toggle('active', active); button.setAttribute('aria-current', active ? 'page' : 'false'); });
-            if (id === 'panel-messages' && typeof loadAdminMessages === 'function') loadAdminMessages();
-            if (id === 'panel-member-comms' && typeof loadAdminMemberComms === 'function') loadAdminMemberComms();
-            if (id === 'panel-members' && typeof loadAdminData === 'function') loadAdminData();
-            if (id === 'panel-local-prices' && typeof loadAdminLocalPrices === 'function') loadAdminLocalPrices();
-        }
-        buttons.forEach(button => button.addEventListener('click', () => activateAdminPanel(button.dataset.target)));
-        const first = buttons.find(button => button.dataset.target === 'panel-whatsapp');
-        activateAdminPanel(first ? first.dataset.target : panels[0]?.id);
-    });
-
     </script>
 </body>
 </html>
