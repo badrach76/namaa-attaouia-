@@ -70,7 +70,7 @@
 
         <!-- إرسال إشعار جماعي لمجموعة الواتساب -->
         <div class="admin-action-box" style="border-top-color: #25d366;">
-            <h4 style="color: var(--primary-green); margin-bottom: 12px;"><i class="fa-brands fa-whatsapp" style="color:#25d366;"></i> إرسال رسالة جماعية لواتساب المهني</h4>
+            <h4 style="color: var(--primary-green); margin-bottom: 12px;"><i class="fa-brands fa-whatsapp" style="color:#25d366;"></i> الرسالة المهنية</h4>
             <form onsubmit="window.open(`https://wa.me/?text=${encodeURIComponent(document.getElementById('group-wa-msg').value)}`, '_blank'); return false;">
                 <div class="form-group"><textarea id="group-wa-msg" rows="2" required placeholder="اكتب الإشعار الجماعي لأصحاب المعاصر..."></textarea></div>
                 <button type="submit" class="submit-btn" style="background-color: #25d366; width: auto; padding: 8px 20px;"><i class="fa-brands fa-whatsapp"></i> إرسال للمجموعة</button>
@@ -79,7 +79,7 @@
 
         <!-- قسم تدبير الأسعار المحلية في لوحة المشرف -->
         <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; border-top: 4px solid var(--accent-gold);">
-            <h3 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-tags"></i> إضافة وتدبير الأسعار المحلية في العارضة</h3>
+            <h3 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-tags"></i> الأسعار المحلية</h3>
             <form onsubmit="handleAddLocalPrice(event)" style="display: flex; gap: 10px; margin-bottom: 20px;">
                 <input type="text" id="local-price-input" required placeholder="مثال: السوق المحلية (العطاوية): 75 - 80 درهم / لتر" style="flex-grow: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
                 <button type="submit" style="background: var(--primary-green); color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">إضافة للعارضة</button>
@@ -101,7 +101,7 @@
 
         <!-- قسم إدارة ورسائل تواصل معنا الواردة عبر المنصة -->
         <div class="admin-action-box" style="border-top-color: #174b3b; background: white;">
-            <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-envelope-open-text"></i> رسائل زوار المنصة والمنخرطين (الواردة عبر صفحة تواصل معنا)</h4>
+            <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-envelope-open-text"></i> رسائل زوار المنصة والمنخرطين</h4>
             <div style="overflow-x: auto;">
                 <div id="messages-container">
                     <p style="color: #666;">جاري تحميل الرسائل الواردة...</p>
@@ -124,7 +124,7 @@
 
         <!-- جدول إدارة المنخرطين (تعديل الحالات والواجبات والحذف) -->
         <div class="admin-action-box">
-            <h4 style="margin-bottom: 15px; color: var(--primary-green);"><i class="fa-solid fa-users-gear"></i> إدارة المنخرطين (تعديل وحذف)</h4>
+            <h4 style="margin-bottom: 15px; color: var(--primary-green);"><i class="fa-solid fa-users-gear"></i> إدارة المنخرطين</h4>
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse; text-align: right; min-width: 750px;">
                     <thead>
@@ -145,7 +145,7 @@
 
         <!-- إدارة الأنشطة (إضافة وحذف) -->
         <div class="admin-action-box">
-            <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-bullhorn"></i> إدارة أنشطة الجمعية (نشر وحذف)</h4>
+            <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-bullhorn"></i> إدارة أنشطة الجمعية</h4>
             <form onsubmit="handleAddActivity(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; align-items: end;">
                 <div class="form-group" style="margin:0;"><label>العنوان:</label><input type="text" id="act-title" required placeholder="العنوان"></div>
                 <div class="form-group" style="margin:0;"><label>التاريخ:</label><input type="date" id="act-date" required></div>
@@ -167,7 +167,7 @@
 
         <!-- إدارة التكوينات (إضافة وحذف) -->
         <div class="admin-action-box" style="border-top-color: var(--accent-gold);">
-            <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-graduation-cap"></i> إدارة التكوينات (نشر وحذف)</h4>
+            <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-graduation-cap"></i> إدارة التكوينات</h4>
             <form onsubmit="handleAddTraining(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; align-items: end;">
                 <div class="form-group" style="margin:0;"><label>عنوان التكوين:</label><input type="text" id="tr-title" required placeholder="العنوان"></div>
                 <div class="form-group" style="margin:0;"><label>التاريخ:</label><input type="date" id="tr-date" required></div>
