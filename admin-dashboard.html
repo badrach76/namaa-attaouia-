@@ -62,7 +62,7 @@
 </header>
 
 
-    <div class="container admin-shell">
+    <div class="container">
         <div class="section-title">
             <h3>إدارة المنصة وقاعدة البيانات (Supabase)</h3>
             <p>إدارة المنخرطين والأنشطة والتكوينات والأخبار والوسائط من مكان واحد</p>
@@ -210,38 +210,10 @@
         <nav class="footer-quick-links" aria-label="روابط سريعة"><a href="about.html">من نحن</a><a href="news.html">أخبار القطاع</a><a href="activities.html">أنشطة الجمعية</a><a href="training.html">التكوين والتأطير</a><a href="membership.html">الانخراط</a></nav>
     <div class="footer-bottom"><p>جميع حقوق النشر محفوظة © 2026 - جمعية نماء العطاوية</p></div>
     </footer>
-    <style>
-    .admin-shell{max-width:1400px}.admin-hub{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;margin:22px 0 28px}.admin-hub a{display:flex;align-items:center;gap:12px;padding:16px;background:#fff;border:1px solid #e7e9e4;border-radius:14px;color:#174b3b;text-decoration:none;font-weight:800;box-shadow:0 5px 18px #173c2b0a;transition:.2s}.admin-hub a:hover,.admin-hub a.active{border-color:#c5a059;background:#f8f4eb;transform:translateY(-2px)}.admin-hub i{font-size:1.25rem;color:#b18a42;width:25px;text-align:center}.admin-panel{scroll-margin-top:18px}.admin-panel[hidden]{display:none!important}.admin-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.admin-small-btn,.admin-delete-btn{border:0;border-radius:7px;padding:7px 9px;cursor:pointer;font:inherit;font-size:.8rem;background:#e9f1ec;color:#174b3b;margin:2px}.admin-delete-btn{background:#fdebea;color:#a12727}.admin-panel table td,.admin-panel table th{vertical-align:top}.admin-panel input,.admin-panel textarea,.admin-panel select{max-width:100%;box-sizing:border-box}@media(max-width:700px){.admin-hub{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-hub a{padding:12px;font-size:.85rem}.admin-action-box{padding:16px!important}.admin-panel-heading h4{font-size:1rem}}
-    </style>
     <script src="main.js"></script>
     <script>
-    // تحويل أقسام الإدارة إلى واجهات مستقلة داخل لوحة واحدة
-    document.addEventListener('DOMContentLoaded', () => {
-      const container=document.querySelector('.admin-shell'); if(!container)return;
-      const title=container.querySelector('.section-title');
-      const candidates=[...container.children].filter(el=>el.classList.contains('admin-action-box') || (el.tagName==='DIV' && el.querySelector('#admin-local-prices-table')));
-      const labels=[
-        ['messages-container','الرسائل الواردة','fa-envelope-open-text'],['old-name','إضافة منخرط','fa-user-plus'],['admin-members-table','المنخرطون','fa-users'],['admin-activities-table','الأنشطة','fa-calendar-check'],['admin-trainings-table','التكوينات','fa-graduation-cap'],['admin-news-table','الأخبار','fa-newspaper'],['admin-local-prices-table','الأسعار المحلية','fa-tags'],['group-wa-msg','إشعار واتساب','fa-brands fa-whatsapp']
-      ];
-      const hub=document.createElement('nav');hub.className='admin-hub';hub.setAttribute('aria-label','أقسام لوحة الإدارة');
-      const overview=document.createElement('a');overview.href='#admin-overview';overview.className='active';overview.innerHTML='<i class="fa-solid fa-gauge-high"></i><span>نظرة عامة</span>';hub.appendChild(overview);
-      const panels=[];
-      candidates.forEach((el,i)=>{
-        const match=labels.find(([id])=>el.querySelector('#'+id));
-        const label=match?match[1]:(el.querySelector('h4')?.textContent.trim()||'قسم الإدارة');
-        const icon=match?match[2]:'fa-folder-open';
-        const id='admin-section-'+i;el.id=id;el.classList.add('admin-panel');
-        const link=document.createElement('a');link.href='#'+id;link.innerHTML='<i class="'+(icon.includes(' ')?'fa-solid '+icon:('fa-solid '+icon))+'"></i><span>'+label+'</span>';link.addEventListener('click',()=>activate(id,link));hub.appendChild(link);panels.push({el,link,id});
-      });
-      title.id='admin-overview';title.insertAdjacentElement('afterend',hub);
-      function activate(id,link){panels.forEach(p=>{p.el.hidden=p.id!==id;p.link.classList.toggle('active',p.id===id)});overview.classList.toggle('active',id==='admin-overview');if(id==='admin-overview')panels.forEach(p=>p.el.hidden=true);}
-      overview.addEventListener('click',e=>{e.preventDefault();activate('admin-overview',overview);window.scrollTo({top:0,behavior:'smooth'})});
-      const first=panels[0];if(first)activate(first.id,first.link);
-    });
-    async function updateMessageStatus(id,status){if(!confirm('تأكيد تحديث حالة الرسالة؟'))return;const {error}=await supabaseClient.from('contact_messages').update({status}).eq('id',id);if(error){alert('تعذر تحديث الحالة: '+error.message);return;}loadAdminMessages();}
-    async function deleteContactMessage(id){if(!confirm('حذف الرسالة نهائياً؟'))return;const {error}=await supabaseClient.from('contact_messages').delete().eq('id',id);if(error){alert('تعذر حذف الرسالة: '+error.message);return;}loadAdminMessages();}
-    </script>
-    <script>
+    function escapeAdminHTML(value) { return String(value ?? '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch])); }
+    async function setContactMessageStatus(id,status){const {error}=await supabaseClient.from('contact_messages').update({status}).eq('id',id);if(error){alert('تعذر تحديث حالة الرسالة: '+error.message);return;}loadAdminMessages();}
     // دالة جلب وعرض الرسائل الواردة في لوحة الإشراف
     async function loadAdminMessages() {
         const container = document.getElementById('messages-container');
@@ -255,23 +227,23 @@
             }
 
             let html = '<table style="width: 100%; border-collapse: collapse; text-align: right; font-size: 14px; min-width: 700px;">';
-            html += '<tr style="background: #f4ecdf; color: var(--primary-green); border-bottom: 2px solid #ddd;"><th style="padding: 10px;">التاريخ</th><th style="padding: 10px;">المرسل والهاتف</th><th style="padding: 10px;">الموضوع</th><th style="padding: 10px;">الرسالة</th><th style="padding: 10px;">الحالة</th><th style="padding: 10px;">إجراء</th></tr>';
+            html += '<tr style="background: #f4ecdf; color: var(--primary-green); border-bottom: 2px solid #ddd;"><th style="padding: 10px;">التاريخ</th><th style="padding: 10px;">المرسل والهاتف</th><th style="padding: 10px;">الموضوع</th><th style="padding: 10px;">الرسالة</th><th style="padding: 10px;">الحالة</th><th style="padding: 10px;">الإجراءات</th></tr>';
 
             data.forEach(msg => {
                 const date = new Date(msg.created_at).toLocaleDateString('ar-MA');
                 html += `<tr style="border-bottom: 1px solid #eee;">
                     <td style="padding: 10px; color: #555; white-space: nowrap;">${date}</td>
-                    <td style="padding: 10px;"><strong>${escapeHTML(msg.name)}</strong><br><small style="color:#777">${escapeHTML(msg.email || "بدون بريد")}</small><br><small style="color:#0077cc">${escapeHTML(msg.phone || 'بدون هاتف')}</small></td>
-                    <td style="padding: 10px;"><span style="background: #e6f4ea; color: #137333; padding: 3px 8px; border-radius: 4px; font-size: 12px; white-space: nowrap;">${escapeHTML(msg.topic)}</span></td>
-                    <td style="padding: 10px; max-width: 300px; word-break: break-word;">${escapeHTML(msg.message)}</td>
-                    <td style="padding: 10px; font-weight: bold; color: #b06000; white-space: nowrap;">${escapeHTML(msg.status || "جديدة")}</td><td style="padding:10px;white-space:nowrap"><button type="button" class="admin-small-btn" onclick="updateMessageStatus(${msg.id}, 'قيد المعالجة')">قيد المعالجة</button> <button type="button" class="admin-small-btn" onclick="updateMessageStatus(${msg.id}, 'تم الرد')">تم الرد</button> <button type="button" class="admin-delete-btn" onclick="deleteContactMessage(${msg.id})">حذف</button></td>
+                    <td style="padding: 10px;"><strong>${escapeAdminHTML(msg.name)}</strong><br><small style="color:#777">${escapeAdminHTML(msg.email || "—")}</small><br><small style="color:#0077cc">${escapeAdminHTML(msg.phone || 'بدون هاتف')}</small></td>
+                    <td style="padding: 10px;"><span style="background: #e6f4ea; color: #137333; padding: 3px 8px; border-radius: 4px; font-size: 12px; white-space: nowrap;">${escapeAdminHTML(msg.topic)}</span></td>
+                    <td style="padding: 10px; max-width: 300px; word-break: break-word;">${escapeAdminHTML(msg.message)}</td>
+                    <td style="padding: 10px; font-weight: bold; color: #b06000; white-space: nowrap;">${escapeAdminHTML(msg.status || "جديدة")}</td><td style="padding:10px;white-space:nowrap"><button onclick="setContactMessageStatus(${Number(msg.id)}, 'قيد المعالجة')">قيد المعالجة</button> <button onclick="setContactMessageStatus(${Number(msg.id)}, 'تم الرد')">تم الرد</button></td>
                 </tr>`;
             });
             html += '</table>';
             container.innerHTML = html;
         } catch (err) {
             console.error(err);
-            container.innerHTML = '<p style="color: red;">تعذر جلب الرسائل من قاعدة البيانات.</p>';
+            container.innerHTML = '<p style="color:red">تعذر جلب الرسائل. تحقق من وجود جدول contact_messages وصلاحيات SELECT/UPDATE في Supabase. التفاصيل: '+escapeAdminHTML(err.message)+'</p>'; 
         }
     }
 
