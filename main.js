@@ -3,12 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchGlobalMarketPrices();
     setInterval(fetchGlobalMarketPrices, 600000); // تحديث كل 10 دقائق
 
-    if (document.getElementById('admin-members-table')) { loadAdminData(); loadAdminActivities(); loadAdminTrainings(); loadAdminNews(); loadAdminLocalPrices(); loadAdminMemberComms(); }
+    if (document.getElementById('admin-members-table')) { loadAdminData(); loadAdminActivities(); loadAdminTrainings(); loadAdminNews(); loadAdminLocalPrices(); }
     if (document.getElementById('public-activities-grid')) loadPublicActivities();
     if (document.getElementById('public-trainings-grid')) loadPublicTrainings();
     if (document.getElementById('member-trainings-grid')) loadMemberTrainings();
     if (document.getElementById('public-news-grid')) loadPublicNews();
-    if (document.getElementById('user-dashboard-info')) { loadUserDashboard(); loadMemberMessages(); loadMemberAnnouncements(); }
+    if (document.getElementById('user-dashboard-info')) loadUserDashboard();
 });
 
 // دالة جلب أسعار السوق ومؤشرات البورصات الدولية والأسعار المحلية المسجلة يدوياً من الإدارة
@@ -17,13 +17,19 @@ async function fetchGlobalMarketPrices() {
     if (!tickerContainer) return;
 
     try {
+        // لا نعرض أسعاراً دولية ثابتة أو تقديرية. إلى حين إعداد نقطة API موثوقة
+        // تقرأ ملف المفوضية الأوروبية وتتحقق من تاريخ البيانات، نعرض رابط المصدر فقط.
         let marketData = [
-            "الأسعار الدولية: المرجع الرسمي هو لوحة المفوضية الأوروبية لأسعار زيت الزيتون (تحديثات دورية).",
-            "للاطلاع على أحدث الأرقام وتاريخها، افتح المصدر الرسمي من قسم الأسعار الدولية في لوحة الإدارة.",
-            "لا تُعرض أرقام دولية تقديرية أو غير موثقة."
+            "🌍 الأسعار الدولية: راجع البيانات الرسمية وتاريخ آخر تحديث لدى المفوضية الأوروبية",
+            "🔎 المجلس الدولي للزيتون: تقارير السوق والإحصاءات الرسمية"
         ];
+
         const { data: localPrices, error } = await supabaseClient.from('market_prices').select('*');
-        if (!error && localPrices?.length) localPrices.forEach(item => marketData.push(`أسعار محلية مدخلة من الإدارة: ${item.price_text} (ليست أسعاراً دولية)`));
+        if (!error && localPrices && localPrices.length > 0) {
+            localPrices.forEach(item => marketData.push(`🇲🇦 أسعار محلية مدخلة من الإدارة: ${item.price_text} (يرجى مراجعة تاريخ ومصدر الإدخال)`));
+        }
+        marketData.push("المصادر الرسمية: agriculture.ec.europa.eu و internationaloliveoil.org");
+
         // مساران متطابقان يضمنان حركة متصلة دون اختفاء النص عند نهاية الدورة
         const track = marketData.map(item => `<span>${escapeHTML(item)}</span>`).join(' <b class="ticker-separator">✦</b> ');
         tickerContainer.innerHTML = `<div class="ticker-track"><div class="ticker-group">${track}</div><div class="ticker-group" aria-hidden="true">${track}</div></div>`;
@@ -38,21 +44,23 @@ async function handleAdminLogin(e) {
     e.preventDefault();
     const email = document.getElementById('admin-user').value.trim();
     const password = document.getElementById('admin-pass').value;
-    const button = e.currentTarget.querySelector('button[type="submit"]');
-    if (button) { button.disabled = true; button.textContent = 'جارٍ التحقق من بيانات الدخول…'; }
+    const submit = e.submitter || document.querySelector('form button[type="submit"]');
+    if (submit) { submit.disabled = true; submit.dataset.originalText = submit.textContent; submit.textContent = 'جارٍ التحقق...'; }
     try {
+        if (typeof supabaseClient === 'undefined') throw new Error('تعذر الاتصال بخدمة تسجيل الدخول.');
         const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
         if (error) throw error;
         if (data.user?.app_metadata?.role !== 'admin') {
             await supabaseClient.auth.signOut();
-            throw new Error('الحساب صحيح لكنه غير مخوّل كمسؤول. يجب تعيين app_metadata.role = admin لهذا المستخدم في Supabase.');
+            throw new Error('الحساب غير مخوّل للإدارة. يجب تعيين app_metadata.role = admin لحساب المشرف.');
         }
         sessionStorage.setItem('isAdmin', 'true');
+        alert('تم التحقق من حساب الإدارة بنجاح.');
         window.location.href = 'admin-dashboard.html';
     } catch (err) {
-        alert('تعذر تسجيل الدخول: ' + (err.message || 'تحقق من البريد الإلكتروني وكلمة المرور وصلاحية المشرف.'));
+        alert('تعذر تسجيل الدخول: ' + (err.message || 'تحقق من البريد الإلكتروني وكلمة المرور.'));
     } finally {
-        if (button) { button.disabled = false; button.innerHTML = 'تسجيل الدخول الآمن'; }
+        if (submit) { submit.disabled = false; submit.textContent = submit.dataset.originalText || 'تسجيل الدخول'; }
     }
 }
 
@@ -83,14 +91,29 @@ async function handleUserLogin(e) {
     }
 }
 
-// 3. عرض لوحة تحكم المنخرط المهني
+// 3. عرض لوحة تحكم المنخرط
 async function loadUserDashboard() {
-    let member; try { member = JSON.parse(sessionStorage.getItem('currentMember') || 'null'); } catch (_) {}
-    if (!member) { window.location.href = 'register.html'; return; }
-    const set = (id, value) => { const el=document.getElementById(id); if(el) el.value=value || ''; };
-    set('update-name',member.name); set('update-mill',member.mill); set('update-phone',member.phone);
-    const infoBox=document.getElementById('user-dashboard-info');
-    if(infoBox) infoBox.innerHTML=`<div class="profile-hero"><div class="profile-avatar"><i class="fa-solid fa-user-tie"></i></div><div><span class="profile-kicker">أهلاً وسهلاً بك</span><h3>${escapeHTML(member.name||'المنخرط المهني')}</h3><p>${escapeHTML(member.mill||'اسم الوحدة غير محدد')}</p></div><span class="member-status-pill ${member.status==='مقبول'?'is-approved':member.status==='مرفوض'?'is-rejected':'is-pending'}">${escapeHTML(member.status||'قيد المعالجة')}</span></div><div class="profile-data-grid"><div><span>الاسم الكامل</span><strong>${escapeHTML(member.name||'—')}</strong></div><div><span>اسم الوحدة / المعصرة</span><strong>${escapeHTML(member.mill||'—')}</strong></div><div><span>رقم الهاتف</span><strong dir="ltr">${escapeHTML(member.phone||'—')}</strong></div><div><span>نوع الوحدة</span><strong>${escapeHTML(member.type||'غير محدد')}</strong></div><div><span>نوع العضوية</span><strong>${escapeHTML(member.member_type||'منخرط')}</strong></div><div><span>واجب الانخراط</span><strong>${escapeHTML(member.annual_fee||'غير محدد')}</strong></div><div><span>العنوان</span><strong>${escapeHTML(member.address||'—')}</strong></div><div><span>الترخيص</span><strong>${escapeHTML(member.license||'غير محدد')}</strong></div></div>`;
+    const member = JSON.parse(sessionStorage.getItem('currentMember'));
+    if (!member) { 
+        window.location.href = 'register.html'; 
+        return; 
+    }
+    ['update-name','name'].forEach(([id,key]) => { const el=document.getElementById(id); if(el) el.value=member[key] || ''; });
+    ['update-mill','mill'].forEach(([id,key]) => { const el=document.getElementById(id); if(el) el.value=member[key] || ''; });
+    ['update-phone','phone'].forEach(([id,key]) => { const el=document.getElementById(id); if(el) el.value=member[key] || ''; });
+    const infoBox = document.getElementById('user-dashboard-info');
+    if (infoBox) {
+        infoBox.innerHTML = `
+            <div style="background:white; padding:20px; border-radius:10px; box-shadow:var(--shadow);">
+                <h3 style="color:var(--primary-green); margin-bottom:10px;">مرحباً بك، ${member.name}</h3>
+                <p><strong>المعصرة:</strong> ${member.mill}</p>
+                <p><strong>رقم الهاتف:</strong> ${member.phone}</p>
+                <p><strong>نوع الانخراط:</strong> ${member.type}</p>
+                <p><strong>حالة الانخراط:</strong> ${member.status}</p>
+                <p><strong>الانخراط السنوي:</strong> ${member.annual_fee}</p>
+            </div>
+        `;
+    }
 }
 
 // 4. طلب انخراط جديد
@@ -105,7 +128,7 @@ async function handleMembership(e) {
     const username = 'user_' + Math.floor(Math.random() * 9000 + 1000);
     const password = 'pass' + Math.floor(Math.random() * 9000 + 1000);
 
-    const { error } = await supabaseClient.from('members').insert([{ name, mill, phone, address, type, license, member_type: 'جديد', annual_fee: 'غير مؤدى', status: 'قيد المعالجة', username, password }]);
+    const { error } = await supabaseClient.from('members').insert([{ name, mill, phone, address, type, license, member_type: 'جديد', annual_fee: 'غير مؤدى', status: 'معالجة', username, password }]);
     if (error) alert('خطأ: ' + error.message);
     else { alert('تم إرسال طلب انخراطكم بنجاح.'); e.target.reset(); window.location.href = 'index.html'; }
 }
@@ -166,52 +189,16 @@ async function loadPublicTrainings() {
 
 // 10. إدارة لوحة المشرف وجلب المنخرطين
 async function loadAdminData() {
+    const { data: members } = await supabaseClient.from('members').select('*').order('id', { ascending: false });
     const table = document.getElementById('admin-members-table');
-    if (!table) return;
-    table.innerHTML = '<tr><td colspan="7">جارٍ تحميل طلبات الانخراط والمنخرطين…</td></tr>';
-    const { data: members, error } = await supabaseClient.from('members').select('*').order('id', { ascending: false });
-    if (error) { table.innerHTML = `<tr><td colspan="7" style="color:#b42318">تعذر تحميل البيانات: ${escapeHTML(error.message)}. تحقق من صلاحيات SELECT في Supabase.</td></tr>`; return; }
-    if (!members || !members.length) { table.innerHTML = '<tr><td colspan="7">لا توجد طلبات أو عضويات مسجلة حالياً.</td></tr>'; return; }
-    table.innerHTML = members.map(m => {
-        const status = m.status || 'قيد المعالجة';
-        const badgeClass = status === 'مقبول' ? 'badge-success' : status === 'مرفوض' ? 'badge-danger' : 'badge-pending';
-        const phone = String(m.phone || '').replace(/[^\d+]/g, '');
-        const waBtn = status === 'مقبول' && phone ? `<a href="https://wa.me/${encodeURIComponent(phone)}" target="_blank" rel="noopener" class="admin-wa-link"><i class="fa-brands fa-whatsapp"></i> تواصل</a>` : '';
-        return `<tr style="border-bottom:1px solid #eee;">
-          <td style="padding:10px"><strong>${escapeHTML(m.name || m.full_name || '—')}</strong><br><small>${escapeHTML(m.member_type || '—')}</small></td>
-          <td style="padding:10px">${escapeHTML(m.mill || m.mill_name || '—')}</td>
-          <td style="padding:10px;direction:ltr">${escapeHTML(m.phone || '—')}</td>
-          <td style="padding:10px"><select aria-label="واجب الانخراط" onchange="updateMemberField(${Number(m.id)},'annual_fee',this.value)"><option value="مؤدى" ${m.annual_fee==='مؤدى'?'selected':''}>مؤدى</option><option value="غير مؤدى" ${m.annual_fee!=='مؤدى'?'selected':''}>غير مؤدى</option></select></td>
-          <td style="padding:10px"><span class="badge ${badgeClass}">${escapeHTML(status)}</span>${waBtn}</td>
-          <td style="padding:10px;min-width:260px"><div class="member-status-actions"><button type="button" class="status-processing" onclick="setMemberStatus(${Number(m.id)},'قيد المعالجة')">قيد المعالجة</button><button type="button" class="status-approve" onclick="setMemberStatus(${Number(m.id)},'مقبول')">قبول</button><button type="button" class="status-reject" onclick="setMemberStatus(${Number(m.id)},'مرفوض')">رفض</button><button type="button" class="admin-small-btn" onclick="editMemberRecord(${Number(m.id)})">تعديل</button></div></td>
-          <td style="padding:10px"><button type="button" class="btn-danger" onclick="deleteRecord('members',${Number(m.id)})">حذف</button></td>
-        </tr>`;
-    }).join('');
-}
-
-async function setMemberStatus(id, status) {
-    if (!['قيد المعالجة','معالجة','مقبول','مرفوض'].includes(status)) return;
-    const { error } = await supabaseClient.from('members').update({ status }).eq('id', id);
-    if (error) { alert('تعذر تحديث حالة طلب الانخراط: ' + error.message); return; }
-    await loadAdminData();
-}
-
-async function editMemberRecord(id) {
- const {data:m,error}=await supabaseClient.from('members').select('*').eq('id',id).single();
- if(error||!m){alert('تعذر جلب بيانات المنخرط: '+(error?.message||''));return;}
- let modal=document.getElementById('member-edit-modal'); if(modal) modal.remove();
- modal=document.createElement('div'); modal.id='member-edit-modal'; modal.className='admin-modal-backdrop';
- const fields=[['name','الاسم الكامل','text'],['mill','اسم المعصرة','text'],['phone','رقم الهاتف','tel'],['address','العنوان','text'],['type','نوع المعصرة','text'],['license','رقم/حالة الترخيص','text'],['username','اسم المستخدم','text'],['status','حالة الانخراط','text'],['member_type','نوع العضوية','text'],['annual_fee','واجب الانخراط','text']];
- modal.innerHTML=`<section class="admin-edit-modal" role="dialog" aria-modal="true" aria-labelledby="member-edit-title"><header><h3 id="member-edit-title">تعديل بيانات المنخرط</h3><button type="button" class="modal-close" aria-label="إغلاق">×</button></header><form id="member-edit-form"><div class="edit-fields">${fields.filter(([k])=>k in m || ['name','mill','phone','status','annual_fee'].includes(k)).map(([k,label,type])=>`<label>${label}<input name="${k}" type="${type}" value="${escapeHTML(m[k] ?? '')}" /></label>`).join('')}</div><footer><button type="button" class="modal-cancel">إلغاء</button><button type="submit" class="modal-save">حفظ التعديلات</button></footer></form></section>`;
- document.body.appendChild(modal); const close=()=>modal.remove(); modal.querySelector('.modal-close').onclick=close; modal.querySelector('.modal-cancel').onclick=close; modal.addEventListener('click',e=>{if(e.target===modal)close()});
- modal.querySelector('form').onsubmit=async e=>{e.preventDefault();const fd=new FormData(e.currentTarget);const updates={};for(const [k,v] of fd.entries())updates[k]=String(v).trim();const btn=e.currentTarget.querySelector('[type=submit]');btn.disabled=true;btn.textContent='جارٍ الحفظ…';const {error:saveError}=await supabaseClient.from('members').update(updates).eq('id',id);if(saveError){alert('تعذر حفظ التعديلات: '+saveError.message);btn.disabled=false;btn.textContent='حفظ التعديلات';return;}close();await loadAdminData();alert('تم تحديث بيانات المنخرط بنجاح.');};
-}
-
-async function handleAddOldMember(e) {
- e.preventDefault(); const name=document.getElementById('old-name').value.trim(), mill=document.getElementById('old-mill').value.trim(), phone=document.getElementById('old-phone').value.trim(), type=document.getElementById('old-type').value, annual_fee=document.getElementById('old-fee').value;
- if(!name||!mill||!phone){alert('يرجى تعبئة الاسم واسم المعصرة والهاتف.');return;}
- const username='member_'+phone.replace(/\D/g,'').slice(-8); const payload={name,mill,phone,type,annual_fee,status:'مقبول',member_type:'قديم',username};
- const {error}=await supabaseClient.from('members').insert([payload]); if(error){alert('تعذرت إضافة المنخرط القديم: '+error.message);return;} e.target.reset(); await loadAdminData(); alert('تمت إضافة المنخرط القديم وظهر في الجدول.');
+    if (!members || !table) return;
+    let html = '';
+    members.forEach(m => {
+        let badgeClass = m.status === 'مقبول' ? 'badge-success' : 'badge-danger';
+        let waBtn = m.status === 'مقبول' ? `<a href="https://wa.me/${m.phone}?text=مرحباً%20${m.name}،%20تم تفعيل حسابكم بجمعية نماء العطاوية. المستخدم: ${m.username} | الرمز: ${m.password}" target="_blank" style="background:#25d366; color:white; padding:3px 6px; border-radius:4px; text-decoration:none; font-size:0.7rem; display:inline-block; margin-top:3px;"><i class="fa-brands fa-whatsapp"></i> واتساب</a>` : '';
+        html += `<tr style="border-bottom:1px solid #eee;"><td style="padding:10px;"><strong>${m.name}</strong></td><td style="padding:10px;">${m.mill}</td><td style="padding:10px; direction:ltr;">${m.phone}</td><td style="padding:10px;"><select onchange="updateMemberField(${m.id}, 'annual_fee', this.value)" style="padding:2px;"><option value="مؤدى" ${m.annual_fee==='مؤدى'?'selected':''}>مؤدى</option><option value="غير مؤدى" ${m.annual_fee==='غير مؤدى'?'selected':''}>غير مؤدى</option></select></td><td style="padding:10px;"><span class="badge ${badgeClass}">${m.status}</span><br>${waBtn}</td><td style="padding:10px;"><button class="btn-danger" onclick="deleteRecord('members', ${m.id})">حذف</button></td></tr>`;
+    });
+    table.innerHTML = html;
 }
 
 async function updateMemberField(id, field, val) {
@@ -280,11 +267,9 @@ async function handleUpdateMemberProfile(e) {
     } else {
         alert('تم تحديث بياناتكم بنجاح!');
         // تحديث الجلسة
-        Object.assign(member, {name, mill, phone});
+        Object.assign(member, updateData);
         sessionStorage.setItem('currentMember', JSON.stringify(member));
-        await loadUserDashboard();
-        const passEl=document.getElementById('update-pass'); if(passEl) passEl.value='';
-        alert('تم تحديث بياناتكم بنجاح.');
+        location.reload();
     }
 }
 // أدوات مشتركة: حماية النصوص وإدارة الوسائط
@@ -326,26 +311,19 @@ async function loadAdminActivities() {
  const table=document.getElementById('admin-activities-table'); if(!table)return;
  const {data,error}=await supabaseClient.from('activities').select('*').order('id',{ascending:false});
  if(error){table.innerHTML='<tr><td colspan="5">تعذر تحميل الأنشطة.</td></tr>';return;}
- table.innerHTML=(data||[]).map(a=>`<tr><td>${escapeHTML(a.title)}</td><td>${escapeHTML(a.date)}</td><td>${escapeHTML(a.type)}</td><td>${a.image_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(a.image_url)+'">صورة</a> ':''}${a.video_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(a.video_url)+'">فيديو</a>':''}</td><td><button onclick="editContentRecord('activities',${a.id})">تعديل</button> <button class="btn-danger" onclick="deleteContentRecord('activities',${a.id})">حذف</button></td></tr>`).join('');
+ table.innerHTML=(data||[]).map(a=>`<tr><td>${escapeHTML(a.title)}</td><td>${escapeHTML(a.date)}</td><td>${escapeHTML(a.type)}</td><td>${a.image_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(a.image_url)+'">صورة</a> ':''}${a.video_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(a.video_url)+'">فيديو</a>':''}</td><td><button class="btn-danger" onclick="deleteContentRecord('activities',${a.id})">حذف</button></td></tr>`).join('');
 }
 async function loadAdminTrainings() {
  const table=document.getElementById('admin-trainings-table'); if(!table)return;
  const {data,error}=await supabaseClient.from('trainings').select('*').order('id',{ascending:false});
  if(error){table.innerHTML='<tr><td colspan="5">تعذر تحميل التكوينات.</td></tr>';return;}
- table.innerHTML=(data||[]).map(t=>`<tr><td>${escapeHTML(t.title)}</td><td>${escapeHTML(t.trainer)}</td><td>${escapeHTML(t.date)}</td><td>${t.image_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(t.image_url)+'">صورة</a> ':''}${t.video_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(t.video_url)+'">فيديو</a>':''}</td><td><button onclick="editContentRecord('trainings',${t.id})">تعديل</button> <button class="btn-danger" onclick="deleteContentRecord('trainings',${t.id})">حذف</button></td></tr>`).join('');
+ table.innerHTML=(data||[]).map(t=>`<tr><td>${escapeHTML(t.title)}</td><td>${escapeHTML(t.trainer)}</td><td>${escapeHTML(t.date)}</td><td>${t.image_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(t.image_url)+'">صورة</a> ':''}${t.video_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(t.video_url)+'">فيديو</a>':''}</td><td><button class="btn-danger" onclick="deleteContentRecord('trainings',${t.id})">حذف</button></td></tr>`).join('');
 }
 async function loadAdminNews() {
  const table=document.getElementById('admin-news-table'); if(!table)return;
  const {data,error}=await supabaseClient.from('news').select('*').order('id',{ascending:false});
  if(error){table.innerHTML='<tr><td colspan="5">تعذر تحميل الأخبار.</td></tr>';return;}
- table.innerHTML=(data||[]).map(n=>`<tr><td>${escapeHTML(n.title)}</td><td>${escapeHTML(n.category)}</td><td>${escapeHTML(n.date)}</td><td>${n.image_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(n.image_url)+'">صورة</a> ':''}${n.document_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(n.document_url)+'">وثيقة</a>':''}</td><td><button onclick="editContentRecord('news',${n.id})">تعديل</button> <button class="btn-danger" onclick="deleteContentRecord('news',${n.id})">حذف</button></td></tr>`).join('');
-}
-async function editContentRecord(table,id) {
- const fields={activities:[['title','العنوان'],['date','التاريخ'],['type','النوع'],['description','التفاصيل'],['image_url','رابط الصورة'],['video_url','رابط الفيديو']],trainings:[['title','العنوان'],['date','التاريخ'],['trainer','المؤطر'],['target','الفئة المستهدفة'],['description','المحتوى'],['image_url','رابط الصورة'],['video_url','رابط الفيديو']],news:[['title','العنوان'],['category','التصنيف'],['date','التاريخ'],['content','مضمون الخبر'],['image_url','رابط الصورة'],['document_url','رابط الوثيقة']]};
- const {data,error}=await supabaseClient.from(table).select('*').eq('id',id).single();if(error||!data){alert('تعذر جلب المنشور للتعديل: '+(error?.message||''));return;}
- const updates={};for(const [key,label] of (fields[table]||[])){if(!(key in data))continue;const value=prompt('تعديل '+label+' (إلغاء يوقف العملية):',data[key]??'');if(value===null)return;updates[key]=value.trim();}
- const {error:saveError}=await supabaseClient.from(table).update(updates).eq('id',id);if(saveError){alert('تعذر حفظ التعديلات: '+saveError.message);return;}alert('تم حفظ التعديلات.');
- if(table==='activities'){await loadAdminActivities();await loadPublicActivities();}if(table==='trainings'){await loadAdminTrainings();await loadPublicTrainings();await loadMemberTrainings();}if(table==='news'){await loadAdminNews();await loadPublicNews();}
+ table.innerHTML=(data||[]).map(n=>`<tr><td>${escapeHTML(n.title)}</td><td>${escapeHTML(n.category)}</td><td>${escapeHTML(n.date)}</td><td>${n.image_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(n.image_url)+'">صورة</a> ':''}${n.document_url?'<a target="_blank" rel="noopener" href="'+escapeHTML(n.document_url)+'">وثيقة</a>':''}</td><td><button class="btn-danger" onclick="deleteContentRecord('news',${n.id})">حذف</button></td></tr>`).join('');
 }
 async function deleteContentRecord(table,id) { if(!confirm('هل تريد حذف هذا المحتوى نهائياً؟'))return; const {error}=await supabaseClient.from(table).delete().eq('id',id); if(error){alert('تعذر الحذف: '+error.message);return;} if(table==='activities'){loadAdminActivities();loadPublicActivities();} if(table==='trainings'){loadAdminTrainings();loadPublicTrainings();loadMemberTrainings();} if(table==='news'){loadAdminNews();loadPublicNews();} }
 
@@ -414,57 +392,3 @@ function initResponsiveNavigation() {
   });
 }
 document.addEventListener('DOMContentLoaded', initResponsiveNavigation);
-
-
-// مراسلات المنخرط مع الإدارة والإعلانات الموجهة للمنخرطين
-async function submitMemberMessage(e) {
-  e.preventDefault();
-  let member; try { member=JSON.parse(sessionStorage.getItem('currentMember')||'null'); } catch(_) {}
-  if(!member){alert('يرجى تسجيل الدخول من جديد.');return;}
-  const message=document.getElementById('member-message-body')?.value.trim();
-  const topic=document.getElementById('member-message-topic')?.value||'استفسار عام';
-  if(!message||message.length<5){alert('يرجى كتابة رسالة واضحة.');return;}
-  const btn=e.currentTarget.querySelector('[type=submit]'); if(btn){btn.disabled=true;btn.innerHTML='جارٍ الإرسال…';}
-  try {
-    const row={member_id:member.id, member_name:member.name||'', mill_name:member.mill||'', phone:member.phone||'', topic, message, status:'جديدة'};
-    const {error}=await supabaseClient.from('member_messages').insert([row]);
-    if(error) throw error;
-    e.currentTarget.reset(); alert('تم إرسال رسالتك إلى الإدارة بنجاح.'); await loadMemberMessages();
-  } catch(err){alert('تعذر إرسال الرسالة. تحقق من تنفيذ ملف MIGRATION-MEMBER-PORTAL.sql وصلاحيات Supabase. '+(err.message||''));}
-  finally {if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> إرسال إلى الإدارة';}}
-}
-async function loadMemberMessages(){
- const box=document.getElementById('member-messages-list'); if(!box)return;
- let member;try{member=JSON.parse(sessionStorage.getItem('currentMember')||'null')}catch(_){}
- if(!member){box.innerHTML='<p class="empty-state">يرجى تسجيل الدخول لعرض المراسلات.</p>';return;}
- box.innerHTML='<p class="loading-state">جارٍ تحميل المراسلات...</p>';
- try{const {data,error}=await supabaseClient.from('member_messages').select('*').eq('member_id',member.id).order('created_at',{ascending:false});if(error)throw error;
- if(!data?.length){box.innerHTML='<p class="empty-state">لا توجد مراسلات بعد. يمكنك إرسال أول رسالة إلى الإدارة من النموذج أعلاه.</p>';return;}
- box.innerHTML=data.map(m=>`<article class="member-message-card"><div class="message-card-head"><strong>${escapeHTML(m.topic||'مراسلة')}</strong><span>${escapeHTML(m.status||'جديدة')}</span></div><p>${escapeHTML(m.message||'')}</p>${m.admin_reply?`<div class="admin-reply"><strong><i class="fa-solid fa-reply"></i> رد الإدارة</strong><p>${escapeHTML(m.admin_reply)}</p></div>`:''}<small>${escapeHTML(m.created_at?new Date(m.created_at).toLocaleString('ar-MA'):'')}</small></article>`).join('');
- }catch(err){box.innerHTML='<p class="empty-state">تعذر تحميل المراسلات. تحقق من صلاحيات الجدول member_messages في Supabase.</p>';}
-}
-async function loadMemberAnnouncements(){
- const box=document.getElementById('member-announcements-list');if(!box)return;
- let member;try{member=JSON.parse(sessionStorage.getItem('currentMember')||'null')}catch(_){}
- if(!member){box.innerHTML='<p class="empty-state">يرجى تسجيل الدخول لعرض الإعلانات.</p>';return;}
- box.innerHTML='<p class="loading-state">جارٍ تحميل الإعلانات...</p>';
- try{const {data,error}=await supabaseClient.from('member_announcements').select('*').order('created_at',{ascending:false});if(error)throw error;
- const visible=(data||[]).filter(a=>a.audience==='all'||String(a.member_id)===String(member.id));
- if(!visible.length){box.innerHTML='<p class="empty-state">لا توجد إعلانات جديدة حالياً.</p>';return;}
- box.innerHTML=visible.map(a=>`<article class="member-announcement-card"><div class="announcement-icon"><i class="fa-solid fa-bullhorn"></i></div><div class="announcement-content"><div class="announcement-meta"><span>${a.audience==='all'?'إعلان عام للمنخرطين':'إعلان خاص'}</span><small>${escapeHTML(a.created_at?new Date(a.created_at).toLocaleDateString('ar-MA'):'')}</small></div><h4>${escapeHTML(a.title||'إعلان الإدارة')}</h4><p>${escapeHTML(a.body||'').replace(/\n/g,'<br>')}</p></div></article>`).join('');
- }catch(err){box.innerHTML='<p class="empty-state">تعذر تحميل الإعلانات. يرجى التأكد من إنشاء جدول member_announcements وتنفيذ ملف التهيئة.</p>';}
-}
-
-
-// مركز التواصل الإداري: إعلانات جماعية/فردية والرد على رسائل المنخرطين
-function toggleAnnouncementMember(){const audience=document.getElementById('admin-announcement-audience')?.value;const field=document.getElementById('announcement-member-field');if(field)field.style.display=audience==='member'?'grid':'none';}
-async function loadAdminMemberComms(){
- const memberSelect=document.getElementById('admin-announcement-member');
- const inbox=document.getElementById('admin-member-messages-list'); const history=document.getElementById('admin-announcements-list');
- if(memberSelect){const {data,error}=await supabaseClient.from('members').select('id,name,mill,phone').order('name');if(error){memberSelect.innerHTML='<option value="">تعذر تحميل المنخرطين</option>';}else{memberSelect.innerHTML='<option value="">اختر المنخرط</option>'+(data||[]).map(m=>`<option value="${Number(m.id)}">${escapeHTML(m.name||'بدون اسم')} — ${escapeHTML(m.mill||'')} (${escapeHTML(m.phone||'')})</option>`).join('');}}
- if(inbox){inbox.innerHTML='<p class="loading-state">جارٍ تحميل الرسائل...</p>';try{const {data,error}=await supabaseClient.from('member_messages').select('*').order('created_at',{ascending:false}).limit(100);if(error)throw error;if(!data?.length){inbox.innerHTML='<p class="empty-state">لا توجد رسائل واردة.</p>';}else{inbox.innerHTML='<div class="admin-comms-list">'+data.map(m=>`<article class="admin-comms-card"><div class="message-card-head"><strong>${escapeHTML(m.topic||'رسالة')}</strong><span>${escapeHTML(m.status||'جديدة')}</span></div><p><b>${escapeHTML(m.member_name||'منخرط')}</b> — ${escapeHTML(m.mill_name||'')} ${m.phone?'· '+escapeHTML(m.phone):''}</p><p>${escapeHTML(m.message||'')}</p>${m.admin_reply?`<div class="admin-reply"><b>الرد السابق:</b><p>${escapeHTML(m.admin_reply)}</p></div>`:''}<form onsubmit="replyToMemberMessage(event,${Number(m.id)})" class="reply-form"><textarea name="admin_reply" rows="3" required placeholder="اكتب الرد أو التوجيه للمنخرط">${escapeHTML(m.admin_reply||'')}</textarea><select name="status"><option ${m.status==='جديدة'?'selected':''}>جديدة</option><option ${m.status==='قيد المعالجة'?'selected':''}>قيد المعالجة</option><option ${m.status==='تم الرد'?'selected':''}>تم الرد</option></select><button type="submit" class="member-primary-btn">حفظ الرد</button></form><small>${escapeHTML(m.created_at?new Date(m.created_at).toLocaleString('ar-MA'):'')}</small></article>`).join('')+'</div>';}}catch(err){inbox.innerHTML='<p class="empty-state">تعذر تحميل رسائل المنخرطين. نفّذ MIGRATION-MEMBER-PORTAL.sql وتحقق من صلاحيات المشرف.</p>';}}
- if(history){history.innerHTML='<p class="loading-state">جارٍ تحميل سجل الإعلانات...</p>';try{const {data,error}=await supabaseClient.from('member_announcements').select('*').order('created_at',{ascending:false}).limit(100);if(error)throw error;if(!data?.length){history.innerHTML='<p class="empty-state">لم يتم نشر إعلانات بعد.</p>';}else{history.innerHTML='<div class="admin-comms-list">'+data.map(a=>`<article class="admin-comms-card"><div class="message-card-head"><strong>${escapeHTML(a.title||'إعلان')}</strong><span>${a.audience==='all'?'جماعي':'فردي'}</span></div><p>${escapeHTML(a.body||'')}</p><small>${escapeHTML(a.created_at?new Date(a.created_at).toLocaleString('ar-MA'):'')}</small><button type="button" class="btn-danger" onclick="deleteMemberAnnouncement(${Number(a.id)})">حذف الإعلان</button></article>`).join('')+'</div>';}}catch(err){history.innerHTML='<p class="empty-state">تعذر تحميل سجل الإعلانات. تحقق من إعداد الجدول وصلاحيات المشرف.</p>';}}
-}
-async function sendMemberAnnouncement(e){e.preventDefault();const audience=document.getElementById('admin-announcement-audience').value;const memberId=document.getElementById('admin-announcement-member').value;const title=document.getElementById('admin-announcement-title').value.trim();const body=document.getElementById('admin-announcement-body').value.trim();if(audience==='member'&&!memberId){alert('اختر المنخرط المستهدف أولاً.');return;}const btn=e.currentTarget.querySelector('[type=submit]');btn.disabled=true;try{const row={audience,member_id:audience==='member'?Number(memberId):null,title,body};const {error}=await supabaseClient.from('member_announcements').insert([row]);if(error)throw error;e.currentTarget.reset();toggleAnnouncementMember();alert('تم حفظ الإعلان وإرساله داخل فضاء المنخرطين.');await loadAdminMemberComms();}catch(err){alert('تعذر نشر الإعلان: '+(err.message||'تحقق من ملف MIGRATION-MEMBER-PORTAL.sql وصلاحيات الإدارة.'));}finally{btn.disabled=false;}}
-async function replyToMemberMessage(e,id){e.preventDefault();const fd=new FormData(e.currentTarget);const admin_reply=String(fd.get('admin_reply')||'').trim();const status=String(fd.get('status')||'تم الرد');const {error}=await supabaseClient.from('member_messages').update({admin_reply,status,replied_at:new Date().toISOString()}).eq('id',id);if(error){alert('تعذر حفظ الرد: '+error.message);return;}alert('تم حفظ رد الإدارة.');await loadAdminMemberComms();}
-async function deleteMemberAnnouncement(id){if(!confirm('هل تريد حذف هذا الإعلان؟'))return;const {error}=await supabaseClient.from('member_announcements').delete().eq('id',id);if(error){alert('تعذر حذف الإعلان: '+error.message);return;}await loadAdminMemberComms();}

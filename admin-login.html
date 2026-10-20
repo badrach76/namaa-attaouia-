@@ -70,8 +70,8 @@
             </div>
             <form onsubmit="handleAdminLogin(event)">
                 <div class="form-group">
-                    <label>اسم المستخدم الإداري:</label>
-                    <input type="text" id="admin-user" required placeholder="أدخل اسم المستخدم" style="direction: ltr; text-align: right;">
+                    <label>البريد الإلكتروني لحساب المشرف في Supabase:</label>
+                    <input type="email" id="admin-user" required placeholder="admin@example.com" style="direction: ltr; text-align: right;">
                 </div>
                 <div class="form-group">
                     <label>كلمة المرور السرية:</label>
@@ -80,7 +80,7 @@
                 <button type="submit" class="submit-btn" style="background-color: var(--accent-gold);">تسجيل الدخول الآمن</button>
             </form>
             <div style="margin-top: 15px; text-align: center; font-size: 0.85rem; color: #666;">
-                <p>بيانات تجريبية للاختبار: اسم المستخدم <code>admin_namaa</code> | كلمة المرور <code>Olive2026@Attaouia</code></p>
+                <p>يلزم إنشاء حساب في Supabase Auth ومنحه app_metadata.role = admin قبل تسجيل الدخول.</p>
             </div>
         </div>
     </div>
