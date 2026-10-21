@@ -378,7 +378,6 @@ button,a,input,select,textarea { -webkit-tap-highlight-color:transparent; }
 .contact-visual { width:100%; display:block; margin-top:22px; border-radius:14px; aspect-ratio:16/9; object-fit:cover; }
 @media(max-width:760px){.contact-grid{grid-template-columns:1fr}.contact-card{padding:20px}.contact-page .about-hero{padding:28px 20px}}
 
-
 /* فضاء المنخرط المهني: تصميم موحد واحترافي ومتجاوب */
 .member-portal-page { background:linear-gradient(180deg,#f5f8f4 0%,#fbfaf6 100%) !important; color:#243b31; }
 .member-portal-container { max-width:1080px !important; padding-bottom:38px !important; }
@@ -426,3 +425,29 @@ button,a,input,select,textarea { -webkit-tap-highlight-color:transparent; }
  .admin-action-box form[style*="display: flex"] { display:grid !important; grid-template-columns:1fr !important; }
  .admin-action-box form[style*="display: flex"] input,.admin-action-box form[style*="display: flex"] button { width:100%; }
 }
+
+/* صفحات فضاء المنخرط المستقلة والمتناسقة */
+.member-logout,.member-back-link{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid #dce7df;border-radius:12px;background:#fff;color:var(--primary-green);padding:11px 15px;text-decoration:none;font:inherit;font-weight:800;cursor:pointer}.member-back-link{margin:0 0 18px}.member-greeting{font-weight:700;color:#426657;background:#fff;border:1px solid #e3ebe3;border-radius:12px;padding:13px 15px;margin-top:16px}.member-quick-link>i:last-child{margin-right:auto;color:#a78648}.member-announcement{padding:18px 0;border-bottom:1px solid #e8eee7}.member-announcement:last-child{border-bottom:0}.member-announcement h4{color:var(--primary-green);margin:0 0 8px}.member-announcement p{line-height:1.9;white-space:normal}.member-announcement small{color:#77847b}.member-edit-card textarea{width:100%;box-sizing:border-box;min-height:130px;border:1px solid #dbe4dc;border-radius:11px;padding:12px;font:inherit;background:#fbfcfa}.member-edit-card select{width:100%;box-sizing:border-box;min-height:46px;border:1px solid #dbe4dc;border-radius:11px;padding:11px;font:inherit;background:#fbfcfa}.member-portal-page .navbar{gap:12px}.member-portal-page .logo-text h1{font-size:clamp(1rem,2.6vw,1.45rem)}@media(max-width:640px){.member-portal-page .navbar{align-items:center}.member-portal-page .logo-text span{font-size:.72rem}.member-logout{font-size:.8rem;padding:9px}.member-back-link{width:100%;box-sizing:border-box}}
+
+#admin-members-table select{max-width:150px;padding:7px;border:1px solid #dce4dc;border-radius:8px;background:#fff;font:inherit}.wa-action{display:block;background:#25d366;color:#fff;border:0;border-radius:8px;padding:7px 9px;margin-top:7px;cursor:pointer;font:inherit;font-size:.8rem;white-space:nowrap}.admin-action-box table td{vertical-align:top}.member-portal-card #user-dashboard-info p{padding:9px 0;border-bottom:1px solid #eef1ec;line-height:1.7}.member-portal-card #user-dashboard-info h3{color:var(--primary-green)}
+
+/* فهرس مواد التكوين وصفحة المادة المستقلة */
+.member-training-grid, #member-trainings-grid, #public-trainings-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:22px; align-items:stretch; }
+.training-index-card { display:flex; flex-direction:column; min-width:0; height:100%; background:#fff; border:1px solid #e4eae5; border-radius:20px; overflow:hidden; box-shadow:0 8px 26px rgba(27,77,62,.07); transition:transform .2s ease,box-shadow .2s ease; }
+.training-index-card:hover { transform:translateY(-4px); box-shadow:0 14px 32px rgba(27,77,62,.13); }
+.training-index-card .training-cover { width:100%; height:190px; object-fit:cover; }
+.training-cover-placeholder { height:150px; display:grid; place-items:center; background:linear-gradient(135deg,#edf4ef,#f8f2e6); color:var(--primary-green); font-size:2.6rem; }
+.training-index-card .training-card-body { display:flex; flex:1; flex-direction:column; align-items:stretch; gap:10px; }
+.training-index-card h4 { line-height:1.7; margin:0; overflow-wrap:anywhere; }
+.training-index-description { color:#58675f; font-size:.92rem; line-height:1.9; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.training-open-link { display:flex; justify-content:center; align-items:center; gap:9px; margin-top:auto; padding:12px 16px; border-radius:12px; background:var(--primary-green,#1b4d3e); color:#fff!important; font-weight:800; text-decoration:none!important; transition:background .2s ease,transform .2s ease; }
+.training-open-link:hover { background:#123b2f; transform:translateY(-1px); }
+.training-material-container { max-width:1000px; }
+.training-material-content { margin:22px 0 36px; }
+.training-detail-card { overflow:hidden; border:1px solid #e2e9e3; border-top:5px solid var(--accent-gold,#c5a059); border-radius:22px; background:#fff; box-shadow:0 12px 34px rgba(27,77,62,.09); }
+.training-detail-cover { display:block; width:100%; max-height:420px; object-fit:cover; }
+.training-detail-body { padding:clamp(18px,4vw,36px); }
+.training-detail-body h2 { color:var(--primary-green,#1b4d3e); font-size:clamp(1.35rem,4vw,2rem); line-height:1.6; margin:8px 0 16px; overflow-wrap:anywhere; }
+.training-detail-body .training-description { margin-top:18px; font-size:1rem; line-height:2; white-space:normal; }
+.training-detail-body .training-media a { min-height:46px; }
+@media(max-width:600px) { .training-index-card .training-cover { height:165px; } .training-index-card .training-card-body { padding:17px; } .training-meta { gap:8px 12px; } .training-detail-body { padding:18px; } }

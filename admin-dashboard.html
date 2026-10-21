@@ -212,11 +212,20 @@
     </footer>
     <script src="main.js"></script>
     <script>
+    function sendMessageReplyWhatsApp(phone, reply) {
+        const text = String(reply || '').trim();
+        if (!text) { alert('اكتب الرد قبل فتح واتساب.'); return; }
+        let n = String(phone || '').replace(/\D/g, '');
+        if (n.startsWith('00')) n = n.slice(2);
+        if (n.startsWith('0')) n = '212' + n.slice(1);
+        if (!n) { alert('رقم الهاتف غير صالح.'); return; }
+        window.open('https://wa.me/' + n + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
+    }
     // دالة جلب وعرض الرسائل الواردة في لوحة الإشراف
     async function loadAdminMessages() {
         const container = document.getElementById('messages-container');
         try {
-            const { data, error } = await _supabase.from('contact_messages').select('*').order('created_at', { ascending: false });
+            const { data, error } = await supabaseClient.from('contact_messages').select('*').order('created_at', { ascending: false });
             if (error) throw error;
 
             if (!data || data.length === 0) {
@@ -225,16 +234,20 @@
             }
 
             let html = '<table style="width: 100%; border-collapse: collapse; text-align: right; font-size: 14px; min-width: 700px;">';
-            html += '<tr style="background: #f4ecdf; color: var(--primary-green); border-bottom: 2px solid #ddd;"><th style="padding: 10px;">التاريخ</th><th style="padding: 10px;">المرسل والهاتف</th><th style="padding: 10px;">الموضوع</th><th style="padding: 10px;">الرسالة</th><th style="padding: 10px;">الحالة</th></tr>';
+            html += '<tr style="background: #f4ecdf; color: var(--primary-green); border-bottom: 2px solid #ddd;"><th style="padding: 10px;">التاريخ</th><th style="padding: 10px;">المرسل والهاتف</th><th style="padding: 10px;">الموضوع</th><th style="padding: 10px;">الرسالة</th><th style="padding: 10px;">الرد عبر واتساب</th><th style="padding: 10px;">الحالة</th></tr>';
 
             data.forEach(msg => {
                 const date = new Date(msg.created_at).toLocaleDateString('ar-MA');
+                const safe = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+                const replyId = 'reply-' + String(msg.id).replace(/[^a-zA-Z0-9_-]/g,'');
+                const waReply = msg.phone ? `<textarea id="${replyId}" rows="3" placeholder="اكتب الرد هنا" style="min-width:190px;width:100%;box-sizing:border-box;padding:8px;border:1px solid #dce4dc;border-radius:8px"></textarea><button type="button" onclick="sendMessageReplyWhatsApp(${JSON.stringify(String(msg.phone))},document.getElementById('${replyId}').value)" style="background:#25d366;color:white;border:0;border-radius:8px;padding:8px 10px;margin-top:6px;cursor:pointer"><i class="fa-brands fa-whatsapp"></i> فتح واتساب بالرد</button>` : '<small>لا يوجد رقم هاتف</small>';
                 html += `<tr style="border-bottom: 1px solid #eee;">
                     <td style="padding: 10px; color: #555; white-space: nowrap;">${date}</td>
-                    <td style="padding: 10px;"><strong>${msg.name}</strong><br><small style="color:#777">${msg.email}</small><br><small style="color:#0077cc">${msg.phone || 'بدون هاتف'}</small></td>
-                    <td style="padding: 10px;"><span style="background: #e6f4ea; color: #137333; padding: 3px 8px; border-radius: 4px; font-size: 12px; white-space: nowrap;">${msg.topic}</span></td>
-                    <td style="padding: 10px; max-width: 300px; word-break: break-word;">${msg.message}</td>
-                    <td style="padding: 10px; font-weight: bold; color: #b06000; white-space: nowrap;">${msg.status}</td>
+                    <td style="padding: 10px;"><strong>${safe(msg.name)}</strong><br><small style="color:#777">${safe(msg.email||'')}</small><br><small style="color:#0077cc">${safe(msg.phone || 'بدون هاتف')}</small></td>
+                    <td style="padding: 10px;"><span style="background: #e6f4ea; color: #137333; padding: 3px 8px; border-radius: 4px; font-size: 12px; white-space: nowrap;">${safe(msg.topic)}</span></td>
+                    <td style="padding: 10px; max-width: 300px; word-break: break-word;">${safe(msg.message)}</td>
+                    <td style="padding: 10px; min-width:220px">${waReply}</td>
+                    <td style="padding: 10px; font-weight: bold; color: #b06000; white-space: nowrap;">${safe(msg.status)}</td>
                 </tr>`;
             });
             html += '</table>';

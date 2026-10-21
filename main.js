@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('public-activities-grid')) loadPublicActivities();
     if (document.getElementById('public-trainings-grid')) loadPublicTrainings();
     if (document.getElementById('member-trainings-grid')) loadMemberTrainings();
+    if (document.getElementById('training-material-content')) loadTrainingMaterialPage();
     if (document.getElementById('public-news-grid')) loadPublicNews();
     if (document.getElementById('user-dashboard-info')) loadUserDashboard();
 });
@@ -88,9 +89,7 @@ async function loadUserDashboard() {
         window.location.href = 'register.html'; 
         return; 
     }
-    ['update-name','name'].forEach(([id,key]) => { const el=document.getElementById(id); if(el) el.value=member[key] || ''; });
-    ['update-mill','mill'].forEach(([id,key]) => { const el=document.getElementById(id); if(el) el.value=member[key] || ''; });
-    ['update-phone','phone'].forEach(([id,key]) => { const el=document.getElementById(id); if(el) el.value=member[key] || ''; });
+    [['update-name','name'],['update-mill','mill'],['update-phone','phone']].forEach(([id,key]) => { const el=document.getElementById(id); if(el) el.value=member[key] || ''; });
     const infoBox = document.getElementById('user-dashboard-info');
     if (infoBox) {
         infoBox.innerHTML = `
@@ -164,17 +163,21 @@ async function loadPublicActivities() {
     grid.innerHTML = html;
 }
 
-// 8. عرض التكوينات العامة
+// 8. فهرس التكوينات العام: عرض بطاقات وروابط فقط، والمحتوى داخل صفحة محمية للمنخرطين.
 async function loadPublicTrainings() {
     const grid = document.getElementById('public-trainings-grid');
     if (!grid) return;
-    const { data: trs } = await supabaseClient.from('trainings').select('*').order('id', { ascending: false });
-    if (!trs) return;
-    let html = '';
-    trs.forEach(t => {
-        html += `<div style="background:white; padding:0; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.06); border-top:4px solid #c5a059;">${t.image_url ? `<img src="${t.image_url}" alt="${t.title}" loading="lazy" style="width:100%;height:190px;object-fit:cover;">` : ''}<div style="padding:22px;"><h4 style="color:#1b4d3e; margin-bottom:10px;"><i class="fa-solid fa-graduation-cap"></i> ${t.title}</h4><p style="font-size:0.9rem; color:#555; margin-bottom:5px;"><strong>المؤطر:</strong> ${t.trainer}</p><p style="font-size:0.8rem; color:#777; margin-bottom:15px;">${t.date}</p>${t.description ? `<p style="margin-bottom:12px;">${t.description}</p>` : ''}${t.video_url ? `<p><a href="${t.video_url}" target="_blank" rel="noopener">▶ مشاهدة فيديو التكوين</a></p>` : ''}<div style="background:#f4ecdf; padding:10px; border-radius:8px; font-size:0.85rem; text-align:center; color:#1b4d3e;"><i class="fa-solid fa-lock"></i> المحتوى الكامل للمنخرطين عبر <a href="register.html" style="font-weight:bold;">فضاء المنخرط</a></div></div></div>`;
-    });
-    grid.innerHTML = html;
+    grid.innerHTML = '<p class="loading-state">جارٍ تحميل مواد التكوين...</p>';
+    const { data: trs, error } = await supabaseClient.from('trainings').select('id,title,trainer,date,description,image_url,target').order('id', { ascending: false });
+    if (error) { grid.innerHTML = '<p class="empty-state">تعذر تحميل التكوينات حالياً.</p>'; return; }
+    if (!trs || !trs.length) { grid.innerHTML = '<p class="empty-state">لا توجد تكوينات منشورة حالياً.</p>'; return; }
+    grid.innerHTML = trs.map(t => `<article class="training-card training-index-card">
+      ${t.image_url ? `<img class="training-cover" src="${escapeHTML(t.image_url)}" alt="${escapeHTML(t.title || 'صورة التكوين')}" loading="lazy">` : '<div class="training-cover-placeholder"><i class="fa-solid fa-graduation-cap"></i></div>'}
+      <div class="training-card-body"><span class="training-kicker"><i class="fa-solid fa-lock"></i> مادة مخصصة للمنخرطين</span>
+      <h4>${escapeHTML(t.title || 'مادة تكوينية')}</h4>
+      <div class="training-meta"><span><i class="fa-solid fa-chalkboard-user"></i> ${escapeHTML(t.trainer || 'غير محدد')}</span><span><i class="fa-solid fa-calendar-days"></i> ${escapeHTML(t.date || 'غير محدد')}</span></div>
+      ${t.description ? `<p class="training-index-description">${escapeHTML(t.description)}</p>` : ''}
+      <a class="training-open-link" href="training-material.html?id=${encodeURIComponent(t.id)}"><i class="fa-solid fa-arrow-up-right-from-square"></i> فتح مادة التكوين</a></div></article>`).join('');
 }
 
 // 10. إدارة لوحة المشرف وجلب المنخرطين
@@ -191,10 +194,7 @@ async function loadAdminData() {
     table.innerHTML = html;
 }
 
-async function updateMemberField(id, field, val) {
-    await supabaseClient.from('members').update({ [field]: val }).eq('id', id);
-    loadAdminData();
-}
+async function updateMemberField(id, field, val) { const {error}=await supabaseClient.from('members').update({ [field]: val }).eq('id', id); if(error) alert('تعذر تحديث البيانات: '+error.message); await loadAdminData(); }
 
 async function deleteRecord(table, id) {
     if (confirm('هل أنت متأكد من الحذف؟')) {
@@ -217,22 +217,48 @@ async function handleAddLocalPrice(e) {
         fetchGlobalMarketPrices();
     }
 }
-// عرض التكوينات الخاصة بالمنخرطين مع الصورة والفيديو والمحتوى والوثائق
+// فضاء المنخرط: فهرس أنيق للمواد، دون عرض المحتوى الكامل في هذه الصفحة.
 async function loadMemberTrainings() {
     const grid = document.getElementById('member-trainings-grid');
     if (!grid) return;
+    const member = sessionStorage.getItem('currentMember');
+    if (!member) { location.href = 'register.html'; return; }
     grid.innerHTML = '<p class="loading-state">جارٍ تحميل البرامج التكوينية...</p>';
-    const { data: trs, error } = await supabaseClient.from('trainings').select('*').order('id', { ascending: false });
+    const { data: trs, error } = await supabaseClient.from('trainings').select('id,title,trainer,date,description,image_url,target').order('id', { ascending: false });
     if (error) { grid.innerHTML = '<p class="empty-state">تعذر تحميل التكوينات. يرجى المحاولة لاحقاً.</p>'; return; }
     if (!trs || !trs.length) { grid.innerHTML = '<p class="empty-state">لا توجد تكوينات منشورة حالياً.</p>'; return; }
-    grid.innerHTML = trs.map(t => `<article class="training-card">
-      ${t.image_url ? `<img class="training-cover" src="${escapeHTML(t.image_url)}" alt="${escapeHTML(t.title || 'صورة التكوين')}" loading="lazy">` : ''}
-      <div class="training-card-body"><span class="training-kicker"><i class="fa-solid fa-graduation-cap"></i> برنامج تكويني</span>
-      <h4>${escapeHTML(t.title || 'تكوين')}</h4>
+    grid.innerHTML = trs.map(t => `<article class="training-card training-index-card">
+      ${t.image_url ? `<img class="training-cover" src="${escapeHTML(t.image_url)}" alt="${escapeHTML(t.title || 'صورة التكوين')}" loading="lazy">` : '<div class="training-cover-placeholder"><i class="fa-solid fa-graduation-cap"></i></div>'}
+      <div class="training-card-body"><span class="training-kicker"><i class="fa-solid fa-circle-check"></i> متاحة للمنخرطين</span>
+      <h4>${escapeHTML(t.title || 'مادة تكوينية')}</h4>
+      <div class="training-meta"><span><i class="fa-solid fa-chalkboard-user"></i> ${escapeHTML(t.trainer || 'غير محدد')}</span><span><i class="fa-solid fa-calendar-days"></i> ${escapeHTML(t.date || 'غير محدد')}</span></div>
+      ${t.description ? `<p class="training-index-description">${escapeHTML(t.description)}</p>` : ''}
+      <a class="training-open-link" href="training-material.html?id=${encodeURIComponent(t.id)}"><i class="fa-solid fa-book-open"></i> الاطلاع على المادة</a></div></article>`).join('');
+}
+
+// صفحة مادة تكوينية منفصلة: فحص جلسة المنخرط قبل طلب المحتوى.
+async function loadTrainingMaterialPage() {
+    const root = document.getElementById('training-material-content');
+    if (!root) return;
+    if (!sessionStorage.getItem('currentMember')) {
+        const next = encodeURIComponent(location.pathname + location.search);
+        location.replace('register.html?next=' + next);
+        return;
+    }
+    const id = new URLSearchParams(location.search).get('id');
+    if (!id || !/^[0-9]+$/.test(id)) { root.innerHTML = '<p class="empty-state">رابط المادة غير صحيح. ارجع إلى قائمة التكوينات واختر مادة.</p>'; return; }
+    root.innerHTML = '<p class="loading-state">جارٍ تحميل المادة التكوينية...</p>';
+    const { data: t, error } = await supabaseClient.from('trainings').select('*').eq('id', id).maybeSingle();
+    if (error || !t) { root.innerHTML = '<p class="empty-state">تعذر العثور على هذه المادة أو أنها لم تعد متاحة.</p>'; return; }
+    root.innerHTML = `<article class="training-detail-card">
+      ${t.image_url ? `<img class="training-detail-cover" src="${escapeHTML(t.image_url)}" alt="${escapeHTML(t.title || 'صورة التكوين')}">` : ''}
+      <div class="training-detail-body"><span class="training-kicker"><i class="fa-solid fa-graduation-cap"></i> مادة تكوينية للمنخرطين</span>
+      <h2>${escapeHTML(t.title || 'مادة تكوينية')}</h2>
       <div class="training-meta"><span><i class="fa-solid fa-chalkboard-user"></i> ${escapeHTML(t.trainer || 'غير محدد')}</span><span><i class="fa-solid fa-calendar-days"></i> ${escapeHTML(t.date || 'غير محدد')}</span>${t.target ? `<span><i class="fa-solid fa-users"></i> ${escapeHTML(t.target)}</span>` : ''}</div>
-      <div class="training-description">${escapeHTML(t.description || t.content || 'لم تتم إضافة تفاصيل لهذا التكوين بعد.').replace(/\n/g,'<br>')}</div>
+      <div class="training-description">${escapeHTML(t.description || t.content || 'لم تتم إضافة تفاصيل لهذه المادة بعد.').replace(/\n/g,'<br>')}</div>
       ${t.video_url ? `<div class="training-media"><a href="${escapeHTML(t.video_url)}" target="_blank" rel="noopener"><i class="fa-solid fa-circle-play"></i> مشاهدة الفيديو أو المادة المرئية</a></div>` : ''}
-      ${t.document_url ? `<div class="training-media"><a href="${escapeHTML(t.document_url)}" target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> فتح الوثيقة المرفقة</a></div>` : ''}</div></article>`).join('');
+      ${t.document_url ? `<div class="training-media"><a href="${escapeHTML(t.document_url)}" target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> فتح الوثيقة المرفقة</a></div>` : ''}
+      </div></article>`;
 }
 
 // دالة تحديث بيانات المنخرط من لوحة تحكمه
