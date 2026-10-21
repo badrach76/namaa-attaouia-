@@ -13,6 +13,33 @@
     <script>
 (async()=>{try{const {data:{session}}=await supabaseClient.auth.getSession();if(!session||session.user?.app_metadata?.role!=='admin'){await supabaseClient.auth.signOut();window.location.replace('admin-login.html');}}catch(e){window.location.replace('admin-login.html');}})();
 </script>
+
+<style>
+:root{--admin-green:#174b3b;--admin-green-2:#23634d;--admin-gold:#c5a059;--admin-bg:#f5f7f5;--admin-line:#e2e8e3;--admin-muted:#64736b}
+body{background:var(--admin-bg)}
+.admin-panel{display:none}.admin-panel.active{display:block;animation:adminFade .18s ease-out}
+@keyframes adminFade{from{opacity:.6;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.admin-section-nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:22px 0 28px}
+.admin-section-link{display:flex;align-items:center;gap:12px;min-height:62px;padding:14px 16px;border:1px solid var(--admin-line);border-radius:14px;background:#fff;color:var(--admin-green);font:inherit;font-weight:700;text-align:right;cursor:pointer;box-shadow:0 4px 14px #183b2b0b;transition:transform .18s,box-shadow .18s,border-color .18s}
+.admin-section-link i{font-size:1.15rem;color:var(--admin-gold)}.admin-section-link:hover,.admin-section-link.active{border-color:var(--admin-green-2);box-shadow:0 8px 22px #183b2b14;transform:translateY(-1px)}
+.admin-section-link.active{background:var(--admin-green);color:#fff}.admin-section-link.active i{color:#e4c78d}
+.admin-action-box,.member-comms-admin,.official-price-note{background:#fff;border:1px solid var(--admin-line);border-radius:18px;padding:clamp(16px,2.5vw,28px);margin:0 0 22px;box-shadow:0 8px 26px #173b2b0b}
+.member-comms-admin h3,.admin-action-box h3{color:var(--admin-green);margin:0 0 10px}.member-comms-admin>p{color:var(--admin-muted);line-height:1.8;margin:0 0 22px}
+.member-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:18px;background:#f8faf8;border:1px solid var(--admin-line);border-radius:14px}
+.member-form label{display:flex;flex-direction:column;gap:8px;font-weight:700;color:#35483e}.member-form label.full-width,.member-form .full-width,.member-form-actions{grid-column:1/-1}
+.member-form input,.member-form textarea,.member-form select,.admin-panel input,.admin-panel textarea,.admin-panel select{width:100%;max-width:100%;box-sizing:border-box;border:1px solid #d6dfd8;border-radius:10px;padding:11px 12px;background:#fff;font:inherit;color:#24362d}
+.member-form input:focus,.member-form textarea:focus,.member-form select:focus,.admin-panel input:focus,.admin-panel textarea:focus,.admin-panel select:focus{outline:2px solid #c5a05955;border-color:var(--admin-gold)}
+.member-form-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.member-primary-btn,.member-secondary-btn,.admin-action-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:0;border-radius:9px;padding:9px 13px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none;transition:filter .15s,transform .15s}
+.member-primary-btn{background:var(--admin-green);color:#fff}.member-secondary-btn{background:#edf2ee;color:var(--admin-green);border:1px solid #dce6de}.admin-action-btn{font-size:.88rem;background:#edf2ee;color:var(--admin-green);margin:2px}.admin-action-btn.danger{background:#fff0ee;color:#a32f27}.admin-action-btn.success{background:#e8f5ec;color:#21643c}.admin-action-btn.warning{background:#fff5df;color:#81540b}
+.member-primary-btn:hover,.member-secondary-btn:hover,.admin-action-btn:hover{filter:brightness(.97);transform:translateY(-1px)}button:disabled{opacity:.55;cursor:not-allowed}
+.admin-data-table{width:100%;border-collapse:separate;border-spacing:0;min-width:720px;font-size:14px}.admin-data-table th{background:#edf3ee;color:var(--admin-green);padding:13px 12px;text-align:right;border-bottom:1px solid var(--admin-line)}.admin-data-table td{padding:13px 12px;border-bottom:1px solid #edf0ed;vertical-align:top}.admin-data-table tr:hover td{background:#fbfcfb}
+.admin-status-pill{display:inline-flex;border-radius:999px;padding:4px 9px;background:#f1f3f2;color:#4c5d53;font-size:12px;font-weight:700;white-space:nowrap}.admin-status-pill.is-done{background:#e6f4ea;color:#17653a}.admin-status-pill.is-progress{background:#fff3d7;color:#855c0a}
+.admin-empty{padding:22px;text-align:center;color:var(--admin-muted);background:#f8faf8;border-radius:12px;border:1px dashed #d9e1da}
+.admin-back-row{margin:12px 0 20px}.admin-panel-focused .container{max-width:1240px}.official-price-frame-wrap iframe{width:100%;min-height:620px;border:1px solid var(--admin-line);border-radius:12px;margin-top:16px}
+@media(max-width:680px){.member-form{grid-template-columns:1fr}.member-form label.full-width,.member-form .full-width,.member-form-actions{grid-column:auto}.admin-section-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.admin-section-link{font-size:.88rem;padding:12px;min-height:58px}.admin-action-box{padding:15px}.admin-data-table{min-width:680px}}
+</style>
+
 </head>
 <body>
     <header>
@@ -146,7 +173,7 @@
  <h3><i class="fa-solid fa-bullhorn"></i> مركز التواصل مع المنخرطين</h3>
  <p>أنشئ إعلاناً عاماً لجميع المنخرطين أو رسالة خاصة لمنخرط محدد. تحفظ الرسائل في قاعدة البيانات لتظهر في فضاء المنخرط.</p>
  <form id="admin-member-message-form" onsubmit="sendMemberAnnouncement(event)" class="member-form">
-  <label>نوع الإرسال<select id="admin-announcement-audience" onchange="toggleAnnouncementMember()"><option value="all">إعلان جماعي لجميع المنخرطين</option><option value="member">رسالة فردية لمنخرط محدد</option></select></label>
+  <label>نوع الإرسال<select id="admin-announcement-audience" onchange="toggleAnnouncementMember()"><option value="all">إعلان جماعي لجميع المنخرطين</option><option value="individual">رسالة فردية لمنخرط محدد</option></select></label>
   <label id="announcement-member-field" style="display:none">المنخرط المستهدف<select id="admin-announcement-member"><option value="">جارٍ تحميل المنخرطين…</option></select></label>
   <label>عنوان الإعلان<input id="admin-announcement-title" required maxlength="180" placeholder="مثال: موعد لقاء تكويني مهم"></label>
   <label class="full-width">نص الإعلان<textarea id="admin-announcement-body" required rows="5" placeholder="اكتب مضمون الإعلان بوضوح..."></textarea></label>
@@ -273,55 +300,126 @@
     <script src="main.js"></script>
     <script>
     function escapeAdminHTML(value) { return String(value ?? '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch])); }
-    async function setContactMessageStatus(id,status){const {error}=await supabaseClient.from('contact_messages').update({status}).eq('id',id);if(error){alert('تعذر تحديث حالة الرسالة: '+error.message);return;}loadAdminMessages();}
-    // دالة جلب وعرض الرسائل الواردة في لوحة الإشراف
-    async function deleteContactMessage(id) {
-        if (!confirm('هل تريد حذف هذه الرسالة نهائياً؟ لا يمكن التراجع عن هذا الإجراء.')) return;
-        try {
-            const { error } = await supabaseClient.from('contact_messages').delete().eq('id', id);
-            if (error) throw error;
-            await loadAdminMessages();
-        } catch (err) {
-            console.error(err);
-            alert('تعذر حذف الرسالة. تحقق من صلاحيات DELETE لجدول contact_messages في Supabase. ' + (err.message || ''));
-        }
+    async function setContactMessageStatus(id,status){
+        const {error}=await supabaseClient.from('contact_messages').update({status}).eq('id',id);
+        if(error){alert('تعذر تحديث حالة الرسالة. تحقق من سياسة UPDATE في Supabase.\n'+error.message);return;}
+        await loadAdminMessages();
     }
-
+    async function deleteContactMessage(id){
+        if(!confirm('هل تريد حذف هذه الرسالة نهائياً؟')) return;
+        const {error}=await supabaseClient.from('contact_messages').delete().eq('id',id);
+        if(error){alert('تعذر حذف الرسالة. تحقق من سياسة DELETE في Supabase.\n'+error.message);return;}
+        await loadAdminMessages();
+    }
+    // جلب رسائل الزوار مع أزرار تعمل عبر Supabase وتعرض أخطاء الصلاحيات بوضوح.
     async function loadAdminMessages() {
         const container = document.getElementById('messages-container');
+        if(!container) return;
+        container.innerHTML='<div class="admin-empty">جارٍ تحميل الرسائل الواردة…</div>';
         try {
             const { data, error } = await supabaseClient.from('contact_messages').select('*').order('created_at', { ascending: false });
             if (error) throw error;
-
-            if (!data || data.length === 0) {
-                container.innerHTML = '<p style="color: #666;">لا توجد رسائل واردة حتى الآن.</p>';
-                return;
-            }
-
-            let html = '<table style="width: 100%; border-collapse: collapse; text-align: right; font-size: 14px; min-width: 700px;">';
-            html += '<tr style="background: #f4ecdf; color: var(--primary-green); border-bottom: 2px solid #ddd;"><th style="padding: 10px;">التاريخ</th><th style="padding: 10px;">المرسل والهاتف</th><th style="padding: 10px;">الموضوع</th><th style="padding: 10px;">الرسالة</th><th style="padding: 10px;">الحالة</th><th style="padding: 10px;">الإجراءات</th><th style="padding: 10px;">حذف</th></tr>';
-
-            data.forEach(msg => {
-                const date = new Date(msg.created_at).toLocaleDateString('ar-MA');
-                html += `<tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding: 10px; color: #555; white-space: nowrap;">${date}</td>
-                    <td style="padding: 10px;"><strong>${escapeAdminHTML(msg.name)}</strong><br><small style="color:#777">${escapeAdminHTML(msg.email || "—")}</small><br><small style="color:#0077cc">${escapeAdminHTML(msg.phone || 'بدون هاتف')}</small></td>
-                    <td style="padding: 10px;"><span style="background: #e6f4ea; color: #137333; padding: 3px 8px; border-radius: 4px; font-size: 12px; white-space: nowrap;">${escapeAdminHTML(msg.topic)}</span></td>
-                    <td style="padding: 10px; max-width: 300px; word-break: break-word;">${escapeAdminHTML(msg.message)}</td>
-                    <td style="padding: 10px; font-weight: bold; color: #b06000; white-space: nowrap;">${escapeAdminHTML(msg.status || "جديدة")}</td><td style="padding:10px;white-space:nowrap"><button class="admin-message-action" onclick="setContactMessageStatus(${JSON.stringify(String(msg.id))}, 'قيد المعالجة')">قيد المعالجة</button> <button class="admin-message-action" onclick="setContactMessageStatus(${JSON.stringify(String(msg.id))}, 'تم الرد')">تم الرد</button></td><td style="padding:10px;white-space:nowrap"><button type="button" class="admin-message-delete" onclick="deleteContactMessage(${JSON.stringify(String(msg.id))})"><i class="fa-solid fa-trash"></i> حذف</button></td>
-                </tr>`;
+            if (!data || data.length === 0) { container.innerHTML='<div class="admin-empty">لا توجد رسائل واردة حتى الآن.</div>'; return; }
+            let html='<table class="admin-data-table"><thead><tr><th>التاريخ</th><th>المرسل والتواصل</th><th>الموضوع</th><th>الرسالة</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody>';
+            data.forEach(msg=>{
+                const date=msg.created_at?new Date(msg.created_at).toLocaleString('ar-MA'):'—';
+                const id=Number(msg.id);
+                const status=msg.status||'جديدة';
+                const pillClass=status==='تم الرد'?'is-done':status==='قيد المعالجة'?'is-progress':'';
+                html+=`<tr>
+                  <td style="white-space:nowrap">${escapeAdminHTML(date)}</td>
+                  <td><strong>${escapeAdminHTML(msg.name||'—')}</strong><br><small>${escapeAdminHTML(msg.email||'—')}</small><br><small>${escapeAdminHTML(msg.phone||'بدون هاتف')}</small></td>
+                  <td>${escapeAdminHTML(msg.topic||msg.subject||'—')}</td>
+                  <td style="min-width:220px;max-width:360px;white-space:pre-wrap;overflow-wrap:anywhere">${escapeAdminHTML(msg.message||msg.body||'—')}</td>
+                  <td><span class="admin-status-pill ${pillClass}">${escapeAdminHTML(status)}</span></td>
+                  <td style="min-width:190px">
+                    <button type="button" class="admin-action-btn warning" onclick="setContactMessageStatus(${id},'قيد المعالجة')"><i class="fa-solid fa-hourglass-half"></i> قيد المعالجة</button>
+                    <button type="button" class="admin-action-btn success" onclick="setContactMessageStatus(${id},'تم الرد')"><i class="fa-solid fa-check"></i> تم الرد</button>
+                    <button type="button" class="admin-action-btn danger" onclick="deleteContactMessage(${id})"><i class="fa-solid fa-trash"></i> حذف</button>
+                  </td></tr>`;
             });
-            html += '</table>';
-            container.innerHTML = html;
+            container.innerHTML=html+'</tbody></table>';
         } catch (err) {
             console.error(err);
-            container.innerHTML = '<p style="color:red">تعذر جلب الرسائل. تحقق من وجود جدول contact_messages وصلاحيات SELECT/UPDATE في Supabase. التفاصيل: '+escapeAdminHTML(err.message)+'</p>'; 
+            container.innerHTML='<div class="admin-empty" style="color:#a32f27">تعذر تحميل الرسائل: '+escapeAdminHTML(err.message)+'<br><small>إذا كان الخطأ متعلقاً بالصلاحيات، راجع سياسات SELECT/UPDATE/DELETE لجدول contact_messages.</small><br><button type="button" class="member-secondary-btn" onclick="loadAdminMessages()">إعادة المحاولة</button></div>';
         }
     }
 
     // استدعاء دالة جلب الرسائل عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', loadAdminMessages);
     
+    // مركز التواصل: يطابق قيم audience مع قيود قاعدة البيانات الحالية.
+    function toggleAnnouncementMember(){
+        const audience=document.getElementById('admin-announcement-audience');
+        const field=document.getElementById('announcement-member-field');
+        if(field) field.style.display=audience && audience.value==='individual'?'flex':'none';
+    }
+    async function loadAdminMemberOptions(){
+        const select=document.getElementById('admin-announcement-member'); if(!select)return;
+        const {data,error}=await supabaseClient.from('members').select('id,name,mill,phone,status').order('name');
+        if(error){select.innerHTML='<option value="">تعذر تحميل المنخرطين</option>';console.error(error);return;}
+        select.innerHTML='<option value="">اختر المنخرط</option>'+(data||[]).map(m=>`<option value="${Number(m.id)}">${escapeAdminHTML(m.name||'بدون اسم')} — ${escapeAdminHTML(m.mill||'')} (${escapeAdminHTML(m.phone||'')})</option>`).join('');
+    }
+    async function sendMemberAnnouncement(event){
+        event.preventDefault();
+        const form=document.getElementById('admin-member-message-form'); const button=form?.querySelector('button[type="submit"]');
+        const audience=document.getElementById('admin-announcement-audience')?.value||'all';
+        const memberValue=document.getElementById('admin-announcement-member')?.value||'';
+        const title=document.getElementById('admin-announcement-title')?.value.trim()||'';
+        const body=document.getElementById('admin-announcement-body')?.value.trim()||'';
+        if(!title||!body){alert('أدخل عنوان الإعلان ومضمونه.');return;}
+        if(audience==='individual'&&!memberValue){alert('اختر المنخرط المستهدف.');return;}
+        if(button){button.disabled=true;button.dataset.oldText=button.innerText;button.innerText='جارٍ الحفظ…';}
+        try{
+            const payload={title,body,audience,member_id:audience==='individual'?Number(memberValue):null,published:true};
+            const {error}=await supabaseClient.from('member_announcements').insert(payload);
+            if(error)throw error;
+            alert('تم حفظ الإعلان بنجاح.'); form.reset(); toggleAnnouncementMember(); await loadAdminMemberComms();
+        }catch(err){alert('تعذر حفظ الإعلان: '+err.message+'\nتحقق من سياسة INSERT الخاصة بالمشرف ومن توافق قيود audience.');}
+        finally{if(button){button.disabled=false;button.innerText=button.dataset.oldText||'نشر / إرسال';}}
+    }
+    async function loadAdminMemberComms(){
+        await loadAdminMemberOptions();
+        const messagesHost=document.getElementById('admin-member-messages-list');
+        const announcementsHost=document.getElementById('admin-announcements-list');
+        if(messagesHost){
+            try{
+                const {data,error}=await supabaseClient.from('member_messages').select('*').order('created_at',{ascending:false});
+                if(error)throw error;
+                if(!data?.length){messagesHost.innerHTML='<div class="admin-empty">لا توجد رسائل واردة من المنخرطين.</div>';}
+                else{
+                    let html='<div style="overflow-x:auto"><table class="admin-data-table"><thead><tr><th>التاريخ</th><th>المنخرط</th><th>الموضوع</th><th>الرسالة</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody>';
+                    for(const m of data){
+                        const memberId=Number(m.member_id); const {data:member}=await supabaseClient.from('members').select('name,mill,phone').eq('id',memberId).maybeSingle();
+                        html+=`<tr><td>${escapeAdminHTML(m.created_at?new Date(m.created_at).toLocaleString('ar-MA'):'—')}</td><td>${escapeAdminHTML(member?.name||('رقم '+memberId))}<br><small>${escapeAdminHTML(member?.mill||'')}</small></td><td>${escapeAdminHTML(m.subject||m.title||'—')}</td><td style="min-width:220px;white-space:pre-wrap">${escapeAdminHTML(m.message||m.body||m.content||'—')}</td><td><span class="admin-status-pill">${escapeAdminHTML(m.status||'جديدة')}</span></td><td><button class="admin-action-btn warning" type="button" onclick="updateMemberMessageStatus(${Number(m.id)},'قيد المعالجة')">قيد المعالجة</button><button class="admin-action-btn success" type="button" onclick="updateMemberMessageStatus(${Number(m.id)},'تم الرد')">تم الرد</button><button class="admin-action-btn danger" type="button" onclick="deleteMemberMessage(${Number(m.id)})">حذف</button></td></tr>`;
+                    }
+                    messagesHost.innerHTML=html+'</tbody></table></div>';
+                }
+            }catch(err){messagesHost.innerHTML='<div class="admin-empty" style="color:#a32f27">تعذر تحميل رسائل المنخرطين: '+escapeAdminHTML(err.message)+'</div>';}
+        }
+        if(announcementsHost){
+            try{
+                const {data,error}=await supabaseClient.from('member_announcements').select('*').order('created_at',{ascending:false});
+                if(error)throw error;
+                if(!data?.length){announcementsHost.innerHTML='<div class="admin-empty">لا يوجد سجل إعلانات حتى الآن.</div>';return;}
+                let html='<div style="overflow-x:auto"><table class="admin-data-table"><thead><tr><th>التاريخ</th><th>العنوان</th><th>الفئة</th><th>المضمون</th><th>النشر</th><th>إجراء</th></tr></thead><tbody>';
+                html+=(data||[]).map(a=>`<tr><td>${escapeAdminHTML(a.created_at?new Date(a.created_at).toLocaleString('ar-MA'):'—')}</td><td>${escapeAdminHTML(a.title)}</td><td>${a.audience==='all'?'جماعي':'فردي · '+escapeAdminHTML(a.member_id??'')}</td><td style="min-width:220px;white-space:pre-wrap">${escapeAdminHTML(a.body)}</td><td><span class="admin-status-pill ${a.published?'is-done':'is-progress'}">${a.published?'منشور':'غير منشور'}</span></td><td><button type="button" class="admin-action-btn" onclick="editAnnouncement('${String(a.id).replace(/[^a-zA-Z0-9-]/g,'')}','${escapeAdminHTML(a.title).replace(/'/g, '&#39;')}','${escapeAdminHTML(a.body).replace(/'/g, '&#39;')}')"><i class="fa-solid fa-pen-to-square"></i> تعديل</button><button type="button" class="admin-action-btn" onclick="toggleAnnouncementPublished('${String(a.id).replace(/[^a-zA-Z0-9-]/g,'')}',${!a.published})">${a.published?'إلغاء النشر':'نشر'}</button><button type="button" class="admin-action-btn danger" onclick="deleteAnnouncement('${String(a.id).replace(/[^a-zA-Z0-9-]/g,'')}')">حذف</button></td></tr>`).join('');
+                announcementsHost.innerHTML=html+'</tbody></table></div>';
+            }catch(err){announcementsHost.innerHTML='<div class="admin-empty" style="color:#a32f27">تعذر تحميل سجل الإعلانات: '+escapeAdminHTML(err.message)+'</div>';}
+        }
+    }
+    async function updateMemberMessageStatus(id,status){const {error}=await supabaseClient.from('member_messages').update({status}).eq('id',id);if(error){alert('تعذر تحديث الرسالة: '+error.message);return;}await loadAdminMemberComms();}
+    async function deleteMemberMessage(id){if(!confirm('حذف رسالة المنخرط؟'))return;const {error}=await supabaseClient.from('member_messages').delete().eq('id',id);if(error){alert('تعذر حذف الرسالة: '+error.message);return;}await loadAdminMemberComms();}
+    async function editAnnouncement(id,currentTitle,currentBody){
+        const title=prompt('تعديل عنوان الإعلان:',currentTitle||''); if(title===null)return;
+        const body=prompt('تعديل نص الإعلان:',currentBody||''); if(body===null)return;
+        if(!title.trim()||!body.trim()){alert('العنوان والمضمون مطلوبان.');return;}
+        const {error}=await supabaseClient.from('member_announcements').update({title:title.trim(),body:body.trim()}).eq('id',id);
+        if(error){alert('تعذر تعديل الإعلان: '+error.message);return;} await loadAdminMemberComms();
+    }
+    async function toggleAnnouncementPublished(id,published){const {error}=await supabaseClient.from('member_announcements').update({published}).eq('id',id);if(error){alert('تعذر تغيير حالة الإعلان: '+error.message);return;}await loadAdminMemberComms();}
+    async function deleteAnnouncement(id){if(!confirm('حذف الإعلان من السجل؟'))return;const {error}=await supabaseClient.from('member_announcements').delete().eq('id',id);if(error){alert('تعذر حذف الإعلان: '+error.message);return;}await loadAdminMemberComms();}
+
     // تنقل لوحة الإدارة: عرض واجهة الأقسام أو القسم المختار وحده.
     function showAdminPanel(id) {
         const buttons = Array.from(document.querySelectorAll('.admin-section-link[data-target]'));
