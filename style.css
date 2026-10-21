@@ -451,3 +451,26 @@ button,a,input,select,textarea { -webkit-tap-highlight-color:transparent; }
 .training-detail-body .training-description { margin-top:18px; font-size:1rem; line-height:2; white-space:normal; }
 .training-detail-body .training-media a { min-height:46px; }
 @media(max-width:600px) { .training-index-card .training-cover { height:165px; } .training-index-card .training-card-body { padding:17px; } .training-meta { gap:8px 12px; } .training-detail-body { padding:18px; } }
+
+
+/* تحسين موحد للوحة الإشراف ورسائل الزوار */
+.admin-section-nav { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin:22px 0 28px; }
+.admin-section-link { display:flex; align-items:center; gap:12px; min-height:72px; padding:16px 18px; border:1px solid #e1e9e3; border-radius:18px; background:linear-gradient(145deg,#fff,#f7faf7); color:#1b4d3e; font-family:inherit; font-weight:800; font-size:1rem; text-align:right; box-shadow:0 6px 20px rgba(27,77,62,.06); cursor:pointer; transition:transform .2s,box-shadow .2s,border-color .2s; }
+.admin-section-link i { color:#b99a5a; font-size:1.25rem; }
+.admin-section-link:hover,.admin-section-link.active { transform:translateY(-2px); border-color:#b99a5a; box-shadow:0 10px 24px rgba(27,77,62,.11); }
+.admin-panel { display:none; }
+.admin-panel.active { display:block; animation:adminPanelIn .22s ease-out; }
+@keyframes adminPanelIn { from {opacity:0; transform:translateY(6px)} to {opacity:1;transform:translateY(0)} }
+.admin-back-row { margin:0 0 18px; }
+.admin-back-row button { border:1px solid #dce7df; border-radius:12px; background:#fff; color:#1b4d3e; padding:11px 16px; font:inherit; font-weight:800; box-shadow:0 4px 14px rgba(27,77,62,.07); }
+.admin-message-action { border:0; border-radius:8px; background:#edf4ef; color:#1b4d3e; padding:8px 10px; margin:2px; font:inherit; cursor:pointer; }
+.admin-message-delete { border:0; border-radius:8px; background:#fff0ef; color:#b42318; padding:8px 10px; font:inherit; font-weight:700; cursor:pointer; }
+.admin-message-delete:hover { background:#ffe0dd; }
+#messages-container { overflow-x:auto; border:1px solid #e7ece8; border-radius:14px; background:#fff; }
+#messages-container table { min-width:900px; }
+#messages-container th { position:sticky; top:0; z-index:1; }
+.admin-panel-focused .container { padding-top:18px; }
+.admin-panel-focused .admin-panel.active { min-height:40vh; }
+.admin-section-nav[hidden],.section-title[hidden],.admin-back-row[hidden] { display:none!important; }
+@media(max-width:640px) { .admin-section-nav { grid-template-columns:1fr 1fr; gap:9px; } .admin-section-link { min-height:66px; padding:12px 10px; font-size:.88rem; border-radius:14px; } }
+@media(prefers-reduced-motion:reduce) { .admin-panel.active { animation:none; } }
