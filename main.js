@@ -257,6 +257,120 @@ async function loadAdminData() {
           <td style="padding:10px;direction:ltr">${escapeHTML(m.phone || '—')}</td>
           <td style="padding:10px"><select aria-label="واجب الانخراط" onchange="updateMemberField(${Number(m.id)},'annual_fee',this.value)"><option value="مؤدى" ${m.annual_fee==='مؤدى'?'selected':''}>مؤدى</option><option value="غير مؤدى" ${m.annual_fee!=='مؤدى'?'selected':''}>غير مؤدى</option></select></td>
           <td style="padding:10px"><span class="badge ${badgeClass}">${escapeHTML(status)}</span>${waBtn}</td>
+          <td style="padding:10px;min-width:260px"><div class="member-status-actions"><button type="button" class="status-processing" onclick="setMemberStatus(${Number(m.id)},'قيد المعالجة')">قيد المعالجة</button><button type="button" class="status-approve" onclick="setMemberStatus(${Number(m.id)},'مقبول')">قبول</button><button type="button" class="status-reject" onclick="setMemberStatus(${Number(m.id)},'مرفوض')">رفض</button><button type="button" class="admin-small-btn" onclick="editMemberRecord(${Number(m.id)})">تعديل</button></div></td'—')}</strong></div><div><span>الترخيص</span><strong>${escapeHTML(member.license||'غير محدد')}</strong></div></div>`;
+}
+
+// 4. طلب انخراط جديد
+async function handleMembership(e) {
+    e.preventDefault();
+    const name = document.getElementById('m-name').value;
+    const mill = document.getElementById('m-mill').value;
+    const phone = document.getElementById('m-phone').value;
+    const address = document.getElementById('m-address').value;
+    const type = document.getElementById('m-type').value;
+    const license = document.getElementById('m-license').value;
+    const username = 'user_' + Math.floor(Math.random() * 9000 + 1000);
+    const password = 'pass' + Math.floor(Math.random() * 9000 + 1000);
+
+    const { error } = await supabaseClient.from('members').insert([{ name, mill, phone, address, type, license, member_type: 'جديد', annual_fee: 'غير مؤدى', status: 'قيد المعالجة', username, password }]);
+    if (error) alert('خطأ: ' + error.message);
+    else { alert('تم إرسال طلب انخراطكم بنجاح.'); e.target.reset(); window.location.href = 'index.html'; }
+}
+
+// 5. نشر خبر جديد مع رفع الصورة
+async function handleAddNews(e) {
+    e.preventDefault();
+    const title = document.getElementById('news-title').value;
+    const category = document.getElementById('news-category').value;
+    const date = document.getElementById('news-date').value;
+    const content = document.getElementById('news-content').value;
+    const imageUrl = (await uploadFileToSupabase('news-image-file')) || document.getElementById('news-image-url')?.value.trim() || '';
+    const documentUrl = document.getElementById('news-document-url')?.value.trim() || '';
+
+    const { error } = await supabaseClient.from('news').insert([{ title, category, date, content, image_url: imageUrl, document_url: documentUrl }]);
+    if (error) alert('خطأ: ' + error.message);
+    else { alert('تم نشر الخبر بنجاح.'); e.target.reset(); loadAdminNews(); loadPublicNews(); }
+}
+
+// 6. عرض الأخبار العامة
+async function loadPublicNews() {
+    const grid = document.getElementById('public-news-grid');
+    if (!grid) return;
+    grid.innerHTML = '<p class="loading-state">جارٍ تحميل الأخبار…</p>';
+    const { data: newsList, error } = await supabaseClient.from('news').select('*').order('id', { ascending: false });
+    if (error) { grid.innerHTML = '<p class="empty-state">تعذر تحميل الأخبار حالياً.</p>'; return; }
+    if (!newsList?.length) { grid.innerHTML = '<p class="empty-state">لا توجد أخبار منشورة حالياً.</p>'; return; }
+    grid.innerHTML = newsList.map(n => {
+        const image = safeHttpUrl(n.image_url), doc = safeHttpUrl(n.document_url);
+        return `<article class="public-content-card" style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.06);border-top:4px solid #c5a059;">
+          ${image ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(n.title || 'صورة الخبر')}" loading="lazy" style="width:100%;height:180px;object-fit:cover;">` : ''}
+          <div style="padding:20px;"><span style="background:#1b4d3e;color:white;padding:3px 10px;border-radius:15px;font-size:.75rem;">${escapeHTML(n.category || 'خبر')}</span>
+          <h4 style="color:#1b4d3e;margin:10px 0 6px;font-size:1.1rem;">${escapeHTML(n.title || 'خبر')}</h4>
+          <p style="font-size:.8rem;color:#777;margin-bottom:8px;"><i class="fa-solid fa-clock"></i> ${escapeHTML(n.date || '—')}</p>
+          <p style="color:#555;font-size:.9rem;white-space:pre-wrap;overflow-wrap:anywhere;">${escapeHTML(n.content || '')}</p>
+          ${doc ? `<p style="margin-top:12px;"><a href="${escapeHTML(doc)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-file-pdf"></i> فتح الوثيقة المرفقة</a></p>` : ''}</div></article>`;
+    }).join('');
+}
+
+// 7. عرض الأنشطة
+async function loadPublicActivities() {
+    const grid = document.getElementById('public-activities-grid');
+    if (!grid) return;
+    grid.innerHTML = '<p class="loading-state">جارٍ تحميل أنشطة الجمعية…</p>';
+    const { data: acts, error } = await supabaseClient.from('activities').select('*').order('id', { ascending: false });
+    if (error) { grid.innerHTML = '<p class="empty-state">تعذر تحميل الأنشطة حالياً.</p>'; return; }
+    if (!acts?.length) { grid.innerHTML = '<p class="empty-state">لا توجد أنشطة منشورة حالياً.</p>'; return; }
+    grid.innerHTML = acts.map(a => {
+        const image = safeHttpUrl(a.image_url), video = safeHttpUrl(a.video_url);
+        return `<article class="public-content-card" style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.06);border-top:4px solid #1b4d3e;">
+          ${image ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(a.title || 'صورة النشاط')}" loading="lazy" style="width:100%;height:180px;object-fit:cover;">` : ''}
+          <div style="padding:20px;"><span style="background:#2e7d32;color:white;padding:3px 10px;border-radius:15px;font-size:.75rem;">${escapeHTML(a.type || 'نشاط')}</span>
+          <h4 style="color:#1b4d3e;margin:10px 0 6px;font-size:1.1rem;">${escapeHTML(a.title || 'نشاط')}</h4>
+          <p style="font-size:.8rem;color:#777;margin-bottom:8px;"><i class="fa-solid fa-calendar"></i> ${escapeHTML(a.date || '—')}</p>
+          <p style="color:#555;font-size:.9rem;white-space:pre-wrap;overflow-wrap:anywhere;">${escapeHTML(a.description || '')}</p>
+          ${video ? `<p><a href="${escapeHTML(video)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> مشاهدة الفيديو</a></p>` : ''}</div></article>`;
+    }).join('');
+}
+
+// 8. عرض التكوينات العامة
+async function loadPublicTrainings() {
+    const grid = document.getElementById('public-trainings-grid');
+    if (!grid) return;
+    grid.innerHTML = '<p class="loading-state">جارٍ تحميل التكوينات…</p>';
+    const { data: trs, error } = await supabaseClient.from('trainings').select('id,title,trainer,date,description,image_url,target').order('id', { ascending: false });
+    if (error) { grid.innerHTML = '<p class="empty-state">تعذر تحميل التكوينات حالياً.</p>'; return; }
+    if (!trs?.length) { grid.innerHTML = '<p class="empty-state">لا توجد تكوينات منشورة حالياً.</p>'; return; }
+    grid.innerHTML = trs.map(t => {
+        const image = safeHttpUrl(t.image_url);
+        return `<article class="training-card training-index-card">
+          ${image ? `<img class="training-cover" src="${escapeHTML(image)}" alt="${escapeHTML(t.title || 'صورة التكوين')}" loading="lazy">` : '<div class="training-cover-placeholder"><i class="fa-solid fa-graduation-cap"></i></div>'}
+          <div class="training-card-body"><span class="training-kicker"><i class="fa-solid fa-lock"></i> مادة مخصصة للمنخرطين</span>
+          <h4>${escapeHTML(t.title || 'مادة تكوينية')}</h4>
+          <div class="training-meta"><span><i class="fa-solid fa-chalkboard-user"></i> ${escapeHTML(t.trainer || 'غير محدد')}</span><span><i class="fa-solid fa-calendar-days"></i> ${escapeHTML(t.date || 'غير محدد')}</span>${t.target ? `<span><i class="fa-solid fa-users"></i> ${escapeHTML(t.target)}</span>` : ''}</div>
+          ${t.description ? `<p class="training-index-description">${escapeHTML(t.description)}</p>` : ''}
+          <a class="training-open-link" href="training-material.html?id=${encodeURIComponent(t.id)}"><i class="fa-solid fa-arrow-up-right-from-square"></i> فتح مادة التكوين</a></div></article>`;
+    }).join('');
+}
+
+// 10. إدارة لوحة المشرف وجلب المنخرطين
+async function loadAdminData() {
+    const table = document.getElementById('admin-members-table');
+    if (!table) return;
+    table.innerHTML = '<tr><td colspan="7">جارٍ تحميل طلبات الانخراط والمنخرطين…</td></tr>';
+    const { data: members, error } = await supabaseClient.from('members').select('id,name,mill,phone,address,type,license,member_type,annual_fee,status,username').order('id', { ascending: false });
+    if (error) { table.innerHTML = `<tr><td colspan="7" style="color:#b42318">تعذر تحميل البيانات: ${escapeHTML(error.message)}. تحقق من صلاحيات SELECT في Supabase.</td></tr>`; return; }
+    if (!members || !members.length) { table.innerHTML = '<tr><td colspan="7">لا توجد طلبات أو عضويات مسجلة حالياً.</td></tr>'; return; }
+    table.innerHTML = members.map(m => {
+        const status = m.status || 'قيد المعالجة';
+        const badgeClass = status === 'مقبول' ? 'badge-success' : status === 'مرفوض' ? 'badge-danger' : 'badge-pending';
+        const phone = String(m.phone || '').replace(/[^\d+]/g, '');
+        const waBtn = status === 'مقبول' && phone ? `<a href="https://wa.me/${encodeURIComponent(phone)}" target="_blank" rel="noopener" class="admin-wa-link"><i class="fa-brands fa-whatsapp"></i> تواصل</a>` : '';
+        return `<tr style="border-bottom:1px solid #eee;">
+          <td style="padding:10px"><strong>${escapeHTML(m.name || m.full_name || '—')}</strong><br><small>${escapeHTML(m.member_type || '—')}</small></td>
+          <td style="padding:10px">${escapeHTML(m.mill || m.mill_name || '—')}</td>
+          <td style="padding:10px;direction:ltr">${escapeHTML(m.phone || '—')}</td>
+          <td style="padding:10px"><select aria-label="واجب الانخراط" onchange="updateMemberField(${Number(m.id)},'annual_fee',this.value)"><option value="مؤدى" ${m.annual_fee==='مؤدى'?'selected':''}>مؤدى</option><option value="غير مؤدى" ${m.annual_fee!=='مؤدى'?'selected':''}>غير مؤدى</option></select></td>
+          <td style="padding:10px"><span class="badge ${badgeClass}">${escapeHTML(status)}</span>${waBtn}</td>
           <td style="padding:10px;min-width:260px"><div class="member-status-actions"><button type="button" class="status-processing" onclick="setMemberStatus(${Number(m.id)},'قيد المعالجة')">قيد المعالجة</button><button type="button" class="status-approve" onclick="setMemberStatus(${Number(m.id)},'مقبول')">قبول</button><button type="button" class="status-reject" onclick="setMemberStatus(${Number(m.id)},'مرفوض')">رفض</button><button type="button" class="admin-small-btn" onclick="editMemberRecord(${Number(m.id)})">تعديل</button></div></td>
           <td style="padding:10px"><button type="button" class="btn-danger" onclick="deleteRecord('members',${Number(m.id)})">حذف</button></td>
         </tr>`;
