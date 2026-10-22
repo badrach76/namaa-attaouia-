@@ -1,0 +1,17 @@
+{
+  "name": "جمعية نماء العطاوية",
+  "short_name": "نماء العطاوية",
+  "description": "منصة أصحاب وحدات إنتاج زيت الزيتون بالعطاوية",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#174b3b",
+  "icons": [
+    {
+      "src": "1000101531.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
