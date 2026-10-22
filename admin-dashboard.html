@@ -173,7 +173,7 @@ body{background:var(--admin-bg)}
  <h3><i class="fa-solid fa-bullhorn"></i> مركز التواصل مع المنخرطين</h3>
  <p>أنشئ إعلاناً عاماً لجميع المنخرطين أو رسالة خاصة لمنخرط محدد. تحفظ الرسائل في قاعدة البيانات لتظهر في فضاء المنخرط.</p>
  <form id="admin-member-message-form" onsubmit="sendMemberAnnouncement(event)" class="member-form">
-  <label>نوع الإرسال<select id="admin-announcement-audience" onchange="toggleAnnouncementMember()"><option value="all">إعلان جماعي لجميع المنخرطين</option><option value="individual">رسالة فردية لمنخرط محدد</option></select></label>
+  <label>نوع الإرسال<select id="admin-announcement-audience" onchange="toggleAnnouncementMember()"><option value="all">إعلان جماعي لجميع المنخرطين</option><option value="member">رسالة فردية لمنخرط محدد</option></select></label>
   <label id="announcement-member-field" style="display:none">المنخرط المستهدف<select id="admin-announcement-member"><option value="">جارٍ تحميل المنخرطين…</option></select></label>
   <label>عنوان الإعلان<input id="admin-announcement-title" required maxlength="180" placeholder="مثال: موعد لقاء تكويني مهم"></label>
   <label class="full-width">نص الإعلان<textarea id="admin-announcement-body" required rows="5" placeholder="اكتب مضمون الإعلان بوضوح..."></textarea></label>
@@ -352,7 +352,7 @@ body{background:var(--admin-bg)}
     function toggleAnnouncementMember(){
         const audience=document.getElementById('admin-announcement-audience');
         const field=document.getElementById('announcement-member-field');
-        if(field) field.style.display=audience && audience.value==='individual'?'flex':'none';
+        if(field) field.style.display=audience && audience.value==='member'?'flex':'none';
     }
     async function loadAdminMemberOptions(){
         const select=document.getElementById('admin-announcement-member'); if(!select)return;
@@ -368,10 +368,10 @@ body{background:var(--admin-bg)}
         const title=document.getElementById('admin-announcement-title')?.value.trim()||'';
         const body=document.getElementById('admin-announcement-body')?.value.trim()||'';
         if(!title||!body){alert('أدخل عنوان الإعلان ومضمونه.');return;}
-        if(audience==='individual'&&!memberValue){alert('اختر المنخرط المستهدف.');return;}
+        if(audience==='member'&&!memberValue){alert('اختر المنخرط المستهدف.');return;}
         if(button){button.disabled=true;button.dataset.oldText=button.innerText;button.innerText='جارٍ الحفظ…';}
         try{
-            const payload={title,body,audience,member_id:audience==='individual'?Number(memberValue):null,published:true};
+            const payload={title,body,audience,member_id:audience==='member'?Number(memberValue):null,published:true};
             const {error}=await supabaseClient.from('member_announcements').insert(payload);
             if(error)throw error;
             alert('تم حفظ الإعلان بنجاح.'); form.reset(); toggleAnnouncementMember(); await loadAdminMemberComms();
@@ -391,7 +391,7 @@ body{background:var(--admin-bg)}
                     let html='<div style="overflow-x:auto"><table class="admin-data-table"><thead><tr><th>التاريخ</th><th>المنخرط</th><th>الموضوع</th><th>الرسالة</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody>';
                     for(const m of data){
                         const memberId=Number(m.member_id); const {data:member}=await supabaseClient.from('members').select('name,mill,phone').eq('id',memberId).maybeSingle();
-                        html+=`<tr><td>${escapeAdminHTML(m.created_at?new Date(m.created_at).toLocaleString('ar-MA'):'—')}</td><td>${escapeAdminHTML(member?.name||('رقم '+memberId))}<br><small>${escapeAdminHTML(member?.mill||'')}</small></td><td>${escapeAdminHTML(m.subject||m.title||'—')}</td><td style="min-width:220px;white-space:pre-wrap">${escapeAdminHTML(m.message||m.body||m.content||'—')}</td><td><span class="admin-status-pill">${escapeAdminHTML(m.status||'جديدة')}</span></td><td><button class="admin-action-btn warning" type="button" onclick="updateMemberMessageStatus(${Number(m.id)},'قيد المعالجة')">قيد المعالجة</button><button class="admin-action-btn success" type="button" onclick="updateMemberMessageStatus(${Number(m.id)},'تم الرد')">تم الرد</button><button class="admin-action-btn danger" type="button" onclick="deleteMemberMessage(${Number(m.id)})">حذف</button></td></tr>`;
+                        html+=`<tr><td>${escapeAdminHTML(m.created_at?new Date(m.created_at).toLocaleString('ar-MA'):'—')}</td><td>${escapeAdminHTML(member?.name||('رقم '+memberId))}<br><small>${escapeAdminHTML(member?.mill||'')}</small></td><td>${escapeAdminHTML(m.topic||m.subject||m.title||'—')}</td><td style="min-width:220px;white-space:pre-wrap">${escapeAdminHTML(m.message||m.body||m.content||'—')}</td><td><span class="admin-status-pill">${escapeAdminHTML(m.status||'جديدة')}</span></td><td><button class="admin-action-btn warning" type="button" onclick="updateMemberMessageStatus(${Number(m.id)},'قيد المعالجة')">قيد المعالجة</button><button class="admin-action-btn success" type="button" onclick="updateMemberMessageStatus(${Number(m.id)},'تم الرد')">تم الرد</button><button class="admin-action-btn danger" type="button" onclick="deleteMemberMessage(${Number(m.id)})">حذف</button></td></tr>`;
                     }
                     messagesHost.innerHTML=html+'</tbody></table></div>';
                 }
@@ -403,16 +403,18 @@ body{background:var(--admin-bg)}
                 if(error)throw error;
                 if(!data?.length){announcementsHost.innerHTML='<div class="admin-empty">لا يوجد سجل إعلانات حتى الآن.</div>';return;}
                 let html='<div style="overflow-x:auto"><table class="admin-data-table"><thead><tr><th>التاريخ</th><th>العنوان</th><th>الفئة</th><th>المضمون</th><th>النشر</th><th>إجراء</th></tr></thead><tbody>';
-                html+=(data||[]).map(a=>`<tr><td>${escapeAdminHTML(a.created_at?new Date(a.created_at).toLocaleString('ar-MA'):'—')}</td><td>${escapeAdminHTML(a.title)}</td><td>${a.audience==='all'?'جماعي':'فردي · '+escapeAdminHTML(a.member_id??'')}</td><td style="min-width:220px;white-space:pre-wrap">${escapeAdminHTML(a.body)}</td><td><span class="admin-status-pill ${a.published?'is-done':'is-progress'}">${a.published?'منشور':'غير منشور'}</span></td><td><button type="button" class="admin-action-btn" onclick="editAnnouncement('${String(a.id).replace(/[^a-zA-Z0-9-]/g,'')}','${escapeAdminHTML(a.title).replace(/'/g, '&#39;')}','${escapeAdminHTML(a.body).replace(/'/g, '&#39;')}')"><i class="fa-solid fa-pen-to-square"></i> تعديل</button><button type="button" class="admin-action-btn" onclick="toggleAnnouncementPublished('${String(a.id).replace(/[^a-zA-Z0-9-]/g,'')}',${!a.published})">${a.published?'إلغاء النشر':'نشر'}</button><button type="button" class="admin-action-btn danger" onclick="deleteAnnouncement('${String(a.id).replace(/[^a-zA-Z0-9-]/g,'')}')">حذف</button></td></tr>`).join('');
+                html+=(data||[]).map(a=>`<tr><td>${escapeAdminHTML(a.created_at?new Date(a.created_at).toLocaleString('ar-MA'):'—')}</td><td>${escapeAdminHTML(a.title)}</td><td>${a.audience==='all'?'جماعي':'فردي · '+escapeAdminHTML(a.member_id??'')}</td><td style="min-width:220px;white-space:pre-wrap">${escapeAdminHTML(a.body)}</td><td><span class="admin-status-pill ${a.published?'is-done':'is-progress'}">${a.published?'منشور':'غير منشور'}</span></td><td><button type="button" class="admin-action-btn" onclick="editAnnouncement('${String(a.id).replace(/[^a-zA-Z0-9-]/g,'')}')"><i class="fa-solid fa-pen-to-square"></i> تعديل</button><button type="button" class="admin-action-btn" onclick="toggleAnnouncementPublished('${String(a.id).replace(/[^a-zA-Z0-9-]/g,'')}',${!a.published})">${a.published?'إلغاء النشر':'نشر'}</button><button type="button" class="admin-action-btn danger" onclick="deleteAnnouncement('${String(a.id).replace(/[^a-zA-Z0-9-]/g,'')}')">حذف</button></td></tr>`).join('');
                 announcementsHost.innerHTML=html+'</tbody></table></div>';
             }catch(err){announcementsHost.innerHTML='<div class="admin-empty" style="color:#a32f27">تعذر تحميل سجل الإعلانات: '+escapeAdminHTML(err.message)+'</div>';}
         }
     }
     async function updateMemberMessageStatus(id,status){const {error}=await supabaseClient.from('member_messages').update({status}).eq('id',id);if(error){alert('تعذر تحديث الرسالة: '+error.message);return;}await loadAdminMemberComms();}
     async function deleteMemberMessage(id){if(!confirm('حذف رسالة المنخرط؟'))return;const {error}=await supabaseClient.from('member_messages').delete().eq('id',id);if(error){alert('تعذر حذف الرسالة: '+error.message);return;}await loadAdminMemberComms();}
-    async function editAnnouncement(id,currentTitle,currentBody){
-        const title=prompt('تعديل عنوان الإعلان:',currentTitle||''); if(title===null)return;
-        const body=prompt('تعديل نص الإعلان:',currentBody||''); if(body===null)return;
+    async function editAnnouncement(id){
+        const {data:row,error:readError}=await supabaseClient.from('member_announcements').select('id,title,body').eq('id',id).maybeSingle();
+        if(readError||!row){alert('تعذر تحميل الإعلان للتعديل: '+(readError?.message||''));return;}
+        const title=prompt('تعديل عنوان الإعلان:',row.title||''); if(title===null)return;
+        const body=prompt('تعديل نص الإعلان:',row.body||''); if(body===null)return;
         if(!title.trim()||!body.trim()){alert('العنوان والمضمون مطلوبان.');return;}
         const {error}=await supabaseClient.from('member_announcements').update({title:title.trim(),body:body.trim()}).eq('id',id);
         if(error){alert('تعذر تعديل الإعلان: '+error.message);return;} await loadAdminMemberComms();

@@ -4,30 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون</title>
-    
-    <!-- إعدادات تطبيق الويب التقدمي (PWA) وأيقونة الشعار -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#174b3b">
-    <link rel="apple-touch-icon" href="1000101531.jpg">
-    <link rel="icon" type="image/jpeg" href="1000101531.jpg">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- شريط السوق المتحرك -->
-    <div class="market-ticker">
-        <div class="ticker-title-part">
-            <i class="fa-solid fa-chart-line" style="margin-left: 8px;"></i> مؤشرات أسعار السوق:
-        </div>
-        <div class="ticker-moving-part">
-            <div class="ticker-content" id="live-market-ticker">
-                <span>🫒 جاري تحميل أحدث الأسعار والمؤشرات الحية...</span>
-            </div>
+    <!-- شريط السوق المتحرك --><!-- شريط أسعار السوق مقسم لقسم ثابث وقسم متحرك -->
+<div class="market-ticker">
+    <div class="ticker-title-part">
+        <i class="fa-solid fa-chart-line" style="margin-left: 8px;"></i> مؤشرات أسعار السوق:
+    </div>
+    <div class="ticker-moving-part">
+        <div class="ticker-content" id="live-market-ticker">
+            <span>🫒 جاري تحميل أحدث الأسعار والمؤشرات الحية...</span>
         </div>
     </div>
+</div>
 
     <!-- الهيدر الموحد بالقوائم المنسدلة -->
     <header>
@@ -42,7 +35,7 @@
             <button class="nav-toggle" type="button" aria-expanded="false" aria-label="فتح القائمة"><i class="fa-solid fa-bars"></i><span>القائمة</span></button>
             <ul class="nav-links">
                 <li><a href="index.html" class="active"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
-                <li><a href="about.html"><i class="fa-solid fa-circle-info"></i> من نحن</a></li>
+            <li><a href="about.html"><i class="fa-solid fa-circle-info"></i> من نحن</a></li>
                 
                 <li>
                     <a><i class="fa-solid fa-newspaper"></i> المستجدات <i class="fa-solid fa-angle-down" style="font-size:0.6rem;"></i></a>
@@ -126,7 +119,7 @@
             </div>
         </div>
         <nav class="footer-quick-links" aria-label="روابط سريعة"><a href="about.html">من نحن</a><a href="news.html">أخبار القطاع</a><a href="activities.html">أنشطة الجمعية</a><a href="training.html">التكوين والتأطير</a><a href="membership.html">الانخراط</a></nav>
-        <div class="footer-bottom">
+    <div class="footer-bottom">
             <p>جميع حقوق النشر محفوظة © 2026 - جمعية نماء العطاوية</p>
         </div>
     </footer>

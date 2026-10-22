@@ -1,169 +1,54 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="تواصل مع جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون.">
-<meta name="theme-color" content="#174b3b">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="تواصل مع جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون."><meta name="theme-color" content="#174b3b">
 <title>تواصل معنا | جمعية نماء العطاوية</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css">
+<!-- تحميل مكتبة Supabase وملف الإعدادات في رأس الصفحة لضمان توفر الاتصال -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<style>
-:root{--contact-green:#174b3b;--contact-green-2:#23634d;--contact-gold:#c5a059;--contact-ink:#24352c;--contact-muted:#66766c;--contact-line:#e2e9e3;--contact-bg:#f5f8f5}
-body{font-family:'Cairo',sans-serif;background:var(--contact-bg);color:var(--contact-ink)}
-.contact-page{padding-top:34px;padding-bottom:60px}
-.contact-hero{position:relative;overflow:hidden;border-radius:24px;padding:clamp(28px,5vw,58px);background:linear-gradient(125deg,#123e31 0%,#1c5b45 66%,#2d7256 100%);color:#fff;box-shadow:0 18px 42px #173b2b20;margin-bottom:26px}
-.contact-hero:before,.contact-hero:after{content:"";position:absolute;border:1px solid #ffffff20;border-radius:50%;pointer-events:none}
-.contact-hero:before{width:310px;height:310px;left:-80px;top:-160px}
-.contact-hero:after{width:190px;height:190px;left:70px;top:-100px}
-.contact-hero-content{position:relative;z-index:1;max-width:780px}
-.contact-eyebrow{display:inline-flex;align-items:center;gap:9px;border:1px solid #ffffff40;background:#ffffff12;border-radius:999px;padding:7px 14px;font-size:.88rem;font-weight:700}
-.contact-hero h2{font-size:clamp(2rem,4vw,3rem);line-height:1.35;margin:16px 0 10px;font-weight:900}
-.contact-hero p{max-width:720px;color:#e5eee8;line-height:2;margin:0;font-size:1.02rem}
-.contact-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.8fr);gap:24px;align-items:start}
-.contact-card{background:#fff;border:1px solid var(--contact-line);border-radius:20px;padding:clamp(20px,3vw,30px);box-shadow:0 9px 28px #173b2b0a}
-.contact-card-head{display:flex;gap:13px;align-items:flex-start;margin-bottom:22px}
-.contact-icon{width:48px;height:48px;flex:0 0 48px;display:grid;place-items:center;border-radius:15px;background:#eaf3ed;color:var(--contact-green);font-size:1.15rem}
-.contact-card h3{margin:0 0 5px;color:var(--contact-green);font-size:1.2rem;font-weight:900}
-.contact-card-head p,.contact-card-intro{color:var(--contact-muted);line-height:1.9;margin:0;font-size:.92rem}
-.contact-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.contact-field{display:flex;flex-direction:column;gap:7px;min-width:0}
-.contact-field.full{grid-column:1/-1}
-.contact-field label{font-size:.9rem;font-weight:800;color:#34473b}
-.contact-field input,.contact-field select,.contact-field textarea{width:100%;box-sizing:border-box;border:1px solid #d9e3db;border-radius:11px;background:#fbfdfb;padding:12px 13px;font:inherit;color:var(--contact-ink);transition:border-color .18s,box-shadow .18s}
-.contact-field textarea{resize:vertical;min-height:150px}
-.contact-field input:focus,.contact-field select:focus,.contact-field textarea:focus{outline:none;border-color:var(--contact-gold);box-shadow:0 0 0 3px #c5a05922;background:#fff}
-.contact-submit{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;border:0;border-radius:11px;padding:12px 20px;background:var(--contact-green);color:#fff;font:inherit;font-weight:800;cursor:pointer;transition:transform .18s,background .18s;grid-column:1/-1}
-.contact-submit:hover{background:var(--contact-green-2);transform:translateY(-1px)}
-.contact-submit:disabled{opacity:.65;cursor:wait;transform:none}
-.contact-privacy{display:flex;gap:9px;align-items:flex-start;grid-column:1/-1;color:var(--contact-muted);font-size:.82rem;line-height:1.8;margin:0}
-.contact-privacy i{color:var(--contact-green);margin-top:5px}
-.contact-status{display:none;border-radius:11px;padding:12px 14px;line-height:1.8;font-size:.9rem;grid-column:1/-1}
-.contact-status.show{display:block}.contact-status.success{background:#eaf7ed;color:#205c34;border:1px solid #cce8d2}.contact-status.error{background:#fff0ee;color:#943b32;border:1px solid #f2d0cb}
-.contact-info-list{display:grid;gap:17px;margin-top:20px}
-.contact-info-item{display:flex;gap:13px;align-items:flex-start;padding-bottom:17px;border-bottom:1px solid #edf1ed}
-.contact-info-item:last-child{border-bottom:0;padding-bottom:0}
-.contact-info-item>i{width:39px;height:39px;display:grid;place-items:center;flex:0 0 39px;border-radius:12px;background:#f4f0e6;color:#9a7835}
-.contact-info-item strong{display:block;color:#31463a;margin-bottom:3px}
-.contact-info-item p{margin:0;color:var(--contact-muted);font-size:.9rem;line-height:1.85;overflow-wrap:anywhere}
-.contact-visual{display:block;width:100%;max-height:230px;object-fit:cover;border-radius:14px;margin-top:24px}
-.contact-side-note{background:#f4f8f4;border:1px solid var(--contact-line);border-radius:14px;padding:15px;margin-top:20px;color:#4d6154;font-size:.88rem;line-height:1.9}
-.contact-side-note i{color:var(--contact-green);margin-left:7px}
-@media(max-width:850px){.contact-layout{grid-template-columns:1fr}.contact-details{order:2}}
-@media(max-width:560px){.contact-page{padding-top:20px}.contact-hero{border-radius:17px}.contact-card{border-radius:16px}.contact-form{grid-template-columns:1fr}.contact-field.full,.contact-submit,.contact-privacy,.contact-status{grid-column:auto}.contact-hero p{font-size:.94rem}}
-</style>
 </head>
 <body>
-<div class="market-ticker">
-  <div class="ticker-title-part"><i class="fa-solid fa-chart-line" style="margin-left:8px"></i> مؤشرات السوق:</div>
-  <div class="ticker-moving-part"><div class="ticker-content" id="live-market-ticker"><span>لا تعرض المنصة أسعاراً دولية غير موثقة.</span></div></div>
-</div>
+<div class="market-ticker"><div class="ticker-title-part"><i class="fa-solid fa-chart-line" style="margin-left:8px"></i> مؤشرات السوق:</div><div class="ticker-moving-part"><div class="ticker-content" id="live-market-ticker"><span>لا تعرض المنصة أسعاراً دولية غير موثقة.</span></div></div></div>
+<header><div class="navbar"><a href="index.html" class="logo-area" style="text-decoration:none"><img src="1000096843.jpg" alt="شعار جمعية نماء" class="logo-img"><div class="logo-text"><h1>جمعية نماء العطاوية</h1><span>لأصحاب وحدات إنتاج زيت الزيتون</span></div></a><button class="nav-toggle" type="button" aria-expanded="false" aria-label="فتح القائمة"><i class="fa-solid fa-bars"></i><span>القائمة</span></button><ul class="nav-links">
+<li><a href="index.html"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+<li><a href="about.html"><i class="fa-solid fa-circle-info"></i> من نحن</a></li>
+<li><a href="#" aria-haspopup="true"><i class="fa-solid fa-newspaper"></i> المستجدات <i class="fa-solid fa-angle-down" style="font-size:.6rem"></i></a><div class="dropdown-menu"><a href="news.html"><i class="fa-solid fa-globe"></i> أخبار القطاع</a><a href="activities.html"><i class="fa-solid fa-calendar-days"></i> أنشطة الجمعية</a></div></li>
+<li><a href="#" aria-haspopup="true"><i class="fa-solid fa-briefcase"></i> المهنية <i class="fa-solid fa-angle-down" style="font-size:.6rem"></i></a><div class="dropdown-menu"><a href="services.html"><i class="fa-solid fa-handshake-angle"></i> الخدمات المهنية</a><a href="training.html"><i class="fa-solid fa-graduation-cap"></i> التكوين والتأطير</a></div></li>
+<li><a href="membership.html"><i class="fa-solid fa-user-plus"></i> الانخراط</a></li><li><a href="register.html" class="admin-nav-btn"><i class="fa-solid fa-user-shield"></i> فضاء المنخرط</a></li><li><a class="active" href="contact.html"><i class="fa-solid fa-envelope"></i> تواصل معنا</a></li>
+</ul></div></header>
+<main class="container contact-page"><section class="about-hero"><span class="eyebrow"><i class="fa-solid fa-comments"></i> نحن رهن إشارتكم</span><h2>تواصل معنا</h2><p>يسعد جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون استقبال استفساراتكم ومقترحاتكم ورسائلكم المهنية مباشرة عبر لوحة إشراف المنصة.</p></section>
+<div class="contact-grid"><section class="contact-card"><h3><i class="fa-solid fa-paper-plane"></i> أرسل رسالة إلى الإدارة</h3><p>املأ المعلومات التالية، وسيتم إرسال رسالتك مباشرة إلى لوحة إشراف الجمعية لمعالجتها.</p>
+<form id="contact-form">
+<label for="contact-name">الاسم الكامل</label><input id="contact-name" name="name" required maxlength="120" placeholder="الاسم الكامل">
+<label for="contact-topic">موضوع الرسالة</label><select id="contact-topic" name="topic"><option>استفسار عام</option><option>الانخراط في الجمعية</option><option>التكوين والتأطير</option><option>خدمات مهنية</option><option>اقتراح أو شراكة</option></select>
+<label for="contact-email">البريد الإلكتروني للتواصل (اختياري)</label><input id="contact-email" name="email" type="email" placeholder="name@example.com">
+<label for="contact-phone">رقم الهاتف (اختياري)</label><input id="contact-phone" name="phone" type="tel" placeholder="06XXXXXXXX">
+<label for="contact-message">نص الرسالة</label><textarea id="contact-message" name="message" rows="6" required maxlength="4000" placeholder="اكتب رسالتك هنا..."></textarea>
+<button class="contact-submit" type="submit" id="submit-btn" style="background-color: #174b3b; margin-top: 15px;"><i class="fa-solid fa-paper-plane"></i> إرسال الرسالة إلى الإدارة</button>
+<p class="contact-note" style="margin-top: 10px;">سيتم حفظ رسالتك بأمان في قاعدة بيانات المنصة للاطلاع عليها من طرف أعضاء المكتب.</p>
+</form></section>
 
-<header>
-  <div class="navbar">
-    <a href="index.html" class="logo-area" style="text-decoration:none">
-      <img src="1000096843.jpg" alt="شعار جمعية نماء العطاوية" class="logo-img">
-      <div class="logo-text"><h1>جمعية نماء العطاوية</h1><span>لأصحاب وحدات إنتاج زيت الزيتون</span></div>
-    </a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="فتح القائمة"><i class="fa-solid fa-bars"></i><span>القائمة</span></button>
-    <ul class="nav-links">
-      <li><a href="index.html"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
-      <li><a href="about.html"><i class="fa-solid fa-circle-info"></i> من نحن</a></li>
-      <li>
-        <a href="news.html"><i class="fa-solid fa-newspaper"></i> المستجدات <i class="fa-solid fa-angle-down" style="font-size:.65rem"></i></a>
-        <div class="dropdown-menu"><a href="news.html"><i class="fa-solid fa-globe"></i> أخبار القطاع</a><a href="activities.html"><i class="fa-solid fa-calendar-days"></i> أنشطة الجمعية</a></div>
-      </li>
-      <li>
-        <a href="services.html"><i class="fa-solid fa-briefcase"></i> المهنية <i class="fa-solid fa-angle-down" style="font-size:.65rem"></i></a>
-        <div class="dropdown-menu"><a href="services.html"><i class="fa-solid fa-handshake-angle"></i> الخدمات</a><a href="training.html"><i class="fa-solid fa-graduation-cap"></i> التكوين والتأطير</a></div>
-      </li>
-      <li><a href="membership.html"><i class="fa-solid fa-user-plus"></i> الانخراط</a></li>
-      <li><a href="register.html"><i class="fa-solid fa-user"></i> فضاء المنخرط</a></li>
-      <li><a class="active" href="contact.html"><i class="fa-solid fa-envelope"></i> تواصل معنا</a></li>
-    </ul>
-  </div>
-</header>
-
-<main class="container contact-page">
-  <section class="contact-hero">
-    <div class="contact-hero-content">
-      <span class="contact-eyebrow"><i class="fa-solid fa-comments"></i> نحن رهن إشارتكم</span>
-      <h2>تواصل معنا</h2>
-      <p>نرحب باستفساراتكم ومقترحاتكم ورسائلكم المهنية. أرسلوا رسالتكم إلى إدارة جمعية نماء العطاوية، وسيتم تسجيلها في المنصة لتتم متابعتها من طرف الإدارة.</p>
-    </div>
-  </section>
-
-  <div class="contact-layout">
-    <section class="contact-card">
-      <div class="contact-card-head">
-        <span class="contact-icon"><i class="fa-solid fa-paper-plane"></i></span>
-        <div><h3>أرسل رسالة إلى الإدارة</h3><p>يرجى ملء الحقول المطلوبة لتسهيل معالجة رسالتكم والرد عليها.</p></div>
-      </div>
-      <form id="contact-form" class="contact-form">
-        <div class="contact-field"><label for="contact-name">الاسم الكامل <span aria-hidden="true">*</span></label><input id="contact-name" name="name" required maxlength="120" autocomplete="name" placeholder="اكتب اسمك الكامل"></div>
-        <div class="contact-field"><label for="contact-topic">موضوع الرسالة</label>
-          <select id="contact-topic" name="topic">
-            <option value="استفسار عام">استفسار عام</option>
-            <option value="الانخراط في الجمعية">الانخراط في الجمعية</option>
-            <option value="التكوين والتأطير">التكوين والتأطير</option>
-            <option value="خدمات مهنية">خدمات مهنية</option>
-            <option value="اقتراح أو شراكة">اقتراح أو شراكة</option>
-            <option value="مشكلة تقنية في المنصة">مشكلة تقنية في المنصة</option>
-          </select>
-        </div>
-        <div class="contact-field"><label for="contact-email">البريد الإلكتروني <span style="font-weight:400;color:#7b887f">(اختياري)</span></label><input id="contact-email" name="email" type="email" maxlength="254" autocomplete="email" placeholder="name@example.com"></div>
-        <div class="contact-field"><label for="contact-phone">رقم الهاتف <span style="font-weight:400;color:#7b887f">(اختياري)</span></label><input id="contact-phone" name="phone" type="tel" maxlength="30" autocomplete="tel" placeholder="06XXXXXXXX"></div>
-        <div class="contact-field full"><label for="contact-message">نص الرسالة <span aria-hidden="true">*</span></label><textarea id="contact-message" name="message" rows="6" required maxlength="4000" placeholder="اكتب رسالتك هنا..."></textarea></div>
-        <div id="contact-status" class="contact-status" role="status" aria-live="polite"></div>
-        <button class="contact-submit" type="submit" id="submit-btn"><i class="fa-solid fa-paper-plane"></i> إرسال الرسالة إلى الإدارة</button>
-        <p class="contact-privacy"><i class="fa-solid fa-shield-halved"></i><span>تُستخدم البيانات المدخلة لمعالجة رسالتكم والتواصل بشأنها. يرجى عدم إدراج كلمات مرور أو معلومات سرية في نص الرسالة.</span></p>
-      </form>
-    </section>
-
-    <aside class="contact-card contact-details">
-      <div class="contact-card-head">
-        <span class="contact-icon"><i class="fa-solid fa-address-card"></i></span>
-        <div><h3>معلومات الجمعية</h3><p>قنوات التواصل الخاصة بالجمعية.</p></div>
-      </div>
-      <div class="contact-info-list">
-        <div class="contact-info-item"><i class="fa-solid fa-location-dot"></i><div><strong>المقر</strong><p>العطاوية، إقليم قلعة السراغنة، المغرب</p></div></div>
-        <div class="contact-info-item"><i class="fa-solid fa-envelope"></i><div><strong>البريد الإلكتروني</strong><p>contact@namaa-attaouia.ma</p></div></div>
-        <div class="contact-info-item"><i class="fa-solid fa-handshake"></i><div><strong>مجالات التواصل</strong><p>الانخراط، أنشطة الجمعية، التكوين والتأطير، الخدمات المهنية ومقترحات التعاون.</p></div></div>
-      </div>
-      <img class="contact-visual" src="namaa-platform-hero.jpg" alt="المنصة الرقمية لجمعية نماء العطاوية" loading="lazy">
-      <div class="contact-side-note"><i class="fa-solid fa-circle-info"></i> بعد الإرسال، ستظهر رسالة تأكيد أو توضيح إذا تعذر الحفظ، حتى لا يُفهم فشل الاتصال على أنه إرسال ناجح.</div>
-    </aside>
-  </div>
-</main>
-
-<footer>
-  <div class="footer-content"><div class="footer-logo"><h2>جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون</h2><p>العطاوية، إقليم قلعة السراغنة، المغرب</p></div><div><p><i class="fa-solid fa-envelope"></i> يسعدنا استقبال رسائلكم المهنية</p></div></div>
-  <nav class="footer-quick-links"><a href="about.html">من نحن</a><a href="news.html">أخبار القطاع</a><a href="membership.html">الانخراط</a><a href="contact.html">تواصل معنا</a></nav>
-  <div class="footer-bottom"><p>جميع حقوق النشر محفوظة © 2026 - جمعية نماء العطاوية</p></div>
-</footer>
+<aside class="contact-card contact-details"><h3><i class="fa-solid fa-address-card"></i> معلومات الجمعية</h3><div class="contact-detail"><i class="fa-solid fa-location-dot"></i><div><strong>المقر</strong><p>العطاوية، إقليم قلعة السراغنة، المغرب</p></div></div><div class="contact-detail"><i class="fa-solid fa-envelope"></i><div><strong>البريد الإلكتروني</strong><p>contact@namaa-attaouia.ma</p></div></div><div class="contact-detail"><i class="fa-solid fa-handshake"></i><div><strong>مجالات التواصل</strong><p>الانخراط، أنشطة الجمعية، التكوين، الخدمات المهنية، ومقترحات التعاون.</p></div></div><img class="contact-visual" src="namaa-platform-hero.jpg" alt="المنصة الرقمية لجمعية نماء العطاوية" loading="lazy"></aside></div></main>
+<footer><div class="footer-content"><div class="footer-logo"><h2>جمعية نماء العطاوية لأصحاب وحدات إنتاج زيت الزيتون</h2><p>العطاوية، إقليم قلعة السراغنة، المغرب</p></div><div><p><i class="fa-solid fa-envelope"></i> يسعدنا استقبال رسائلكم المهنية</p></div></div><nav class="footer-quick-links"><a href="about.html">من نحن</a><a href="news.html">أخبار القطاع</a><a href="membership.html">الانخراط</a><a href="contact.html">تواصل معنا</a></nav><div class="footer-bottom"><p>جميع حقوق النشر محفوظة © 2026 - جمعية نماء العطاوية</p></div></footer>
 
 <script src="main.js"></script>
 <script>
-(() => {
-  const form = document.getElementById('contact-form');
-  const button = document.getElementById('submit-btn');
-  const statusBox = document.getElementById('contact-status');
-
-  function showStatus(message, kind) {
-    statusBox.textContent = message;
-    statusBox.className = 'contact-status show ' + kind;
-  }
-
-  form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const client = window.supabaseClient;
-    if (!client || typeof client.from !== 'function') {
-      showStatus('تعذر الاتصال بقاعدة البيانات. تحقق من إعداد supabase-config.js ثم أعد المحاولة.', 'error');
-      return;
+document.getElementById('contact-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // التحقق من تعريف متغير الاتصال بقاعدة البيانات (سواء كان باسم supabase أو _supabase)
+    const dbClient = typeof supabaseClient !== 'undefined' ? supabaseClient : null;
+    
+    if (!dbClient) {
+        alert('خطأ: تعذر الاتصال بقاعدة البيانات (Supabase غير معرّف). يرجى التحقق من ملف supabase-config.js');
+        return;
     }
+
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
 
     const name = document.getElementById('contact-name').value.trim();
     const topic = document.getElementById('contact-topic').value;
@@ -171,31 +56,21 @@ body{font-family:'Cairo',sans-serif;background:var(--contact-bg);color:var(--con
     const phone = document.getElementById('contact-phone').value.trim() || null;
     const message = document.getElementById('contact-message').value.trim();
 
-    if (!name || !message) {
-      showStatus('يرجى إدخال الاسم الكامل ونص الرسالة.', 'error');
-      return;
-    }
-
-    button.disabled = true;
-    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جارٍ إرسال الرسالة...';
-    statusBox.className = 'contact-status';
-
     try {
-      const { error } = await client.from('contact_messages').insert({
-        name, topic, email, phone, message, status: 'جديدة'
-      });
-      if (error) throw error;
-      showStatus('تم إرسال رسالتكم بنجاح إلى الإدارة. شكرًا لتواصلكم معنا.', 'success');
-      form.reset();
-    } catch (error) {
-      console.error('Contact message submission failed:', error);
-      showStatus('تعذر حفظ الرسالة. يرجى المحاولة لاحقًا أو التواصل مع الإدارة عبر قناة أخرى. (' + (error?.message || 'خطأ غير معروف') + ')', 'error');
+        const { data, error } = await dbClient.from('contact_messages').insert([
+            { name: name, topic: topic, email: email, phone: phone, message: message, status: 'جديدة' }
+        ]);
+
+        if (error) throw error;
+
+        alert('تم إرسال رسالتك بنجاح إلى الإدارة! شكراً لتواصلك معنا، سيتم الرد عليك في أقرب وقت.');
+        document.getElementById('contact-form').reset();
+    } catch (err) {
+        console.error(err);
+        alert('حدث خطأ أثناء إرسال الرسالة: ' + (err.message || 'يرجى المحاولة لاحقاً.'));
     } finally {
-      button.disabled = false;
-      button.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال الرسالة إلى الإدارة';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال الرسالة إلى الإدارة';
     }
-  });
-})();
-</script>
-</body>
-</html>
+});
+</script></body></html>
