@@ -377,100 +377,110 @@ button,a,input,select,textarea { -webkit-tap-highlight-color:transparent; }
 .contact-detail p { color:#65736b; font-size:.92rem; }
 .contact-visual { width:100%; display:block; margin-top:22px; border-radius:14px; aspect-ratio:16/9; object-fit:cover; }
 @media(max-width:760px){.contact-grid{grid-template-columns:1fr}.contact-card{padding:20px}.contact-page .about-hero{padding:28px 20px}}
+/* نماذج إدارة احترافية موحدة */
+.admin-modal-backdrop{position:fixed;inset:0;z-index:9999;background:rgba(12,30,23,.58);display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(5px)}.admin-edit-modal{width:min(760px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:20px;box-shadow:0 25px 80px #0003;padding:24px;border-top:5px solid var(--accent-gold)}.admin-edit-modal>header{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #e8ece6;padding-bottom:14px;margin-bottom:18px}.admin-edit-modal h3{margin:0;color:var(--primary-green)}.modal-close{font-size:1.7rem;background:#f2f4f1;border:0;border-radius:10px;width:40px;height:40px;cursor:pointer}.edit-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.edit-fields label{display:flex;flex-direction:column;gap:6px;font-weight:700;color:#34483e}.edit-fields input{width:100%;box-sizing:border-box;border:1px solid #d8e0d8;border-radius:10px;padding:11px;font:inherit}.admin-edit-modal footer{display:flex;justify-content:flex-start;gap:10px;margin-top:22px}.modal-save,.modal-cancel{border:0;border-radius:10px;padding:11px 20px;font:inherit;font-weight:800;cursor:pointer}.modal-save{background:var(--primary-green);color:white}.modal-cancel{background:#eef1ed;color:#34483e}@media(max-width:600px){.edit-fields{grid-template-columns:1fr}.admin-edit-modal{padding:17px}}
 
-/* فضاء المنخرط المهني: تصميم موحد واحترافي ومتجاوب */
-.member-portal-page { background:linear-gradient(180deg,#f5f8f4 0%,#fbfaf6 100%) !important; color:#243b31; }
-.member-portal-container { max-width:1080px !important; padding-bottom:38px !important; }
-.member-portal-heading { background:linear-gradient(135deg,#fff 0%,#f1f6f1 100%); border:1px solid #e0e9e1; border-radius:22px; padding:24px 20px; box-shadow:0 10px 28px rgba(27,77,62,.06); }
-.member-portal-heading h3 { font-size:clamp(1.25rem,3vw,1.8rem) !important; margin-bottom:8px; }
-.member-quick-nav { display:grid; grid-template-columns:repeat( auto-fit,minmax(190px,1fr)); gap:14px; margin:0 0 24px; }
-.member-quick-link { min-width:0; display:flex; align-items:center; gap:13px; padding:16px; background:#fff; border:1px solid #e1e9e1; border-radius:16px; box-shadow:0 6px 18px rgba(27,77,62,.045); color:var(--primary-green); text-decoration:none; transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease; }
-.member-quick-link:hover,.member-quick-link:focus-visible { transform:translateY(-2px); border-color:var(--accent-gold); box-shadow:0 12px 24px rgba(27,77,62,.09); outline:none; }
-.member-quick-link > span:last-child { display:flex; flex-direction:column; gap:4px; min-width:0; }
-.member-quick-link strong { font-size:.96rem; line-height:1.5; }
-.member-quick-link small { color:#77847b; font-size:.76rem; line-height:1.5; }
-.member-quick-icon { flex:0 0 43px; width:43px; height:43px; display:grid; place-items:center; border-radius:13px; background:#edf4ee; color:#1b4d3e; font-size:1.1rem; }
-.member-portal-card { background:#fff; border:1px solid #e4e9e2; border-top:4px solid var(--accent-gold); border-radius:20px; padding:clamp(18px,3vw,28px); box-shadow:0 10px 30px rgba(27,77,62,.065); margin-bottom:24px; min-width:0; }
-.member-card-heading { display:flex; align-items:center; gap:10px; color:var(--primary-green); font-size:1.12rem; line-height:1.6; padding-bottom:14px; margin:0 0 18px; border-bottom:1px solid #edf0eb; }
-.member-card-heading i { width:38px; height:38px; display:grid; place-items:center; border-radius:12px; background:#edf4ee; color:#a78648; }
-#user-dashboard-info { background:linear-gradient(135deg,#fff 0%,#fbfcfa 100%) !important; padding:0 !important; border:0 !important; border-radius:0 !important; box-shadow:none !important; margin:0 !important; }
-#user-dashboard-info > div { overflow-wrap:anywhere; }
-.member-edit-action button { min-height:46px; border-radius:12px !important; padding:12px 20px !important; }
-.member-edit-card form { display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px !important; }
-.member-edit-card .form-group { min-width:0; margin:0; }
-.member-edit-card label { display:block; font-size:.88rem; font-weight:800; color:#355447; margin-bottom:7px; }
-.member-edit-card input,.member-edit-card select,.member-edit-card textarea { width:100%; min-width:0; box-sizing:border-box; min-height:46px; padding:11px 13px !important; border:1px solid #dbe4dc !important; border-radius:11px !important; background:#fbfcfa; font:inherit; }
-.member-edit-card form > div[style*="grid-column"] { grid-column:1/-1; }
-.member-edit-card form button { border-radius:11px !important; min-height:46px; padding:11px 20px !important; }
-.member-training-card #member-trainings-grid { grid-template-columns:repeat( auto-fit,minmax(min(100%,280px),1fr)) !important; }
-.member-section-note { color:#68796f; line-height:1.9; margin-bottom:16px; }
-.member-contact-cta { display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:11px 17px; background:var(--primary-green); color:#fff; text-decoration:none; border-radius:11px; font-weight:800; }
-.member-contact-cta:hover { background:#123d30; }
-/* اتساق نماذج لوحة الإدارة مع الهوية البصرية */
-.admin-action-box input,.admin-action-box select,.admin-action-box textarea { box-sizing:border-box; max-width:100%; min-width:0; font:inherit; border:1px solid #dce4dc !important; border-radius:10px !important; background:#fcfdfb; padding:11px 13px !important; }
-.admin-action-box label { display:block; margin-bottom:7px; font-weight:800; color:#355447; }
-.admin-action-box button,.submit-btn { border-radius:10px !important; font:inherit; font-weight:800; }
-@media(max-width:640px) {
- .member-portal-container { margin-top:18px !important; padding-left:14px !important; padding-right:14px !important; }
- .member-portal-heading { padding:19px 14px; border-radius:17px; }
- .member-quick-nav { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
- .member-quick-link { align-items:flex-start; padding:12px 10px; gap:9px; border-radius:13px; }
- .member-quick-icon { width:35px; height:35px; flex-basis:35px; border-radius:10px; font-size:.95rem; }
- .member-quick-link strong { font-size:.82rem; }
- .member-quick-link small { font-size:.68rem; }
- .member-portal-card { padding:17px 14px; border-radius:16px; }
- .member-card-heading { font-size:1rem; }
- .member-edit-card form { grid-template-columns:1fr !important; }
- .member-edit-card form > div[style*="grid-column"] { grid-column:1 !important; }
- .admin-action-box form[style*="display: flex"] { display:grid !important; grid-template-columns:1fr !important; }
- .admin-action-box form[style*="display: flex"] input,.admin-action-box form[style*="display: flex"] button { width:100%; }
-}
+/* لوحة إدارة موحدة: روابط أقسام أنيقة مع عرض قسم واحد فقط */
+.admin-section-nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:0 auto 28px;max-width:1180px;padding:16px;background:linear-gradient(135deg,#fff,#f5f8f5);border:1px solid #e4ebe5;border-radius:18px;box-shadow:0 12px 32px rgba(27,77,62,.08)}
+.admin-section-link{display:flex;align-items:center;justify-content:flex-start;gap:11px;min-height:58px;padding:13px 15px;border:1px solid #e1e8e2;border-radius:12px;background:#fff;color:#244c3f;text-decoration:none;font:inherit;font-weight:800;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease;text-align:right}
+.admin-section-link i:first-child{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:#edf4ef;color:#1b4d3e}
+.admin-section-link span{flex:1}
+.admin-section-link:hover{transform:translateY(-2px);border-color:#c5a059;box-shadow:0 8px 18px rgba(27,77,62,.1)}
+.admin-section-link.active{background:#1b4d3e;color:#fff;border-color:#1b4d3e;box-shadow:0 8px 20px rgba(27,77,62,.2)}
+.admin-section-link.active i:first-child{background:rgba(255,255,255,.14);color:#f4d69c}
+.admin-section-link.external{border-style:dashed}
+.admin-panel{display:none;animation:adminPanelIn .24s ease both}
+.admin-panel.active{display:block}
+.admin-panel>.admin-action-box,.admin-panel>div[style*="background: white"]{max-width:1180px;margin:0 auto 24px}
+.official-price-note{max-width:1180px;margin:0 auto 24px;padding:22px 24px;border:1px solid #dce8df;border-right:5px solid #c5a059;border-radius:14px;background:#f7faf7;color:#304b40}
+.official-price-note h4{margin:0 0 10px;color:#1b4d3e;font-size:1.08rem}
+.official-price-note p{margin:0 0 14px;line-height:1.9}
+.official-price-note a{display:inline-flex;gap:8px;align-items:center;padding:10px 16px;border-radius:9px;background:#1b4d3e;color:white;text-decoration:none;font-weight:800}
+@keyframes adminPanelIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.admin-section-nav{grid-template-columns:1fr 1fr;padding:10px;gap:8px}.admin-section-link{padding:10px;min-height:62px;font-size:.82rem;gap:7px}.admin-section-link i:first-child{width:29px;height:29px;flex-basis:29px}.official-price-note{padding:16px}}
+.member-status-actions{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.member-status-actions button{border:0;border-radius:7px;padding:7px 9px;font:inherit;font-size:.78rem;font-weight:800;cursor:pointer}.status-processing{background:#fff4d6;color:#805b00}.status-approve{background:#e3f5e9;color:#17633a}.status-reject{background:#fde8e7;color:#a12622}.admin-wa-link{display:inline-block;margin:6px 0 0 6px;background:#25d366;color:#fff;text-decoration:none;border-radius:6px;padding:3px 7px;font-size:.75rem}
+.official-price-frame-wrap{margin-top:18px;width:100%;height:min(72vh,760px);min-height:420px;overflow:hidden;border:1px solid #dce5de;border-radius:12px;background:#fff}.official-price-frame-wrap iframe{width:100%;height:100%;border:0;background:#fff}
 
-/* صفحات فضاء المنخرط المستقلة والمتناسقة */
-.member-logout,.member-back-link{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid #dce7df;border-radius:12px;background:#fff;color:var(--primary-green);padding:11px 15px;text-decoration:none;font:inherit;font-weight:800;cursor:pointer}.member-back-link{margin:0 0 18px}.member-greeting{font-weight:700;color:#426657;background:#fff;border:1px solid #e3ebe3;border-radius:12px;padding:13px 15px;margin-top:16px}.member-quick-link>i:last-child{margin-right:auto;color:#a78648}.member-announcement{padding:18px 0;border-bottom:1px solid #e8eee7}.member-announcement:last-child{border-bottom:0}.member-announcement h4{color:var(--primary-green);margin:0 0 8px}.member-announcement p{line-height:1.9;white-space:normal}.member-announcement small{color:#77847b}.member-edit-card textarea{width:100%;box-sizing:border-box;min-height:130px;border:1px solid #dbe4dc;border-radius:11px;padding:12px;font:inherit;background:#fbfcfa}.member-edit-card select{width:100%;box-sizing:border-box;min-height:46px;border:1px solid #dbe4dc;border-radius:11px;padding:11px;font:inherit;background:#fbfcfa}.member-portal-page .navbar{gap:12px}.member-portal-page .logo-text h1{font-size:clamp(1rem,2.6vw,1.45rem)}@media(max-width:640px){.member-portal-page .navbar{align-items:center}.member-portal-page .logo-text span{font-size:.72rem}.member-logout{font-size:.8rem;padding:9px}.member-back-link{width:100%;box-sizing:border-box}}
-
-#admin-members-table select{max-width:150px;padding:7px;border:1px solid #dce4dc;border-radius:8px;background:#fff;font:inherit}.wa-action{display:block;background:#25d366;color:#fff;border:0;border-radius:8px;padding:7px 9px;margin-top:7px;cursor:pointer;font:inherit;font-size:.8rem;white-space:nowrap}.admin-action-box table td{vertical-align:top}.member-portal-card #user-dashboard-info p{padding:9px 0;border-bottom:1px solid #eef1ec;line-height:1.7}.member-portal-card #user-dashboard-info h3{color:var(--primary-green)}
-
-/* فهرس مواد التكوين وصفحة المادة المستقلة */
-.member-training-grid, #member-trainings-grid, #public-trainings-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:22px; align-items:stretch; }
-.training-index-card { display:flex; flex-direction:column; min-width:0; height:100%; background:#fff; border:1px solid #e4eae5; border-radius:20px; overflow:hidden; box-shadow:0 8px 26px rgba(27,77,62,.07); transition:transform .2s ease,box-shadow .2s ease; }
-.training-index-card:hover { transform:translateY(-4px); box-shadow:0 14px 32px rgba(27,77,62,.13); }
-.training-index-card .training-cover { width:100%; height:190px; object-fit:cover; }
-.training-cover-placeholder { height:150px; display:grid; place-items:center; background:linear-gradient(135deg,#edf4ef,#f8f2e6); color:var(--primary-green); font-size:2.6rem; }
-.training-index-card .training-card-body { display:flex; flex:1; flex-direction:column; align-items:stretch; gap:10px; }
-.training-index-card h4 { line-height:1.7; margin:0; overflow-wrap:anywhere; }
-.training-index-description { color:#58675f; font-size:.92rem; line-height:1.9; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-.training-open-link { display:flex; justify-content:center; align-items:center; gap:9px; margin-top:auto; padding:12px 16px; border-radius:12px; background:var(--primary-green,#1b4d3e); color:#fff!important; font-weight:800; text-decoration:none!important; transition:background .2s ease,transform .2s ease; }
-.training-open-link:hover { background:#123b2f; transform:translateY(-1px); }
-.training-material-container { max-width:1000px; }
-.training-material-content { margin:22px 0 36px; }
-.training-detail-card { overflow:hidden; border:1px solid #e2e9e3; border-top:5px solid var(--accent-gold,#c5a059); border-radius:22px; background:#fff; box-shadow:0 12px 34px rgba(27,77,62,.09); }
-.training-detail-cover { display:block; width:100%; max-height:420px; object-fit:cover; }
-.training-detail-body { padding:clamp(18px,4vw,36px); }
-.training-detail-body h2 { color:var(--primary-green,#1b4d3e); font-size:clamp(1.35rem,4vw,2rem); line-height:1.6; margin:8px 0 16px; overflow-wrap:anywhere; }
-.training-detail-body .training-description { margin-top:18px; font-size:1rem; line-height:2; white-space:normal; }
-.training-detail-body .training-media a { min-height:46px; }
-@media(max-width:600px) { .training-index-card .training-cover { height:165px; } .training-index-card .training-card-body { padding:17px; } .training-meta { gap:8px 12px; } .training-detail-body { padding:18px; } }
-
-
-/* تحسين موحد للوحة الإشراف ورسائل الزوار */
-.admin-section-nav { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin:22px 0 28px; }
-.admin-section-link { display:flex; align-items:center; gap:12px; min-height:72px; padding:16px 18px; border:1px solid #e1e9e3; border-radius:18px; background:linear-gradient(145deg,#fff,#f7faf7); color:#1b4d3e; font-family:inherit; font-weight:800; font-size:1rem; text-align:right; box-shadow:0 6px 20px rgba(27,77,62,.06); cursor:pointer; transition:transform .2s,box-shadow .2s,border-color .2s; }
-.admin-section-link i { color:#b99a5a; font-size:1.25rem; }
-.admin-section-link:hover,.admin-section-link.active { transform:translateY(-2px); border-color:#b99a5a; box-shadow:0 10px 24px rgba(27,77,62,.11); }
+/* تحسينات التناسق المضافة على النسخة الأحدث */
 .admin-panel { display:none; }
-.admin-panel.active { display:block; animation:adminPanelIn .22s ease-out; }
-@keyframes adminPanelIn { from {opacity:0; transform:translateY(6px)} to {opacity:1;transform:translateY(0)} }
-.admin-back-row { margin:0 0 18px; }
-.admin-back-row button { border:1px solid #dce7df; border-radius:12px; background:#fff; color:#1b4d3e; padding:11px 16px; font:inherit; font-weight:800; box-shadow:0 4px 14px rgba(27,77,62,.07); }
-.admin-message-action { border:0; border-radius:8px; background:#edf4ef; color:#1b4d3e; padding:8px 10px; margin:2px; font:inherit; cursor:pointer; }
-.admin-message-delete { border:0; border-radius:8px; background:#fff0ef; color:#b42318; padding:8px 10px; font:inherit; font-weight:700; cursor:pointer; }
-.admin-message-delete:hover { background:#ffe0dd; }
-#messages-container { overflow-x:auto; border:1px solid #e7ece8; border-radius:14px; background:#fff; }
-#messages-container table { min-width:900px; }
-#messages-container th { position:sticky; top:0; z-index:1; }
+.admin-panel.active { display:block; animation: adminPanelIn .18s ease-out; }
+@keyframes adminPanelIn { from { opacity:.65; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+.nav-links > li > a[href="#"] { cursor:pointer; }
+@media (prefers-reduced-motion: reduce) { .admin-panel.active { animation:none; } }
+
+
+/* تحسين نهائي: عرض قسم الإدارة المختار وحده مع العودة للوحة الرئيسية */
+.admin-section-nav[hidden], .section-title[hidden], .admin-back-row[hidden] { display:none !important; }
+.admin-back-row { max-width:1180px; margin:0 auto 18px; padding:0 2px; }
+.admin-back-row .member-secondary-btn { display:inline-flex; align-items:center; gap:9px; border:1px solid #dce7df; border-radius:10px; background:#fff; color:var(--primary-green); padding:10px 16px; font-weight:800; box-shadow:0 4px 14px rgba(27,77,62,.07); cursor:pointer; }
+.admin-panel-focused .admin-panel.active { min-height:45vh; }
 .admin-panel-focused .container { padding-top:18px; }
-.admin-panel-focused .admin-panel.active { min-height:40vh; }
-.admin-section-nav[hidden],.section-title[hidden],.admin-back-row[hidden] { display:none!important; }
-@media(max-width:640px) { .admin-section-nav { grid-template-columns:1fr 1fr; gap:9px; } .admin-section-link { min-height:66px; padding:12px 10px; font-size:.88rem; border-radius:14px; } }
-@media(prefers-reduced-motion:reduce) { .admin-panel.active { animation:none; } }
+.admin-panel-focused .admin-panel.active > .admin-action-box,
+.admin-panel-focused .admin-panel.active > div { max-width:1180px; margin-left:auto; margin-right:auto; }
+/* عارضة الأخبار تستخدم نفس بنية واتجاه وسرعة عارضة الأسعار */
+.market-ticker .ticker-track { animation-duration:58s; }
+.news-ticker-placeholder { color:#fff; }
+@media (prefers-reduced-motion: reduce) { .market-ticker .ticker-track { animation-duration:120s; } }
+
+/* تحسين وضوح عارضة الأسعار وتوحيد أسلوب النص */
+.market-ticker { color:#fff; font-size:clamp(.9rem,1.05vw,1.02rem); font-weight:800; }
+.ticker-title-part { color:#ffe7a8; font-size:clamp(.88rem,1vw,1rem); }
+.ticker-group { color:#fff; font-size:inherit; font-weight:800; }
+.ticker-group span, .ticker-group a { color:#fff; font-size:inherit; line-height:1.5; }
+.ticker-group strong { color:#ffe08a; font-weight:900; }
+.ticker-group small { color:#e2f1e8; font-size:.86em; }
+.ticker-group a { text-decoration:underline; text-underline-offset:3px; }
+.content-edit-wide { grid-column:1/-1; }
+.edit-fields textarea { width:100%; min-height:110px; box-sizing:border-box; border:1px solid #d8e0d8; border-radius:10px; padding:11px; font:inherit; resize:vertical; }
+.edit-fields input[type=file] { background:#f8faf7; }
+@media(max-width:600px){.market-ticker{font-size:.82rem}.ticker-title-part{font-size:.78rem}.ticker-group small{font-size:.76em}}
+
+
+/* ===== بوابة المنخرط: تصميم النسخة السابقة المعتمدة ===== */
+.member-portal { background: #f4f7f4; color: #203a31; }
+.member-portal .navbar { gap: 16px; }
+.member-portal .logo-area { text-decoration: none; }
+.member-logout { border: 1px solid #d8e2dc; background: #fff; color: #174b3b; border-radius: 10px; padding: 10px 15px; font: inherit; cursor: pointer; }
+.member-shell { width: min(1120px, calc(100% - 32px)); margin: 28px auto 48px; }
+.member-welcome { display:flex; justify-content:space-between; align-items:center; gap:24px; background:linear-gradient(135deg,#fff,#edf4ef); border:1px solid #e0e9e2; border-radius:24px; padding:clamp(22px,4vw,42px); box-shadow:0 12px 35px rgba(23,75,59,.07); }
+.member-welcome h2 { margin:10px 0; color:#174b3b; font-size:clamp(1.65rem,4vw,2.45rem); }
+.member-welcome p { margin:0; color:#63736a; line-height:1.9; }
+.member-eyebrow { color:#9a7a37; font-weight:700; }
+.welcome-mark { width:76px; height:76px; flex:0 0 76px; border-radius:22px; display:grid; place-items:center; background:#e0eee5; color:#174b3b; font-size:2rem; }
+.member-section-nav { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; margin:22px 0; }
+.member-nav-link { display:flex; align-items:center; justify-content:center; gap:9px; min-height:62px; padding:12px; border:1px solid #dfe8e1; border-radius:14px; background:#fff; color:#315346; font:inherit; font-weight:700; cursor:pointer; transition:background .2s,border-color .2s,transform .2s; }
+.member-nav-link:hover { transform:translateY(-1px); border-color:#9db9a7; }
+.member-nav-link.active { background:#174b3b; border-color:#174b3b; color:#fff; }
+.member-panel { display:none; background:#fff; border:1px solid #e1e9e2; border-radius:22px; padding:clamp(18px,3vw,32px); box-shadow:0 8px 28px rgba(23,75,59,.05); }
+.member-panel.active { display:block; animation:memberPanelIn .18s ease-out; }
+@keyframes memberPanelIn { from {opacity:.65;transform:translateY(4px)} to {opacity:1;transform:translateY(0)} }
+.member-panel-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; padding-bottom:18px; margin-bottom:20px; border-bottom:1px solid #edf1ed; color:#174b3b; }
+.member-panel-heading span { color:#9a7a37; font-size:.9rem; font-weight:700; }
+.member-panel-heading h3 { margin:5px 0 0; font-size:1.45rem; }
+.member-panel-heading > i { font-size:1.8rem; color:#b69a5b; }
+.member-profile-card,.member-form,.member-note,.member-security-note { line-height:1.9; }
+.member-form { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.member-form label { display:flex; flex-direction:column; gap:7px; font-weight:700; color:#385448; }
+.member-form input,.member-form select,.member-form textarea { width:100%; box-sizing:border-box; border:1px solid #d8e2da; border-radius:10px; padding:12px; font:inherit; background:#fbfdfb; color:#203a31; }
+.member-form .full-width { grid-column:1/-1; }
+.member-form-actions { grid-column:1/-1; display:flex; flex-wrap:wrap; gap:10px; }
+.member-primary-btn,.member-secondary-btn { border:0; border-radius:10px; padding:11px 16px; font:inherit; font-weight:700; cursor:pointer; }
+.member-primary-btn { background:#174b3b; color:white; }
+.member-secondary-btn { background:#edf3ee; color:#174b3b; }
+.member-note,.member-security-note { display:flex; gap:10px; align-items:flex-start; margin-top:18px; padding:13px 15px; background:#f4f8f4; border-radius:12px; color:#53685c; }
+.member-security-note { background:#fff9eb; color:#755f2f; }
+.member-intro { color:#627268; line-height:1.9; }
+.member-subheading { display:flex; justify-content:space-between; align-items:center; gap:12px; margin:25px 0 12px; }
+.member-subheading h4 { margin:0; color:#174b3b; }
+.member-training-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+.member-footer { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:24px 4px 0; color:#66776d; }
+.member-footer a { color:#174b3b; font-weight:700; }
+.loading-state { color:#77877c; padding:12px; }
+@media (max-width:800px) { .member-section-nav { grid-template-columns:repeat(2,minmax(0,1fr)); } .member-nav-link:last-child { grid-column:1/-1; } }
+@media (max-width:560px) { .member-shell { width:calc(100% - 22px); margin-top:14px; } .member-welcome { padding:20px; border-radius:17px; } .welcome-mark { width:48px; height:48px; flex-basis:48px; font-size:1.35rem; border-radius:14px; } .member-nav-link { justify-content:flex-start; font-size:.88rem; padding:10px; min-height:56px; } .member-form { grid-template-columns:1fr; } .member-form .full-width,.member-form-actions { grid-column:1; } .member-panel { border-radius:16px; } .member-logout { padding:8px 10px; font-size:.85rem; } }
+
+/* توحيد سلوك القوائم المنسدلة في صفحة التكوين مع بقية الموقع */
+.dropdown-trigger { cursor:pointer; }
+.nav-links > li { position:relative; }
+.nav-links .dropdown-menu { z-index:1000; }
+@media (hover:hover) and (min-width:901px) { .nav-links > li:hover > .dropdown-menu, .nav-links > li:focus-within > .dropdown-menu { display:block; } }

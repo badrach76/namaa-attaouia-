@@ -80,11 +80,58 @@ async function fetchGlobalMarketPrices() {
         console.warn('تعذر تحديث الأسعار المحلية:', err);
         items.push('<span>تعذر تحميل الأسعار المحلية حالياً.</span>');
     }
+    try {
+        const { data: recentNews, error: newsError } = await supabaseClient.from('news').select('title,category,date').order('id', { ascending: false }).limit(6);
+        if (!newsError && recentNews?.length) recentNews.forEach(n => items.push(`<span>📰 مستجد: ${escapeHTML(n.title || 'خبر جديد')}${n.category ? ` — ${escapeHTML(n.category)}` : ''}${n.date ? ` (${escapeHTML(n.date)})` : ''}</span>`));
+    } catch (err) { console.warn('تعذر تحميل عناوين الأخبار للعارضة:', err); }
     items.push('<small>ملاحظة: بيانات المفوضية أسعار سوق مُبلّغ عنها وتُحدّث دورياً، وليست أسعاراً لحظية أو أسعار بيع بالتجزئة في المغرب.</small>');
     const track = items.join(' <b class="ticker-separator" aria-hidden="true">✦</b> ');
     tickerContainer.innerHTML = `<div class="ticker-track"><div class="ticker-group">${track}</div><div class="ticker-group" aria-hidden="true">${track}</div></div>`;
 }
 
+
+// استعادة كلمة مرور المشرف عبر رسالة البريد الإلكتروني الموثقة في Supabase Auth
+async function requestAdminPasswordReset(e) {
+    e.preventDefault();
+    const email = document.getElementById('reset-admin-email')?.value.trim();
+    if (!email) { alert('أدخل البريد الإلكتروني لحساب المشرف.'); return; }
+    const button = e.currentTarget.querySelector('[type="submit"]');
+    if (button) { button.disabled = true; button.textContent = 'جارٍ إرسال رابط الاستعادة…'; }
+    try {
+        const redirectTo = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, 'admin-reset-password.html')}`;
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
+        if (error) throw error;
+        alert('إذا كان البريد مسجلاً في النظام، فستصلك رسالة لاستعادة كلمة المرور. افحص البريد غير المرغوب فيه أيضاً.');
+    } catch (err) { alert('تعذر طلب الاستعادة: ' + (err.message || 'تحقق من إعدادات البريد في Supabase.')); }
+    finally { if (button) { button.disabled = false; button.textContent = 'إرسال رابط الاستعادة'; } }
+}
+async function updateAdminPassword(e) {
+    e.preventDefault();
+    const password = document.getElementById('new-admin-password')?.value || '';
+    const confirmPassword = document.getElementById('confirm-admin-password')?.value || '';
+    if (password.length < 10) { alert('اختر كلمة مرور لا تقل عن 10 أحرف.'); return; }
+    if (password !== confirmPassword) { alert('كلمتا المرور غير متطابقتين.'); return; }
+    const button = e.currentTarget.querySelector('[type="submit"]'); if (button) { button.disabled = true; button.textContent = 'جارٍ تحديث كلمة المرور…'; }
+    try {
+        const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+        if (sessionError) throw sessionError;
+        if (!session) throw new Error('رابط الاستعادة غير صالح أو انتهت صلاحيته. اطلب رابطاً جديداً.');
+        const { error } = await supabaseClient.auth.updateUser({ password });
+        if (error) throw error;
+        alert('تم تحديث كلمة المرور. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.');
+        await supabaseClient.auth.signOut(); window.location.href = 'admin-login.html';
+    } catch (err) { alert('تعذر تحديث كلمة المرور: ' + (err.message || 'اطلب رابط استعادة جديداً.')); }
+    finally { if (button) { button.disabled = false; button.textContent = 'تحديث كلمة المرور'; } }
+}
+
+// إشعار محفوظ داخل فضاء المنخرطين؛ لا يُعد إرسال واتساب أو SMS خارجياً.
+async function notifyMembers(title, body, memberId = null) {
+    try {
+        const row = { audience: memberId ? 'member' : 'all', member_id: memberId ? Number(memberId) : null, title, body, published: true };
+        const { error } = await supabaseClient.from('member_announcements').insert([row]);
+        if (error) console.warn('تعذر حفظ إشعار المنخرطين:', error.message);
+    } catch (err) { console.warn('تعذر حفظ إشعار المنخرطين:', err); }
+}
 
 // 1. تسجيل دخول المشرف (الإدارة)
 async function handleAdminLogin(e) {
@@ -171,11 +218,9 @@ async function handleAddNews(e) {
     const date = document.getElementById('news-date').value;
     const content = document.getElementById('news-content').value;
     const imageUrl = (await uploadFileToSupabase('news-image-file')) || document.getElementById('news-image-url')?.value.trim() || '';
-    const documentUrl = document.getElementById('news-document-url')?.value.trim() || '';
-
-    const { error } = await supabaseClient.from('news').insert([{ title, category, date, content, image_url: imageUrl, document_url: documentUrl }]);
+    const { error } = await supabaseClient.from('news').insert([{ title, category, date, content, image_url: imageUrl }]);
     if (error) alert('خطأ: ' + error.message);
-    else { alert('تم نشر الخبر بنجاح.'); e.target.reset(); loadAdminNews(); loadPublicNews(); }
+    else { alert('تم نشر الخبر بنجاح.'); e.target.reset(); await notifyMembers('خبر جديد: ' + title, `تمت إضافة خبر جديد إلى المنصة: ${title}`); await loadAdminNews(); await loadPublicNews(); await fetchGlobalMarketPrices(); }
 }
 
 // 6. عرض الأخبار العامة
@@ -187,14 +232,14 @@ async function loadPublicNews() {
     if (error) { grid.innerHTML = '<p class="empty-state">تعذر تحميل الأخبار حالياً.</p>'; return; }
     if (!newsList?.length) { grid.innerHTML = '<p class="empty-state">لا توجد أخبار منشورة حالياً.</p>'; return; }
     grid.innerHTML = newsList.map(n => {
-        const image = safeHttpUrl(n.image_url), doc = safeHttpUrl(n.document_url);
+        const image = safeHttpUrl(n.image_url);
         return `<article class="public-content-card" style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.06);border-top:4px solid #c5a059;">
           ${image ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(n.title || 'صورة الخبر')}" loading="lazy" style="width:100%;height:180px;object-fit:cover;">` : ''}
           <div style="padding:20px;"><span style="background:#1b4d3e;color:white;padding:3px 10px;border-radius:15px;font-size:.75rem;">${escapeHTML(n.category || 'خبر')}</span>
           <h4 style="color:#1b4d3e;margin:10px 0 6px;font-size:1.1rem;">${escapeHTML(n.title || 'خبر')}</h4>
           <p style="font-size:.8rem;color:#777;margin-bottom:8px;"><i class="fa-solid fa-clock"></i> ${escapeHTML(n.date || '—')}</p>
           <p style="color:#555;font-size:.9rem;white-space:pre-wrap;overflow-wrap:anywhere;">${escapeHTML(n.content || '')}</p>
-          ${doc ? `<p style="margin-top:12px;"><a href="${escapeHTML(doc)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-file-pdf"></i> فتح الوثيقة المرفقة</a></p>` : ''}</div></article>`;
+          </div></article>`;
     }).join('');
 }
 
@@ -207,14 +252,14 @@ async function loadPublicActivities() {
     if (error) { grid.innerHTML = '<p class="empty-state">تعذر تحميل الأنشطة حالياً.</p>'; return; }
     if (!acts?.length) { grid.innerHTML = '<p class="empty-state">لا توجد أنشطة منشورة حالياً.</p>'; return; }
     grid.innerHTML = acts.map(a => {
-        const image = safeHttpUrl(a.image_url), video = safeHttpUrl(a.video_url);
+        const image = safeHttpUrl(a.image_url);
         return `<article class="public-content-card" style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.06);border-top:4px solid #1b4d3e;">
           ${image ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(a.title || 'صورة النشاط')}" loading="lazy" style="width:100%;height:180px;object-fit:cover;">` : ''}
           <div style="padding:20px;"><span style="background:#2e7d32;color:white;padding:3px 10px;border-radius:15px;font-size:.75rem;">${escapeHTML(a.type || 'نشاط')}</span>
           <h4 style="color:#1b4d3e;margin:10px 0 6px;font-size:1.1rem;">${escapeHTML(a.title || 'نشاط')}</h4>
           <p style="font-size:.8rem;color:#777;margin-bottom:8px;"><i class="fa-solid fa-calendar"></i> ${escapeHTML(a.date || '—')}</p>
           <p style="color:#555;font-size:.9rem;white-space:pre-wrap;overflow-wrap:anywhere;">${escapeHTML(a.description || '')}</p>
-          ${video ? `<p><a href="${escapeHTML(video)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i> مشاهدة الفيديو</a></p>` : ''}</div></article>`;
+          </div></article>`;
     }).join('');
 }
 
@@ -250,7 +295,7 @@ async function loadAdminData() {
         const status = m.status || 'قيد المعالجة';
         const badgeClass = status === 'مقبول' ? 'badge-success' : status === 'مرفوض' ? 'badge-danger' : 'badge-pending';
         const phone = String(m.phone || '').replace(/[^\d+]/g, '');
-        const waBtn = status === 'مقبول' && phone ? `<a href="https://wa.me/${encodeURIComponent(phone)}" target="_blank" rel="noopener" class="admin-wa-link"><i class="fa-brands fa-whatsapp"></i> تواصل</a>` : '';
+        const waBtn = status === 'مقبول' && phone ? `<button type="button" onclick="sendMemberCredentials(${Number(m.id)})" class="admin-wa-link" style="border:0;cursor:pointer"><i class="fa-brands fa-whatsapp"></i> إرسال بيانات الدخول</button>` : '';
         return `<tr style="border-bottom:1px solid #eee;">
           <td style="padding:10px"><strong>${escapeHTML(m.name || m.full_name || '—')}</strong><br><small>${escapeHTML(m.member_type || '—')}</small></td>
           <td style="padding:10px">${escapeHTML(m.mill || m.mill_name || '—')}</td>
@@ -265,9 +310,31 @@ async function loadAdminData() {
 
 async function setMemberStatus(id, status) {
     if (!['قيد المعالجة','معالجة','مقبول','مرفوض'].includes(status)) return;
+    const { data: before } = await supabaseClient.from('members').select('id,name,mill,phone,username,status').eq('id', id).maybeSingle();
     const { error } = await supabaseClient.from('members').update({ status }).eq('id', id);
     if (error) { alert('تعذر تحديث حالة طلب الانخراط: ' + error.message); return; }
+    if (status === 'مقبول' && before?.status !== 'مقبول') {
+        await notifyMembers('قبول طلب الانخراط', `تم قبول طلب انخراط ${before.name || ''} (${before.mill || ''}).`, id);
+        alert('تم قبول طلب الانخراط. يمكن فتح واتساب من زر «إرسال بيانات الدخول» لإرسال الرسالة بعد مراجعتها.');
+    }
     await loadAdminData();
+}
+async function sendMemberCredentials(id) {
+    const { data: m, error } = await supabaseClient.from('members').select('id,name,mill,phone,username,password,status').eq('id', id).single();
+    if (error || !m) { alert('تعذر جلب بيانات المنخرط.'); return; }
+    if (m.status !== 'مقبول') { alert('لا يمكن إرسال بيانات الدخول قبل قبول الانخراط.'); return; }
+    let phone = String(m.phone || '').replace(/\D/g, '');
+    if (phone.startsWith('0')) phone = '212' + phone.slice(1);
+    else if (phone.startsWith('212')) phone = phone;
+    else if (phone.length === 9) phone = '212' + phone;
+    if (!phone) { alert('رقم هاتف المنخرط غير متوفر.'); return; }
+    if (!m.username || !m.password) { alert('اسم المستخدم أو كلمة المرور غير متوفرين. حدّث بيانات الدخول أولاً.'); return; }
+    const message = `السلام عليكم ${m.name || ''}،
+نخبركم بقبول طلب انخراطكم في جمعية نماء العطاوية.
+اسم المستخدم: ${m.username}
+كلمة المرور المؤقتة: ${m.password}
+يرجى تغيير كلمة المرور بعد الدخول وعدم مشاركتها مع أي شخص.`;
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
 }
 
 async function editMemberRecord(id) {
@@ -314,6 +381,7 @@ async function handleAddLocalPrice(e) {
     if (error) alert('خطأ: ' + error.message);
     else {
         alert('تم إضافة السعر المحلي بنجاح وتحديث العارضة.');
+        await notifyMembers('تحديث الأسعار المحلية', `أضافت الإدارة تحديثاً للأسعار: ${priceText}`);
         e.target.reset();
         loadAdminLocalPrices();
         fetchGlobalMarketPrices();
@@ -400,11 +468,11 @@ async function uploadFileToSupabase(inputId) {
         input.value = '';
         return '';
     }
-    // يتطلب إنشاء bucket باسم media مع سياسات رفع مناسبة في Supabase Storage.
+    // يتطلب إنشاء bucket باسم namaa-media مع سياسات رفع مناسبة في Supabase Storage.
     const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '-')}`;
-    const { data, error } = await supabaseClient.storage.from('media').upload(safeName, file, { upsert: false });
-    if (error) { console.error('Storage upload failed:', error); alert('تعذر رفع الملف. تحقق من إعدادات Storage وbucket باسم media، أو استخدم رابطاً مباشراً.'); return ''; }
-    return supabaseClient.storage.from('media').getPublicUrl(data.path).data.publicUrl;
+    const { data, error } = await supabaseClient.storage.from('namaa-media').upload(safeName, file, { upsert: false });
+    if (error) { console.error('Storage upload failed:', error); alert('تعذر رفع الملف. تحقق من إعدادات Storage وbucket باسم namaa-media، أو استخدم رابطاً مباشراً.'); return ''; }
+    return supabaseClient.storage.from('namaa-media').getPublicUrl(data.path).data.publicUrl;
 }
 function mediaUrl(fileId, urlId, uploaded) { return uploaded || document.getElementById(urlId)?.value.trim() || ''; }
 async function handleAddActivity(e) {
@@ -415,7 +483,7 @@ async function handleAddActivity(e) {
       const row = { title: document.getElementById('act-title').value.trim(), date: document.getElementById('act-date').value, type: document.getElementById('act-type').value, description: document.getElementById('act-desc').value.trim(), image_url: mediaUrl('act-image-file','act-image-url',uploaded), video_url: videoUploaded || document.getElementById('act-video-url').value.trim() };
       const { error } = await supabaseClient.from('activities').insert([row]);
       if (error) throw error;
-      alert('تم نشر النشاط بنجاح.'); e.target.reset(); loadAdminActivities(); loadPublicActivities();
+      alert('تم نشر النشاط بنجاح.'); e.target.reset(); await notifyMembers('نشاط جديد: ' + row.title, `تمت إضافة نشاط جديد إلى المنصة: ${row.title}`); await loadAdminActivities(); await loadPublicActivities(); await fetchGlobalMarketPrices();
     } catch (err) { if (err?.message) console.error(err); if (!err?.handled) alert('تعذر نشر النشاط: ' + (err.message || 'تحقق من الاتصال وإعدادات قاعدة البيانات.')); }
 }
 async function handleAddTraining(e) {
@@ -426,7 +494,7 @@ async function handleAddTraining(e) {
       const row = { title: document.getElementById('tr-title').value.trim(), date: document.getElementById('tr-date').value, trainer: document.getElementById('tr-trainer').value.trim(), target: document.getElementById('tr-target').value.trim(), description: document.getElementById('tr-content').value.trim(), image_url: mediaUrl('tr-image-file','tr-image-url',uploaded), video_url: videoUploaded || document.getElementById('tr-video-url').value.trim() };
       const { error } = await supabaseClient.from('trainings').insert([row]);
       if (error) throw error;
-      alert('تم نشر التكوين بنجاح.'); e.target.reset(); loadAdminTrainings(); loadPublicTrainings(); loadMemberTrainings();
+      alert('تم نشر التكوين بنجاح.'); e.target.reset(); await notifyMembers('تكوين جديد: ' + row.title, `تمت إضافة مادة تكوينية جديدة: ${row.title}`); await loadAdminTrainings(); await loadPublicTrainings(); await loadMemberTrainings(); await fetchGlobalMarketPrices();
     } catch (err) { if (err?.message) console.error(err); alert('تعذر نشر التكوين: ' + (err.message || 'تحقق من الاتصال وإعدادات قاعدة البيانات.')); }
 }
 async function loadAdminActivities() {
@@ -448,11 +516,37 @@ async function loadAdminNews() {
  table.innerHTML=(data||[]).map(n=>`<tr><td>${escapeHTML(n.title)}</td><td>${escapeHTML(n.category)}</td><td>${escapeHTML(n.date)}</td><td>${safeHttpUrl(n.image_url)?'<a target="_blank" rel="noopener noreferrer" href="'+escapeHTML(safeHttpUrl(n.image_url))+'">صورة</a> ':''}${safeHttpUrl(n.document_url)?'<a target="_blank" rel="noopener noreferrer" href="'+escapeHTML(safeHttpUrl(n.document_url))+'">وثيقة</a>':''}</td><td><button onclick="editContentRecord('news',${n.id})">تعديل</button> <button class="btn-danger" onclick="deleteContentRecord('news',${n.id})">حذف</button></td></tr>`).join('');
 }
 async function editContentRecord(table,id) {
- const fields={activities:[['title','العنوان'],['date','التاريخ'],['type','النوع'],['description','التفاصيل'],['image_url','رابط الصورة'],['video_url','رابط الفيديو']],trainings:[['title','العنوان'],['date','التاريخ'],['trainer','المؤطر'],['target','الفئة المستهدفة'],['description','المحتوى'],['image_url','رابط الصورة'],['video_url','رابط الفيديو']],news:[['title','العنوان'],['category','التصنيف'],['date','التاريخ'],['content','مضمون الخبر'],['image_url','رابط الصورة'],['document_url','رابط الوثيقة']]};
- const {data,error}=await supabaseClient.from(table).select('*').eq('id',id).single();if(error||!data){alert('تعذر جلب المنشور للتعديل: '+(error?.message||''));return;}
- const updates={};for(const [key,label] of (fields[table]||[])){if(!(key in data))continue;const value=prompt('تعديل '+label+' (إلغاء يوقف العملية):',data[key]??'');if(value===null)return;updates[key]=value.trim();}
- const {error:saveError}=await supabaseClient.from(table).update(updates).eq('id',id);if(saveError){alert('تعذر حفظ التعديلات: '+saveError.message);return;}alert('تم حفظ التعديلات.');
- if(table==='activities'){await loadAdminActivities();await loadPublicActivities();}if(table==='trainings'){await loadAdminTrainings();await loadPublicTrainings();await loadMemberTrainings();}if(table==='news'){await loadAdminNews();await loadPublicNews();}
+ const definitions={
+  activities:[['title','العنوان','text'],['date','التاريخ','date'],['type','النوع','text'],['description','التفاصيل','textarea'],['image_url','رابط الصورة','url'],['video_url','رابط الفيديو (للاستخدام الداخلي/التكوين)','url']],
+  trainings:[['title','العنوان','text'],['date','التاريخ','date'],['trainer','المؤطر','text'],['target','الفئة المستهدفة','text'],['description','المحتوى','textarea'],['image_url','رابط الصورة','url'],['video_url','رابط الفيديو','url']],
+  news:[['title','العنوان','text'],['category','التصنيف','text'],['date','التاريخ','date'],['content','مضمون الخبر','textarea'],['image_url','رابط الصورة','url']]
+ };
+ const fields=definitions[table]; if(!fields){alert('نوع المحتوى غير مدعوم.');return;}
+ const {data,error}=await supabaseClient.from(table).select('*').eq('id',id).single();
+ if(error||!data){alert('تعذر جلب المنشور للتعديل: '+(error?.message||''));return;}
+ document.getElementById('content-edit-modal')?.remove();
+ const modal=document.createElement('div'); modal.id='content-edit-modal'; modal.className='admin-modal-backdrop';
+ const controls=fields.filter(([key])=>key in data || ['title','date','description','content','image_url'].includes(key)).map(([key,label,type])=>{
+  const value=String(data[key]??'');
+  if(type==='textarea') return `<label class="content-edit-wide">${label}<textarea name="${key}" rows="4">${escapeHTML(value)}</textarea></label>`;
+  return `<label>${label}<input name="${key}" type="${type}" value="${escapeHTML(value)}" /></label>`;
+ }).join('');
+ modal.innerHTML=`<section class="admin-edit-modal" role="dialog" aria-modal="true" aria-labelledby="content-edit-title"><header><h3 id="content-edit-title">تعديل ${table==='news'?'الخبر':table==='activities'?'النشاط':'التكوين'}</h3><button type="button" class="modal-close" aria-label="إغلاق">×</button></header><form id="content-edit-form"><div class="edit-fields">${controls}<label>استبدال/رفع صورة من الجهاز<input type="file" name="edit-image-file" id="edit-image-file" accept="image/*"></label>${table!=='news'?`<label>استبدال/رفع فيديو من الجهاز<input type="file" name="edit-video-file" id="edit-video-file" accept="video/mp4,video/webm,video/quicktime"></label>`:''}<p class="content-edit-wide" style="color:#66736b;font-size:.88rem">يمكن تعديل جميع الخانات في هذه النافذة ثم حفظها مرة واحدة. رفع الملفات يتطلب إعداد مخزن Supabase باسم <b>namaa-media</b>.</p></div><footer><button type="button" class="modal-cancel">إلغاء</button><button type="submit" class="modal-save">حفظ كل التعديلات</button></footer></form></section>`;
+ document.body.appendChild(modal); const close=()=>modal.remove(); modal.querySelector('.modal-close').onclick=close; modal.querySelector('.modal-cancel').onclick=close; modal.addEventListener('click',e=>{if(e.target===modal)close();});
+ const form=modal.querySelector('#content-edit-form'); form.onsubmit=async e=>{
+  e.preventDefault(); const btn=form.querySelector('[type=submit]'); btn.disabled=true; btn.textContent='جارٍ رفع الملفات وحفظ التعديلات…';
+  try{
+   const fd=new FormData(form), updates={};
+   for(const [key] of fields){if(key in data){const el=form.elements.namedItem(key); if(el) updates[key]=String(el.value??'').trim();}}
+   const imageUploaded=await uploadFileToSupabase('edit-image-file'); if(imageUploaded) updates.image_url=imageUploaded;
+   if(table!=='news'){const videoUploaded=await uploadFileToSupabase('edit-video-file');if(videoUploaded)updates.video_url=videoUploaded;}
+   const {error:saveError}=await supabaseClient.from(table).update(updates).eq('id',id); if(saveError)throw saveError;
+   close(); alert('تم حفظ جميع التعديلات بنجاح.');
+   if(table==='activities'){await loadAdminActivities();await loadPublicActivities();}
+   if(table==='trainings'){await loadAdminTrainings();await loadPublicTrainings();await loadMemberTrainings();}
+   if(table==='news'){await loadAdminNews();await loadPublicNews();await fetchGlobalMarketPrices();}
+  }catch(err){alert('تعذر حفظ التعديلات: '+(err.message||'تحقق من اتصال قاعدة البيانات ومخزن الملفات.'));btn.disabled=false;btn.textContent='حفظ كل التعديلات';}
+ };
 }
 async function deleteContentRecord(table,id) { if(!confirm('هل تريد حذف هذا المحتوى نهائياً؟'))return; const {error}=await supabaseClient.from(table).delete().eq('id',id); if(error){alert('تعذر الحذف: '+error.message);return;} if(table==='activities'){loadAdminActivities();loadPublicActivities();} if(table==='trainings'){loadAdminTrainings();loadPublicTrainings();loadMemberTrainings();} if(table==='news'){loadAdminNews();loadPublicNews();} }
 
